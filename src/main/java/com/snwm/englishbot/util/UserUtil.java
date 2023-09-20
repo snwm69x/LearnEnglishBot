@@ -1,9 +1,10 @@
 package com.snwm.englishbot.util;
 
-import java.io.File;
 import java.io.Serializable;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,6 @@ import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.UserUtilService;
 
-import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -62,25 +62,26 @@ public class UserUtil implements Serializable {
     // }
 
     public Word getRandomWord() {
-        List<Word> words = this.words;
         if (words.isEmpty()) {
             this.words = new ArrayList<>(wordRepository.findAll());
         }
-        if (!words.isEmpty()) {
-            Word word = words.get((int) (Math.random() * words.size()));
-            words.remove(word);
-            UserUtil userUtil = UserUtil.builder()
-                        .user(user)
-                        .words(words)
-                        .build();
+        int randomIndex = ThreadLocalRandom.current().nextInt(words.size());
+        Word word = words.get(randomIndex);
+        words.remove(randomIndex);
+        UserUtil userUtil = UserUtil.builder()
+                .user(user)
+                .words(words)
+                .build();
+        if (userUtilService != null) {
             userUtilService.saveUserUtil(userUtil);
-            return word;
         }
-        return null;
+        return word;
     }
 
     public void updateWords(List<Word> newWords) {
         this.words = new ArrayList<>(newWords);
-        userUtilService.saveUserUtil(this);
+        if (userUtilService != null) {
+            userUtilService.saveUserUtil(this);
+        }
     }
 }
