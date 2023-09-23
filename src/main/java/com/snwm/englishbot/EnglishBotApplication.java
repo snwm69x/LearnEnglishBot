@@ -8,18 +8,15 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import com.snwm.englishbot.bot.EnglishWordBot;
-import com.snwm.englishbot.service.UserUtilService;
 
 @SpringBootApplication
-public class EnglishbotApplication {
+public class EnglishBotApplication {
 
 	public static void main(String[] args) throws TelegramApiException {
-		SpringApplication.run(EnglishbotApplication.class, args);
-		ApplicationContext context = SpringApplication.run(EnglishbotApplication.class, args);
+		ApplicationContext context = SpringApplication.run(EnglishBotApplication.class, args);
 		EnglishWordBot bot = context.getBean(EnglishWordBot.class);
 		TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 		botsApi.registerBot(bot);
-		System.out.println(context.getBean(UserUtilService.class));
 	}
 
 }

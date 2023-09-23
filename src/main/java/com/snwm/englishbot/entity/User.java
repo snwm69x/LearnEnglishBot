@@ -1,27 +1,20 @@
 package com.snwm.englishbot.entity;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
 @Entity
 @Table(name = "user_data")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Getter
+@Setter
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,4 +30,7 @@ public class User implements Serializable {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userData")
+    private Set<Word> wordList;
 }

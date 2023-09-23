@@ -1,9 +1,11 @@
 package com.snwm.englishbot.bot;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.snwm.englishbot.entity.User;
+import com.snwm.englishbot.service.UserService;
+import com.snwm.englishbot.service.WordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,33 +24,22 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.snwm.englishbot.entity.User;
-import com.snwm.englishbot.entity.Word;
-import com.snwm.englishbot.repository.UserRepository;
-import com.snwm.englishbot.repository.WordRepository;
-import com.snwm.englishbot.service.UserUtilService;
-import com.snwm.englishbot.util.UserUtil;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 @Component
 public class EnglishWordBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
-
     private final String token;
     private final String username;
 
     @Autowired
-    private WordRepository wordRepository;
-
+    private WordService wordService;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    @Autowired
-    private UserUtilService userUtilService;
 
-    EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username) {
+    EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username, WordService wordService, UserService userService) {
         this.token = token;
         this.username = username;
     }
@@ -75,22 +66,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        //
         // Обработка первого сообщения пользователя
-        //
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
             if (message.getText().equals("/start")) {
-                // Сохранение пользователя в базу данных.
-                User user = User.builder()
-                        .chatId(message.getChatId())
-                        .firstName(message.getFrom().getFirstName())
-                        .lastName(message.getFrom().getLastName())
-                        .username(message.getFrom().getUserName())
-                        .build();
-                if (userRepository.findByChatId(user.getChatId()) == null) {
-                    userRepository.save(user);
+                if (userService.getIdForChat(message.getChatId()) == null) {
+                    User user = userService.saveUser(message);
                 }
+
                 SendMessage startMessage = new SendMessage();
                 startMessage.setChatId(message.getChatId().toString());
                 startMessage.setText("Привет, я бот для изучения английского языка. Выбери действие:");
@@ -116,10 +99,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     logger.error("Error while sending start message: {}", e.getMessage());
                 }
             }
-
-            //
             // Обработка команды "О боте"
-            //
             if (message.getText().equals("О боте")) {
                 SendMessage helpMessage = new SendMessage();
                 helpMessage.setChatId(message.getChatId().toString());
@@ -136,27 +116,17 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             // Обработка команды "Новое слово"
             //
             if (message.getText().equals("Новое слово")) {
-                if (!new File(
-                        "C:\\Users\\snwm1337\\Downloads\\englishbot\\englishbot\\src\\main\\java\\com\\snwm\\englishbot\\data\\user_util"
-                                + File.separator + message.getChatId() + ".ser")
-                        .exists()) {
-                    UserUtil userUtil = UserUtil.builder()
-                            .user(userRepository.findByChatId(message.getChatId()))
-                            .words(new ArrayList<>(wordRepository.findAll()))
-                            .build();
-                    userUtilService.saveUserUtil(userUtil);
-                }
-                UserUtil userUtil = userUtilService.loadUserUtil(message.getChatId());
-                Word word = userUtil.getRandomWord();
+                User user = userService.getIdForChat(message.getChatId());
+                //String word = userService.getRandomWord(user);
                 SendMessage wordMessage = new SendMessage();
                 wordMessage.setChatId(message.getChatId().toString());
-                wordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
+                //wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.getTranscription());
                 InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
                 List<InlineKeyboardButton> row = new ArrayList<>();
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText("Показать перевод");
-                button.setCallbackData("translation:" + word.getTranslation());
+                //button.setCallbackData("translation:" + word.getTranslation());
                 row.add(button);
                 keyboard.add(row);
                 markup.setKeyboard(keyboard);
