@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-//import com.snwm.englishbot.bot.EnglishWordBot;
+import com.snwm.englishbot.bot.EnglishWordBot;
 
 @SpringBootApplication
 public class EnglishBotApplication {
@@ -19,5 +19,4 @@ public class EnglishBotApplication {
 		TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 		botsApi.registerBot(bot);
 	}
-
 }

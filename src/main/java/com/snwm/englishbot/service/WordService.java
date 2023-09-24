@@ -10,4 +10,7 @@ import java.util.Set;
 
 public interface WordService {
     List<Word> getAllWordsByUser(Long id);
+    List<Word> getAllWordsInDb();
+
+    void setAllWord(Long id);
 }

@@ -37,6 +37,6 @@ public class Word {
     private String translation;
     @Column
     private String transcription;
-    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<User> users;
 }

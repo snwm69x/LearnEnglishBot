@@ -27,8 +27,18 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getAllWordsByUser(Long id) {
-//        User user = userRepository.findUserById(id).orElseThrow(EntityNotFoundException::new);
-//        return user.getWords();
         return wordRepository.findWordsByUsers(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public List<Word> getAllWordsInDb() {
+        return wordRepository.findAll();
+    }
+
+    @Override
+    public void setAllWord(Long id) {
+        User user = userRepository.findUserByChatId(id);
+        user.setWords(wordRepository.findAll());
+        userRepository.save(user);
     }
 }
