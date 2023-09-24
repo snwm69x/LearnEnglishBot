@@ -31,6 +31,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userData")
-    private Set<Word> wordList;
+    @ManyToMany
+    @JoinColumn(name = "word_id")
+    private Set<Word> words;
 }
