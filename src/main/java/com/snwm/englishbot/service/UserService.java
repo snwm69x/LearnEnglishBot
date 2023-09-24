@@ -1,13 +1,17 @@
 package com.snwm.englishbot.service;
 
+import com.snwm.englishbot.entity.User;
+import com.snwm.englishbot.entity.Word;
+import com.snwm.englishbot.repository.UserRepository;
+import com.snwm.englishbot.repository.WordRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import com.snwm.englishbot.entity.User;
+import java.util.List;
+import java.util.Set;
 
 public interface UserService {
-    // Получить пользователя по chatId.
     User findUserByChatId(Long id);
-
-    // Создать нового пользователя.
     void createNewUser(Message message);
 }

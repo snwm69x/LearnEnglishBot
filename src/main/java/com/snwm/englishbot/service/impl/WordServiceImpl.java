@@ -5,11 +5,13 @@ import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class WordServiceImpl implements WordService {
@@ -17,6 +19,7 @@ public class WordServiceImpl implements WordService {
     private final WordRepository wordRepository;
     private final UserRepository userRepository;
 
+    @Autowired
     public WordServiceImpl(WordRepository wordRepository, UserRepository userRepository) {
         this.wordRepository = wordRepository;
         this.userRepository = userRepository;
@@ -24,7 +27,7 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getAllWordsByUser(Long id) {
-        return wordRepository.findWordsByUser(id).orElseThrow(EntityNotFoundException::new);
+        return wordRepository.findWordsByUsers(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -33,48 +36,9 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public void setAllWordToUser(Long id) {
+    public void setAllWord(Long id) {
         User user = userRepository.findUserByChatId(id);
         user.setWords(wordRepository.findAll());
         userRepository.save(user);
-    }
-
-    @Override
-    public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
-        User user = userRepository.findUserByChatId(id);
-        List<Word> words = user.getWords();
-        if(words.isEmpty()) {
-            words = wordRepository.findAll();
-        }
-        int randomIndex = (int) (Math.random() * words.size());
-        Word word = words.get(randomIndex);
-        words.remove(randomIndex);
-        user.setWords(words);
-        userRepository.deleteWordById(user.getChatId(), (long)randomIndex);
-        return word;
-    }
-
-    @Override
-    public Word getRandomWord(Word correctWord) {
-        Word word = wordRepository.findRandomWord();
-        while (word.equals(correctWord)) {
-            word = wordRepository.findRandomWord();
-        }
-        return word;
-    }
-
-    @Override
-    public Word getWordByTranslation(String translation) {
-        return wordRepository.findByTranslation(translation);
-    }
-
-    @Override
-    public Word getWordById(Long id) {
-        Optional<Word> optionalWord = wordRepository.findById(id);
-        if (optionalWord.isPresent()) {
-            return optionalWord.get();
-        } else {
-            throw new RuntimeException("Word not found");
-        }
     }
 }
