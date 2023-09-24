@@ -15,12 +15,12 @@ import java.util.List;
 public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "word_id")
     private Long id;
+    @Column(name = "word")
     private String word;
+    @Column(name = "translation")
     private String translation;
+    @Column(name = "transcription")
     private String transcription;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wordList")
-    private User userData;
 }

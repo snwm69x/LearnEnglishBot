@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.snwm.englishbot.entity.User;
+import com.snwm.englishbot.entity.Word;
+import com.snwm.englishbot.repository.UserRepository;
+import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
 import org.slf4j.Logger;
@@ -37,6 +40,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private WordService wordService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WordRepository wordRepository;
 
 
     EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username, WordService wordService, UserService userService) {
@@ -71,8 +78,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             if (message.getText().equals("/start")) {
                 if (userService.getIdForChat(message.getChatId()) == null) {
-                    User user = userService.saveUser(message);
+                    userService.saveUser(message);
                 }
+
 
                 SendMessage startMessage = new SendMessage();
                 startMessage.setChatId(message.getChatId().toString());
@@ -117,16 +125,18 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             //
             if (message.getText().equals("Новое слово")) {
                 User user = userService.getIdForChat(message.getChatId());
-                //String word = userService.getRandomWord(user);
+
+                List<Word> word = wordRepository.findAll();
+
                 SendMessage wordMessage = new SendMessage();
                 wordMessage.setChatId(message.getChatId().toString());
-                //wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.getTranscription());
+                wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.getTranscription());
                 InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
                 List<InlineKeyboardButton> row = new ArrayList<>();
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText("Показать перевод");
-                //button.setCallbackData("translation:" + word.getTranslation());
+                button.setCallbackData("translation:" + word.getTranslation());
                 row.add(button);
                 keyboard.add(row);
                 markup.setKeyboard(keyboard);
