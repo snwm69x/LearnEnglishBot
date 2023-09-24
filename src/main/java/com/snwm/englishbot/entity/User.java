@@ -1,27 +1,30 @@
 package com.snwm.englishbot.entity;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
 @Entity
 @Table(name = "user_data")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Getter
+@Setter
+@JsonIgnoreProperties({"words"})
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,4 +40,12 @@ public class User implements Serializable {
 
     @Column(name = "last_name")
     private String lastName;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "userWords",
+            joinColumns =
+                    {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "word_id", referencedColumnName = "id")})
+    private List<Word> words;
 }
