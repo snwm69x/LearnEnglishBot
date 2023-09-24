@@ -2,6 +2,7 @@ package com.snwm.englishbot.bot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
@@ -130,13 +131,17 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
                 SendMessage wordMessage = new SendMessage();
                 wordMessage.setChatId(message.getChatId().toString());
-                wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.getTranscription());
+                wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.stream()
+                        .map(Word::getTranscription)
+                        .collect(Collectors.toList()));//тут говно
                 InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
                 List<InlineKeyboardButton> row = new ArrayList<>();
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText("Показать перевод");
-                button.setCallbackData("translation:" + word.getTranslation());
+                button.setCallbackData("translation:" + word.stream() //тут тоже говно
+                        .map(Word::getTranscription)
+                        .collect(Collectors.toList()));
                 row.add(button);
                 keyboard.add(row);
                 markup.setKeyboard(keyboard);

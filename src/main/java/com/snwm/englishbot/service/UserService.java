@@ -26,7 +26,7 @@ public class UserService {
                 .lastName(message.getFrom().getLastName())
                 .build();
         userRepository.save(user);
-        user.setWordList(wordRepository.findAll(user.getId()));
+//        user.setWords(wordRepository.findAll(user.getId()));
         return user;
     }
 
