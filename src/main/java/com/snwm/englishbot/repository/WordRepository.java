@@ -9,6 +9,6 @@ import java.util.Set;
 
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
-    @Query("select w.id from Word w where w.userData = ?1")
+    @Query("select w.id from Word w where w.userData = ?#{id}")
     Set<Word> findAll(Long id);
 }
