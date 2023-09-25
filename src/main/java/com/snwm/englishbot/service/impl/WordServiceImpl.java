@@ -39,4 +39,20 @@ public class WordServiceImpl implements WordService {
         user.setWords(wordRepository.findAll());
         userRepository.save(user);
     }
+
+    @Override
+    public Word getRandomWordByUserIdAndDeleteIt(Long id) {
+        User user = userRepository.findUserByChatId(id);
+        List<Word> words = user.getWords();
+        if(words.size() == 0) {
+            words = wordRepository.findAll();
+        }
+        int randomIndex = (int) (Math.random() * words.size());
+        Word word = words.get(randomIndex);
+        words.remove(randomIndex);
+        user.setWords(words);
+        userRepository.save(user);
+        return word;
+    }
+
 }

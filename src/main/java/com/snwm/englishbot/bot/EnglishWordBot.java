@@ -119,18 +119,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             //
             if (message.getText().equals("Новое слово")) {
                 SendMessage wordMessage = new SendMessage();
-
-                User user = userService.findUserByChatId(message.getChatId());
-                int a = (int) (Math.random() * user.getWords().size());
-
+                Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
                 wordMessage.setChatId(message.getChatId().toString());
-                wordMessage.setText("Слово: " + user.getWords().get(a).getWord() + "\nТранскрипция: " + user.getWords().get(a).getTranscription());
+                wordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
                 InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
                 List<InlineKeyboardButton> row = new ArrayList<>();
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText("Показать перевод");
-                button.setCallbackData("translation:" + user.getWords().get(a).getTranslation());
+                button.setCallbackData("translation:" + word.getTranslation());
                 row.add(button);
                 keyboard.add(row);
                 markup.setKeyboard(keyboard);
