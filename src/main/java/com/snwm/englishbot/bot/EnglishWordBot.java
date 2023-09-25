@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.snwm.englishbot.entity.User;
-import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
 import org.slf4j.Logger;
