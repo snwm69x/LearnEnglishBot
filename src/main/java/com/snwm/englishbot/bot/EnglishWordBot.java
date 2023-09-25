@@ -2,12 +2,9 @@ package com.snwm.englishbot.bot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
-import com.snwm.englishbot.repository.UserRepository;
-import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
 import org.slf4j.Logger;
@@ -41,13 +38,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private WordService wordService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private WordRepository wordRepository;
 
-
-    EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username, WordService wordService, UserService userService) {
+    EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.token = token;
         this.username = username;
     }
@@ -78,10 +70,11 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
             if (message.getText().equals("/start")) {
-                if (userService.getIdForChat(message.getChatId()) == null) {
-                    userService.saveUser(message);
-                }
 
+                if (userService.findUserByChatId(message.getChatId()) == null) {
+                    userService.createNewUser(message);
+                    wordService.setAllWord(message.getChatId());
+                }
 
                 SendMessage startMessage = new SendMessage();
                 startMessage.setChatId(message.getChatId().toString());
@@ -113,7 +106,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 SendMessage helpMessage = new SendMessage();
                 helpMessage.setChatId(message.getChatId().toString());
                 helpMessage.setText(
-                        "Список доступных команд:\n/start - начать работу с ботом\n/newword - получить новое слово\n/info - информация о боте\n\n // created by snwm //");
+                        "snwm");
                 try {
                     execute(helpMessage);
                 } catch (TelegramApiException e) {
@@ -125,23 +118,19 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             // Обработка команды "Новое слово"
             //
             if (message.getText().equals("Новое слово")) {
-                User user = userService.getIdForChat(message.getChatId());
-
-                List<Word> word = wordRepository.findAll();
-
                 SendMessage wordMessage = new SendMessage();
+
+                User user = userService.findUserByChatId(message.getChatId());
+                int a = (int) (Math.random() * user.getWords().size());
+
                 wordMessage.setChatId(message.getChatId().toString());
-                wordMessage.setText("Слово: " + word + "\nТранскрипция: " + word.stream()
-                        .map(Word::getTranscription)
-                        .collect(Collectors.toList()));//тут говно
+                wordMessage.setText("Слово: " + user.getWords().get(a).getWord() + "\nТранскрипция: " + user.getWords().get(a).getTranscription());
                 InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
                 List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
                 List<InlineKeyboardButton> row = new ArrayList<>();
                 InlineKeyboardButton button = new InlineKeyboardButton();
                 button.setText("Показать перевод");
-                button.setCallbackData("translation:" + word.stream() //тут тоже говно
-                        .map(Word::getTranscription)
-                        .collect(Collectors.toList()));
+                button.setCallbackData("translation:" + user.getWords().get(a).getTranslation());
                 row.add(button);
                 keyboard.add(row);
                 markup.setKeyboard(keyboard);

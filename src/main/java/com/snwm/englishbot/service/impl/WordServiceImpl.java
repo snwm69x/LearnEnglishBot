@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class WordServiceImpl implements WordService {
@@ -27,8 +25,18 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getAllWordsByUser(Long id) {
-//        User user = userRepository.findUserById(id).orElseThrow(EntityNotFoundException::new);
-//        return user.getWords();
         return wordRepository.findWordsByUsers(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public List<Word> getAllWordsInDb() {
+        return wordRepository.findAll();
+    }
+
+    @Override
+    public void setAllWord(Long id) {
+        User user = userRepository.findUserByChatId(id);
+        user.setWords(wordRepository.findAll());
+        userRepository.save(user);
     }
 }
