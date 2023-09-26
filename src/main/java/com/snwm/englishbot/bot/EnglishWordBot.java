@@ -1,9 +1,12 @@
 package com.snwm.englishbot.bot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
-import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -33,6 +37,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private final String token;
     private final String username;
+    private final Map<String, List<Word>> wordsCache = new HashMap<>();
 
     @Autowired
     private WordService wordService;
@@ -114,64 +119,45 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 }
             }
 
-            //
             // Обработка команды "Новое слово"
-            //
             if (message.getText().equals("Новое слово")) {
-                SendMessage wordMessage = new SendMessage();
-                Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
-                wordMessage.setChatId(message.getChatId().toString());
-                wordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
-                InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-                List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-                List<InlineKeyboardButton> row = new ArrayList<>();
-                InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText("Показать перевод");
-                button.setCallbackData("translation:" + word.getTranslation());
-                row.add(button);
-                keyboard.add(row);
-                markup.setKeyboard(keyboard);
-                wordMessage.setReplyMarkup(markup);
-
-                try {
-                    execute(wordMessage);
-                } catch (TelegramApiException e) {
-                    logger.error("Error while sending word message: {}", e.getMessage());
-                }
-
-            }
-
-        }
-
-        //
-        // Обработка нажатия на кнопку перевода слова.
-        //
-        if (update.hasCallbackQuery()) {
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            String[] data = callbackQuery.getData().split(":");
-            if (data[0].equals("translation")) {
-                String translation = data[1];
-                EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
-                editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
-                editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
-                InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-                List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-                List<InlineKeyboardButton> row = new ArrayList<>();
-                InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText(translation);
-                button.setCallbackData(callbackQuery.getData());
-                row.add(button);
-                keyboard.add(row);
-                markup.setKeyboard(keyboard);
-                editMessageReplyMarkup.setReplyMarkup(markup);
-                try {
-                    execute(editMessageReplyMarkup);
-                } catch (TelegramApiException e) {
-                    logger.error("Error while editing message reply markup: {}", e.getMessage());
-                }
+                handleNewWordCommand(message);
             }
         }
+    }
 
+    private void handleNewWordCommand(Message message) {
+        // Если кэш пуст, то заполняем его словами из базы данных.
+        // но всё равно слова в ответах могут повторится
+        List<Word> words = wordsCache.get(message.getChatId().toString());
+        if(words == null) {
+            words = wordService.getAllWordsInDb();
+            wordsCache.put(message.getChatId().toString(), words);
+        }
+        Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
+        wordsCache.get(message.getChatId().toString()).remove(word);
+        List<String> options = new ArrayList<>();
+        List<Word> tempWords = wordsCache.get(message.getChatId().toString());
+        for(int i = 0; i<3; i++) {
+            int randomIndex = (int) (Math.random() * wordsCache.size());
+            options.add(tempWords.get(randomIndex).getTranslation());
+            tempWords.remove(randomIndex);
+        }
+        options.add(word.getTranslation());
+        Collections.shuffle(options);
+        int correctOptionId = options.indexOf(word.getTranslation());
+        SendPoll sendPoll = new SendPoll();
+        sendPoll.setType("quiz");
+        sendPoll.setChatId(message.getChatId().toString());
+        sendPoll.setQuestion("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
+        sendPoll.setOptions(options);
+        sendPoll.setCorrectOptionId(correctOptionId);
+
+        try {
+            execute(sendPoll);
+        } catch (TelegramApiException e) {
+            logger.error("Error while sending word message: {}", e.getMessage());
+        }
     }
 
 }
