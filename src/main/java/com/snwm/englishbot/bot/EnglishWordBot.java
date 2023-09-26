@@ -75,48 +75,11 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
             if (message.getText().equals("/start")) {
-
-                if (userService.findUserByChatId(message.getChatId()) == null) {
-                    userService.createNewUser(message);
-                    wordService.setAllWord(message.getChatId());
-                }
-
-                SendMessage startMessage = new SendMessage();
-                startMessage.setChatId(message.getChatId().toString());
-                startMessage.setText("Привет, я бот для изучения английского языка. Выбери действие:");
-                // Создание клавиатуры
-                ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-                markup.setResizeKeyboard(true);
-                markup.setOneTimeKeyboard(false);
-                List<KeyboardRow> keyboard = new ArrayList<>();
-                // Добавление кнопок
-                KeyboardRow row1 = new KeyboardRow();
-                KeyboardButton button_wordplay = new KeyboardButton();
-                button_wordplay.setText("Новое слово");
-                row1.add(button_wordplay);
-                KeyboardButton button_info = new KeyboardButton();
-                button_info.setText("О боте");
-                row1.add(button_info);
-                keyboard.add(row1);
-                markup.setKeyboard(keyboard);
-                startMessage.setReplyMarkup(markup);
-                try {
-                    execute(startMessage);
-                } catch (TelegramApiException e) {
-                    logger.error("Error while sending start message: {}", e.getMessage());
-                }
+                handleStartCommand(message);
             }
             // Обработка команды "О боте"
             if (message.getText().equals("О боте")) {
-                SendMessage helpMessage = new SendMessage();
-                helpMessage.setChatId(message.getChatId().toString());
-                helpMessage.setText(
-                        "snwm");
-                try {
-                    execute(helpMessage);
-                } catch (TelegramApiException e) {
-                    logger.error("Error while sending help message: {}", e.getMessage());
-                }
+                handleInfoCommand(message);
             }
 
             // Обработка команды "Новое слово"
@@ -158,6 +121,49 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             logger.error("Error while sending word message: {}", e.getMessage());
         }
+    }
+
+    private void handleInfoCommand(Message message) {
+        SendMessage infoMessage = new SendMessage();
+        infoMessage.setChatId(message.getChatId().toString());
+        infoMessage.setText("Бот для изучения английского языка. Версия 1.0");
+        try {
+            execute(infoMessage);
+        } catch (TelegramApiException e) {
+            logger.error("Error while sending info message: {}", e.getMessage());
+        }
+    }
+
+    private void handleStartCommand(Message message) {
+        if (userService.findUserByChatId(message.getChatId()) == null) {
+                    userService.createNewUser(message);
+                    wordService.setAllWord(message.getChatId());
+                }
+
+                SendMessage startMessage = new SendMessage();
+                startMessage.setChatId(message.getChatId().toString());
+                startMessage.setText("Привет, я бот для изучения английского языка. Выбери действие:");
+                // Создание клавиатуры
+                ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
+                markup.setResizeKeyboard(true);
+                markup.setOneTimeKeyboard(false);
+                List<KeyboardRow> keyboard = new ArrayList<>();
+                // Добавление кнопок
+                KeyboardRow row1 = new KeyboardRow();
+                KeyboardButton button_wordplay = new KeyboardButton();
+                button_wordplay.setText("Новое слово");
+                row1.add(button_wordplay);
+                KeyboardButton button_info = new KeyboardButton();
+                button_info.setText("О боте");
+                row1.add(button_info);
+                keyboard.add(row1);
+                markup.setKeyboard(keyboard);
+                startMessage.setReplyMarkup(markup);
+                try {
+                    execute(startMessage);
+                } catch (TelegramApiException e) {
+                    logger.error("Error while sending start message: {}", e.getMessage());
+                }
     }
 
 }
