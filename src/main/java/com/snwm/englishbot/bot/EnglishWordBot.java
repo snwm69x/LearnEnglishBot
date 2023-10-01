@@ -18,9 +18,15 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.polls.Poll;
+import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -67,28 +73,42 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        // Обработка неизвестных команд
         if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().getText().equals("/start")
-                && !update.getMessage().getText().equals("Новое слово")
-                && !update.getMessage().getText().equals("О боте")) {
+                && !update.getMessage().getText().equals("Новое слово 💬")
+                && !update.getMessage().getText().equals("О боте 📝")
+                && !update.getMessage().getText().equals("Quiz 📚")) {
             handleUnknownCommand(update.getMessage());
         }
-        // Обработка первого сообщения пользователя
+        // Обработка команд
         if (update.hasMessage() && update.getMessage().hasText()) {
+            // Обработка команды "/start"
             if (update.getMessage().getText().equals("/start")) {
                 handleStartCommand(update.getMessage());
             }
             // Обработка команды "О боте"
-            if (update.getMessage().getText().equals("О боте")) {
+            if (update.getMessage().getText().equals("О боте 📝")) {
                 handleInfoCommand(update.getMessage());
             }
+            // Обработка команды "Quiz"
+            if (update.getMessage().getText().equals("Quiz 📚")) {
+                handleQuizCommand(update.getMessage());
+            }
             // Обработка команды "Новое слово"
-            if (update.getMessage().getText().equals("Новое слово")) {
-                handleNewWordCommand(update.getMessage());     
+            if (update.getMessage().getText().equals("Новое слово 💬")) {
+                handleNewWordCommand(update.getMessage());
+            }
+        }
+
+        if (update.hasCallbackQuery()) {
+            // Обработка ответа на команду "Новое слово"
+            if (update.getCallbackQuery().getData().startsWith("newword")) {
+                handleNewWordCommandResponse(update.getCallbackQuery());
             }
         }
     }
 
-    private void handleNewWordCommand(Message message) {
+    private void handleQuizCommand(Message message) {
         // Если кэш пуст, то заполняем его словами из базы данных.
         // но всё равно слова в ответах могут повторится
         List<Word> words = wordsCache.get(message.getChatId().toString());
@@ -113,6 +133,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         sendPoll.setChatId(message.getChatId().toString());
         sendPoll.setQuestion("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
         sendPoll.setOptions(options);
+        sendPoll.setIsAnonymous(false);
         sendPoll.setCorrectOptionId(correctOptionId);
 
         try {
@@ -155,13 +176,18 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<KeyboardRow> keyboard = new ArrayList<>();
         // Добавление кнопок
         KeyboardRow row1 = new KeyboardRow();
-        KeyboardButton button_wordplay = new KeyboardButton();
-        button_wordplay.setText("Новое слово");
-        row1.add(button_wordplay);
+        KeyboardRow row2 = new KeyboardRow();
+        KeyboardButton button_quiz = new KeyboardButton();
+        button_quiz.setText("Quiz 📚");
+        row1.add(button_quiz);
         KeyboardButton button_info = new KeyboardButton();
-        button_info.setText("О боте");
+        button_info.setText("О боте 📝");
         row1.add(button_info);
+        KeyboardButton button_wordplay = new KeyboardButton();
+        button_wordplay.setText("Новое слово 💬");
+        row2.add(button_wordplay);
         keyboard.add(row1);
+        keyboard.add(row2);
         markup.setKeyboard(keyboard);
         startMessage.setReplyMarkup(markup);
         try {
@@ -179,6 +205,106 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             execute(unknownMessage);
         } catch (TelegramApiException e) {
             logger.error("Error while sending unknown command message: {}", e.getMessage());
+        }
+    }
+
+    private void handleNewWordCommand(Message message) {
+        List<Word> words = wordsCache.get(message.getChatId().toString());
+        if (words == null) {
+            words = wordService.getAllWordsInDb();
+            wordsCache.put(message.getChatId().toString(), words);
+        }
+        Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
+        wordsCache.get(message.getChatId().toString()).remove(word);
+        List<String> options = new ArrayList<>();
+        List<Word> tempWords = wordsCache.get(message.getChatId().toString());
+        for (int i = 0; i < 3; i++) {
+            int randomIndex = (int) (Math.random() * tempWords.size());
+            options.add(tempWords.get(randomIndex).getTranslation());
+            tempWords.remove(randomIndex);
+        }
+        options.add(word.getTranslation());
+        Collections.shuffle(options);
+        String correctAnswer = options.get(options.indexOf(word.getTranslation()));
+        SendMessage newWordMessage = new SendMessage();
+        newWordMessage.setChatId(message.getChatId().toString());
+        newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
+        // Создание клавиатуры
+        InlineKeyboardButton button1 = new InlineKeyboardButton();
+        button1.setText(options.get(0));
+        button1.setCallbackData("newword:" + correctAnswer + ":" + options.get(0));
+        InlineKeyboardButton button2 = new InlineKeyboardButton();
+        button2.setText(options.get(1));
+        button2.setCallbackData("newword:" + correctAnswer + ":" + options.get(1));
+        InlineKeyboardButton button3 = new InlineKeyboardButton();
+        button3.setText(options.get(2));
+        button3.setCallbackData("newword:" + correctAnswer + ":" + options.get(2));
+        InlineKeyboardButton button4 = new InlineKeyboardButton();
+        button4.setText(options.get(3));
+        button4.setCallbackData("newword:" + correctAnswer + ":" + options.get(3));
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(button1);
+        row1.add(button2);
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        row2.add(button3);
+        row2.add(button4);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row1);
+        keyboard.add(row2);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(keyboard);
+        newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
+        try {
+            execute(newWordMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
+        String[] data = callbackQuery.getData().split(":");
+        String correctAnswer = data[1];
+        String userAnswer = data[2];
+        System.out.println(correctAnswer);
+        System.out.println(userAnswer);
+        if (correctAnswer.equals(userAnswer)) {
+            EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+            editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
+            editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText("Correct Answer");
+            button.setCallbackData(callbackQuery.getData());
+            row.add(button);
+            keyboard.add(row);
+            markup.setKeyboard(keyboard);
+            editMessageReplyMarkup.setReplyMarkup(markup);
+            try {
+                execute(editMessageReplyMarkup);
+            } catch (TelegramApiException e) {
+                logger.error("Error while editing message reply markup: {}", e.getMessage());
+            }
+        } else {
+            EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+            editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
+            editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
+            InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText("Wrong Answer");
+            button.setCallbackData(callbackQuery.getData());
+            row.add(button);
+            keyboard.add(row);
+            markup.setKeyboard(keyboard);
+            editMessageReplyMarkup.setReplyMarkup(markup);
+            try {
+                execute(editMessageReplyMarkup);
+            } catch (TelegramApiException e) {
+                logger.error("Error while editing message reply markup: {}", e.getMessage());
+            }
         }
     }
 

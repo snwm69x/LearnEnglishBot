@@ -6,6 +6,7 @@ import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
