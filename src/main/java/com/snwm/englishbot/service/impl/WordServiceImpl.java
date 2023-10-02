@@ -6,7 +6,6 @@ import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -26,7 +25,7 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getAllWordsByUser(Long id) {
-        return wordRepository.findWordsByUsers(id).orElseThrow(EntityNotFoundException::new);
+        return wordRepository.findWordsByUser(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -42,18 +41,17 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
-    public Word getRandomWordByUserIdAndDeleteIt(Long id) {
+    public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
         User user = userRepository.findUserByChatId(id);
         List<Word> words = user.getWords();
-        if(words.size() == 0) {
+        if(words.isEmpty()) {
             words = wordRepository.findAll();
         }
         int randomIndex = (int) (Math.random() * words.size());
         Word word = words.get(randomIndex);
         words.remove(randomIndex);
         user.setWords(words);
-        userRepository.save(user);
+        userRepository.deleteWordById(user.getChatId(), (long)randomIndex);
         return word;
     }
-
 }

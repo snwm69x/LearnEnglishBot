@@ -22,8 +22,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.polls.Poll;
-import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -116,7 +114,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             words = wordService.getAllWordsInDb();
             wordsCache.put(message.getChatId().toString(), words);
         }
-        Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
+        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
         wordsCache.get(message.getChatId().toString()).remove(word);
         List<String> options = new ArrayList<>();
         List<Word> tempWords = wordsCache.get(message.getChatId().toString());
@@ -209,20 +207,16 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommand(Message message) {
-        List<Word> words = wordsCache.get(message.getChatId().toString());
-        if (words == null) {
-            words = wordService.getAllWordsInDb();
-            wordsCache.put(message.getChatId().toString(), words);
-        }
-        Word word = wordService.getRandomWordByUserIdAndDeleteIt(message.getChatId());
-        wordsCache.get(message.getChatId().toString()).remove(word);
+        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
+        List<Word> words = wordService.getAllWordsByUser(message.getChatId());
+
         List<String> options = new ArrayList<>();
-        List<Word> tempWords = wordsCache.get(message.getChatId().toString());
         for (int i = 0; i < 3; i++) {
-            int randomIndex = (int) (Math.random() * tempWords.size());
-            options.add(tempWords.get(randomIndex).getTranslation());
-            tempWords.remove(randomIndex);
+            int randomIndex = (int) (Math.random() * words.size());
+            options.add(words.get(randomIndex).getTranslation());
+            words.remove(randomIndex);
         }
+
         options.add(word.getTranslation());
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word.getTranslation()));

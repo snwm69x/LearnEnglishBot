@@ -7,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -26,9 +24,6 @@ import java.util.List;
 @JsonIgnoreProperties({"words"})
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "chat_id", unique = true)
     private Long chatId;
 
@@ -44,7 +39,7 @@ public class User {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "userWords",
             joinColumns =
-                    {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "user_id", referencedColumnName = "chat_id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "word_id", referencedColumnName = "id")})
     private List<Word> words;
