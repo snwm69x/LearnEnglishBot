@@ -10,14 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -37,6 +32,6 @@ public class Word {
     private String translation;
     @Column
     private String transcription;
-    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<User> users;
 }
