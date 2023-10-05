@@ -9,6 +9,7 @@ import java.util.Map;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.service.UserService;
+import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private WordService wordService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserWordStatsService userWordStatsService;
 
     EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.token = token;
@@ -107,21 +110,13 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleQuizCommand(Message message) {
-        // Если кэш пуст, то заполняем его словами из базы данных.
-        // но всё равно слова в ответах могут повторится
-        List<Word> words = wordsCache.get(message.getChatId().toString());
-        if (words == null) {
-            words = wordService.getAllWordsInDb();
-            wordsCache.put(message.getChatId().toString(), words);
-        }
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
-        wordsCache.get(message.getChatId().toString()).remove(word);
+        List<Word> words = wordService.getAllWordsByUser(message.getChatId());
         List<String> options = new ArrayList<>();
-        List<Word> tempWords = wordsCache.get(message.getChatId().toString());
         for (int i = 0; i < 3; i++) {
             int randomIndex = (int) (Math.random() * wordsCache.size());
-            options.add(tempWords.get(randomIndex).getTranslation());
-            tempWords.remove(randomIndex);
+            options.add(words.get(randomIndex).getTranslation());
+            words.remove(randomIndex);
         }
         options.add(word.getTranslation());
         Collections.shuffle(options);
@@ -159,10 +154,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         User user = userService.findUserByChatId(message.getChatId());
         if (user == null) {
             userService.createNewUser(message);
-            wordService.setAllWord(message.getChatId());
+            wordService.setAllWordToUser(message.getChatId());
         }
         if (user != null && user.getWords().size() == 0) {
-            wordService.setAllWord(message.getChatId());
+            wordService.setAllWordToUser(message.getChatId());
         }
         SendMessage startMessage = new SendMessage();
         startMessage.setChatId(message.getChatId().toString());
@@ -209,14 +204,12 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private void handleNewWordCommand(Message message) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
         List<Word> words = wordService.getAllWordsByUser(message.getChatId());
-
         List<String> options = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             int randomIndex = (int) (Math.random() * words.size());
             options.add(words.get(randomIndex).getTranslation());
             words.remove(randomIndex);
         }
-
         options.add(word.getTranslation());
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word.getTranslation()));
@@ -257,11 +250,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.getData().split(":");
+        User user = userService.findUserByChatId(callbackQuery.getMessage().getChatId());
+        Word word = wordService.getWordByTranslation(data[1]);
         String correctAnswer = data[1];
         String userAnswer = data[2];
         System.out.println(correctAnswer);
         System.out.println(userAnswer);
         if (correctAnswer.equals(userAnswer)) {
+            userWordStatsService.updateWordStats(user, word, true);
             EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
             editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
             editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
@@ -281,6 +277,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         } else {
+            userWordStatsService.updateWordStats(user, word, false);
             EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
             editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
             editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
