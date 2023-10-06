@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
+import com.snwm.englishbot.service.KeyboardMaker;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
@@ -46,6 +47,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private UserService userService;
     @Autowired
     private UserWordStatsService userWordStatsService;
+    @Autowired
+    private KeyboardMaker keyboardMaker;
 
     EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username) {
         this.token = token;
@@ -162,27 +165,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         SendMessage startMessage = new SendMessage();
         startMessage.setChatId(message.getChatId().toString());
         startMessage.setText("Привет, я бот для изучения английского языка. Выбери действие:");
-        // Создание клавиатуры
-        ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
-        markup.setResizeKeyboard(true);
-        markup.setOneTimeKeyboard(false);
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        // Добавление кнопок
-        KeyboardRow row1 = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
-        KeyboardButton button_quiz = new KeyboardButton();
-        button_quiz.setText("Quiz 📚");
-        row1.add(button_quiz);
-        KeyboardButton button_info = new KeyboardButton();
-        button_info.setText("О боте 📝");
-        row1.add(button_info);
-        KeyboardButton button_wordplay = new KeyboardButton();
-        button_wordplay.setText("Новое слово 💬");
-        row2.add(button_wordplay);
-        keyboard.add(row1);
-        keyboard.add(row2);
-        markup.setKeyboard(keyboard);
-        startMessage.setReplyMarkup(markup);
+        ReplyKeyboardMarkup keyboard = keyboardMaker.getMainKeyboard();
+        startMessage.setReplyMarkup(keyboard);
         try {
             execute(startMessage);
         } catch (TelegramApiException e) {
@@ -216,30 +200,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
-        // Создание клавиатуры
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText(options.get(0));
-        button1.setCallbackData("newword:" + correctAnswer + ":" + options.get(0));
-        InlineKeyboardButton button2 = new InlineKeyboardButton();
-        button2.setText(options.get(1));
-        button2.setCallbackData("newword:" + correctAnswer + ":" + options.get(1));
-        InlineKeyboardButton button3 = new InlineKeyboardButton();
-        button3.setText(options.get(2));
-        button3.setCallbackData("newword:" + correctAnswer + ":" + options.get(2));
-        InlineKeyboardButton button4 = new InlineKeyboardButton();
-        button4.setText(options.get(3));
-        button4.setCallbackData("newword:" + correctAnswer + ":" + options.get(3));
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(button1);
-        row1.add(button2);
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-        row2.add(button3);
-        row2.add(button4);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row1);
-        keyboard.add(row2);
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(keyboard);
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options);
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             execute(newWordMessage);

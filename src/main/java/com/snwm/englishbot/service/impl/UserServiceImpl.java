@@ -5,7 +5,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.repository.UserRepository;
-import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.UserService;
 
 @Service
