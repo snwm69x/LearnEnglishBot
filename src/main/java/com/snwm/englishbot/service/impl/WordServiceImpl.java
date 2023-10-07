@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WordServiceImpl implements WordService {
@@ -65,5 +66,15 @@ public class WordServiceImpl implements WordService {
     @Override
     public Word getWordByTranslation(String translation) {
         return wordRepository.findByTranslation(translation);
+    }
+
+    @Override
+    public Word getWordById(Long id) {
+        Optional<Word> optionalWord = wordRepository.findById(id);
+        if (optionalWord.isPresent()) {
+            return optionalWord.get();
+        } else {
+            throw new RuntimeException("Word not found");
+        }
     }
 }

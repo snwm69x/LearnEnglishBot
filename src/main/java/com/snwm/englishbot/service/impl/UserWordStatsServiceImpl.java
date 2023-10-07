@@ -1,6 +1,7 @@
 package com.snwm.englishbot.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,14 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
         userWordStatsRepository.save(lasttry);
         }
     }
-    
+
+    @Override
+    public String getSuccessRateForUser(Long userChatId) {
+        Long[] result = userWordStatsRepository.getSuccessRateForUser(userChatId);
+        System.out.println(result.toString());
+        Long totalCorrectAttempts = result[0];
+        Long totalAttempts = result[1];
+        String back = "Total Correct Attempts: " + totalCorrectAttempts + ", Total Attempts: " + totalAttempts + " percentage : " + (totalCorrectAttempts * 100 / totalAttempts);
+        return back;
+    }
 }

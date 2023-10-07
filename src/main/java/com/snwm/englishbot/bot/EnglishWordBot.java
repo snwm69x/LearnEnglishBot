@@ -27,8 +27,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
@@ -81,7 +79,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().getText().equals("/start")
                 && !update.getMessage().getText().equals("Новое слово 💬")
                 && !update.getMessage().getText().equals("О боте 📝")
-                && !update.getMessage().getText().equals("Quiz 📚")) {
+                && !update.getMessage().getText().equals("Quiz 📚")
+                && !update.getMessage().getText().equals("Статистика 🔄")) {
             handleUnknownCommand(update.getMessage());
         }
         // Обработка команд
@@ -101,6 +100,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             // Обработка команды "Новое слово"
             if (update.getMessage().getText().equals("Новое слово 💬")) {
                 handleNewWordCommand(update.getMessage());
+            }
+            // Обработка команды "Второй шанс 🔄"
+            if (update.getMessage().getText().equals("Статистика 🔄")) {
+                handleStatsCommand(update.getMessage());
             }
         }
 
@@ -142,10 +145,11 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private void handleInfoCommand(Message message) {
         SendMessage infoMessage = new SendMessage();
         infoMessage.setChatId(message.getChatId().toString());
-        infoMessage.setText("Бот для изучения английского языка. Версия 0.1 \n" +
-                "Автор: - \n" +
-                "GitHub: - \n" +
-                "если бот не работает используйте /start");
+        infoMessage.setText("Это бот для изучения английского. Содержит в себе слова от уровня A1 до B2. \n" +
+                "Автор: snwm \n" +
+                "При использовании команды 'Новое слово' бот сохраняет статистику \n" +
+                "и можно проводить работу над ошибками с помощью команды 'Второй шанс \n'" +
+                "Режим QUIZ не сохраняет статистику.");
         try {
             execute(infoMessage);
         } catch (TelegramApiException e) {
@@ -200,7 +204,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options);
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options, word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             execute(newWordMessage);
@@ -212,7 +216,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.getData().split(":");
         User user = userService.findUserByChatId(callbackQuery.getMessage().getChatId());
-        Word word = wordService.getWordByTranslation(data[1]);
+        Word word = wordService.getWordById(Long.parseLong(data[3]));
         String correctAnswer = data[1];
         String userAnswer = data[2];
         System.out.println(correctAnswer);
@@ -257,6 +261,18 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
+        }
+    }
+
+    private void handleStatsCommand(Message message){
+        SendMessage msg = SendMessage.builder()
+        .chatId(message.getChatId().toString())
+        .text(userWordStatsService.getSuccessRateForUser(message.getChatId()))
+        .build();
+        try {
+            execute(msg);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 

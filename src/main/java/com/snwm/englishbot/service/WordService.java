@@ -20,4 +20,6 @@ public interface WordService {
     Word getRandomWord(Word correctWord);
 
     Word getWordByTranslation(String translation);
+
+    Word getWordById(Long id);
 }

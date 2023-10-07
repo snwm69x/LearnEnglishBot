@@ -24,4 +24,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     Word findByTranslation(String translation);
 
+    Optional<Word> findById(Long id);
 }
