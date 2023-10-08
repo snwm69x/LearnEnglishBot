@@ -36,7 +36,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "userWords",
             joinColumns =
                     {@JoinColumn(name = "user_id", referencedColumnName = "chat_id")},

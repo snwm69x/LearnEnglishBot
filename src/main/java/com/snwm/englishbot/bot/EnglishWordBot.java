@@ -163,7 +163,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             userService.createNewUser(message);
             wordService.setAllWordToUser(message.getChatId());
         }
-        if (user != null && user.getWords().size() == 0) {
+        if (user != null && user.getWords().isEmpty()) {
             wordService.setAllWordToUser(message.getChatId());
         }
         SendMessage startMessage = new SendMessage();

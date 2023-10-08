@@ -1,17 +1,10 @@
 package com.snwm.englishbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.snwm.englishbot.entity.enums.WordLevel;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 
@@ -32,6 +25,9 @@ public class Word {
     private String translation;
     @Column
     private String transcription;
-    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "words", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
+
+    @Enumerated
+    private WordLevel wordLevel;
 }

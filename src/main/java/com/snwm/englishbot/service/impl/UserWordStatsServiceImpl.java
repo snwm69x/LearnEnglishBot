@@ -1,14 +1,10 @@
 package com.snwm.englishbot.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import com.snwm.englishbot.entity.*;
 import org.springframework.stereotype.Service;
 
-import com.snwm.englishbot.entity.User;
-import com.snwm.englishbot.entity.UserWordStats;
-import com.snwm.englishbot.entity.UserWordStatsId;
-import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.repository.UserWordStatsRepository;
 import com.snwm.englishbot.service.UserWordStatsService;
 
@@ -23,7 +19,7 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
 
     @Override
     public void updateWordStats(User user, Word word, boolean isCorrect) {
-        if(!userWordStatsRepository.findByUserAndWord(user, word).isPresent()){
+        if (userWordStatsRepository.findByUserAndWord(user, word).isEmpty()) {
             UserWordStats userWordStats = UserWordStats.builder()
                     .id(new UserWordStatsId(user.getChatId(), word.getId()))
                     .user(user)
@@ -34,25 +30,24 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
                     .build();
             userWordStatsRepository.save(userWordStats);
         } else {
-        UserWordStats lasttry = userWordStatsRepository.findByUserAndWord(user, word).get();
-        lasttry.setLastAttempt(LocalDateTime.now());
-        if(isCorrect){
-            lasttry.setCorrectAttempts(lasttry.getCorrectAttempts() + 1);
-        }
-        if(!isCorrect){
-            lasttry.setIncorrectAttempts(lasttry.getIncorrectAttempts() + 1);
-        }
-        userWordStatsRepository.save(lasttry);
+            UserWordStats lastTry = userWordStatsRepository.findByUserAndWord(user, word).get();
+            lastTry.setLastAttempt(LocalDateTime.now());
+            if (isCorrect) {
+                lastTry.setCorrectAttempts(lastTry.getCorrectAttempts() + 1);
+            }
+            if (!isCorrect) {
+                lastTry.setIncorrectAttempts(lastTry.getIncorrectAttempts() + 1);
+            }
+            userWordStatsRepository.save(lastTry);
         }
     }
 
     @Override
     public String getSuccessRateForUser(Long userChatId) {
-        Long[] result = userWordStatsRepository.getSuccessRateForUser(userChatId);
-        System.out.println(result.toString());
-        Long totalCorrectAttempts = result[0];
-        Long totalAttempts = result[1];
-        String back = "Total Correct Attempts: " + totalCorrectAttempts + ", Total Attempts: " + totalAttempts + " percentage : " + (totalCorrectAttempts * 100 / totalAttempts);
-        return back;
+        int totalCorrectAttempts = userWordStatsRepository.getCorrectAttempt(userChatId);
+        int totalAttempts = userWordStatsRepository.getAllAttempt(userChatId);
+        return "Total Correct Attempts: " + totalCorrectAttempts +
+                ", Total Attempts: " + totalAttempts + " percentage: " +
+                (double)((totalCorrectAttempts * 100) / totalAttempts);
     }
 }
