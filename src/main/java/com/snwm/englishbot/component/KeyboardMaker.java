@@ -20,21 +20,13 @@ public class KeyboardMaker {
         List<KeyboardRow> keys= new ArrayList<>();
         // Добавление кнопок
         KeyboardRow row1 = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
-        KeyboardButton button_quiz = new KeyboardButton();
-        button_quiz.setText("Quiz 📚");
-        row1.add(button_quiz);
-        KeyboardButton button_info = new KeyboardButton();
-        button_info.setText("О боте 📝");
-        row1.add(button_info);
-        KeyboardButton button_wordplay = new KeyboardButton();
-        KeyboardButton button_secondchance = new KeyboardButton();
-        button_wordplay.setText("Новое слово 💬");
-        button_secondchance.setText("Статистика 🔄");
-        row2.add(button_wordplay);
-        row2.add(button_secondchance);
+        KeyboardButton button_newWord = new KeyboardButton();
+        KeyboardButton button_statistics = new KeyboardButton();
+        button_newWord.setText("Новое слово 💬");
+        button_statistics.setText("Статистика 🔄");
+        row1.add(button_newWord);
+        row1.add(button_statistics);
         keys.add(row1);
-        keys.add(row2);
         keyboard.setKeyboard(keys);
         return keyboard;
     }
@@ -98,6 +90,19 @@ public class KeyboardMaker {
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         keyboard.add(row1);
         keyboard.add(row2);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(keyboard);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup getSuccessPickedDifficultLevel() {
+        InlineKeyboardButton button1 = new InlineKeyboardButton();
+        button1.setText("Сложность выбрана");
+        button1.setCallbackData("success");
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(button1);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row1);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;

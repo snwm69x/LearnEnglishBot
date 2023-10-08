@@ -231,31 +231,76 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 .chatId(callbackQuery.getMessage().getChatId().toString())
                 .text("Выбран уровень сложности: " + data[1])
                 .build();
+        msg.setReplyMarkup(keyboardMaker.getMainKeyboard());
+        EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
+        editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
+        editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
+        editMessageReplyMarkup.setReplyMarkup(keyboardMaker.getSuccessPickedDifficultLevel());
         User user = userService.findUserByChatId(callbackQuery.getMessage().getChatId());
         WordLevel wordLevel = WordLevel.valueOf(data[1]);
         switch (data[1]) {
             case "A1":
-                wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                if(user.getUserType().equals(UserType.USER)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                }
                 break;
             case "A2":
-                wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                if(user.getUserType().equals(UserType.USER)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                }
                 break;
             case "B1":
-                wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                if(user.getUserType().equals(UserType.USER)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                }
                 break;
             case "B2":
-                (user.getUserType()).equals(UserType.USER);
+                if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                } else {
+                    SendMessage msg2 = SendMessage.builder()
+                            .chatId(callbackQuery.getMessage().getChatId().toString())
+                            .text("У вас нет доступа к этому уровню")
+                            .build();
+                        execute(msg2);
+                }
                 break;
             case "C1":
-                (user.getUserType()).equals(UserType.USER);
+                if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                } else {
+                    SendMessage msg3 = SendMessage.builder()
+                            .chatId(callbackQuery.getMessage().getChatId().toString())
+                            .text("У вас нет доступа к этому уровню")
+                            .build();
+                        execute(msg3);
+                }
                 break;
             case "C2":
-                (user.getUserType()).equals(UserType.USER);
+                if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
+                    execute(msg);
+                    execute(editMessageReplyMarkup);
+                } else {
+                    SendMessage msg3 = SendMessage.builder()
+                            .chatId(callbackQuery.getMessage().getChatId().toString())
+                            .text("У вас нет доступа к этому уровню")
+                            .build();
+                        execute(msg3);
+                }
                 break;
             default:
                 break;
         }
-        msg.setReplyMarkup(keyboardMaker.getMainKeyboard());
-        execute(msg);
     }
 }
