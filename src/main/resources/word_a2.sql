@@ -1,5 +1,5 @@
 -- Глаголы VERB
-INSERT INTO words (word, translation, transcription, wordLevel, wordType)
+INSERT INTO words (word, translation, transcription, word_level, word_type)
 VALUES ('To appear', 'Появлятся', '[əˈpɪə]', 'A2', 'VERB'),
 ('To cancel', 'Отменять', '[ˈkænsəl]', 'A2', 'VERB'), 
 ('To bite', 'Кусать;Укусить', '[baɪt]', 'A2', 'VERB'), 

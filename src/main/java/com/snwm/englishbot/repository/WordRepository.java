@@ -1,6 +1,7 @@
 package com.snwm.englishbot.repository;
 
 import com.snwm.englishbot.entity.Word;
+import com.snwm.englishbot.entity.enums.WordLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +18,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
             nativeQuery = true)
     Optional<List<Word>> findWordsByUser(@Param("userChatId") Long userId);
 
-    List<Word> findAll();
+    List<Word> findByWordLevel(WordLevel wordLevel);
 
     Optional<Word> findById(Long id);
 }

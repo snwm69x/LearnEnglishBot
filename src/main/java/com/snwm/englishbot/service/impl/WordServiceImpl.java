@@ -2,6 +2,7 @@ package com.snwm.englishbot.service.impl;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
+import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
@@ -29,9 +30,9 @@ public class WordServiceImpl implements WordService {
 
 
     @Override
-    public void setAllWordToUser(Long id) {
+    public void setAllWordToUser(Long id, WordLevel wordLevel) {
         User user = userRepository.findUserByChatId(id);
-        user.setWords(wordRepository.findAll());
+        user.setWords(wordRepository.findByWordLevel(wordLevel));
         userRepository.save(user);
     }
 

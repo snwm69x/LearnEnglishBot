@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findUserByChatId(Long id);
-
     @Modifying
     @Transactional
     @Query(value = "DELETE from user_words where user_id = :user_id and word_id = :word_id", nativeQuery = true)

@@ -1,17 +1,10 @@
 package com.snwm.englishbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.snwm.englishbot.entity.enums.UserType;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -43,4 +36,7 @@ public class User {
             inverseJoinColumns =
                     {@JoinColumn(name = "word_id", referencedColumnName = "id")})
     private List<Word> words;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 }
