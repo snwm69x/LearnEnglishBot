@@ -1,4 +1,4 @@
-package com.snwm.englishbot.service;
+package com.snwm.englishbot.component;
 
 import java.util.ArrayList;
 import java.util.List;
