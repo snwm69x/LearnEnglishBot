@@ -2,13 +2,11 @@ package com.snwm.englishbot.bot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
-import com.snwm.englishbot.service.KeyboardMaker;
+import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
@@ -37,7 +35,6 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private final String token;
     private final String username;
-    private final Map<String, List<Word>> wordsCache = new HashMap<>();
 
     @Autowired
     private WordService wordService;
@@ -120,13 +117,13 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<Word> words = wordService.getAllWordsByUser(message.getChatId());
         List<String> options = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            int randomIndex = (int) (Math.random() * wordsCache.size());
-            options.add(words.get(randomIndex).getTranslation());
+            int randomIndex = (int) (Math.random() * words.size());
+            options.add(words.get(randomIndex).getTranslation().get(0)); // TODO: shit 0
             words.remove(randomIndex);
         }
-        options.add(word.getTranslation());
+        options.add(word.getTranslation().get(0));
         Collections.shuffle(options);
-        int correctOptionId = options.indexOf(word.getTranslation());
+        int correctOptionId = options.indexOf(word.getTranslation().get(0)); // TODO: 1
         SendPoll sendPoll = new SendPoll();
         sendPoll.setType("quiz");
         sendPoll.setChatId(message.getChatId().toString());
@@ -195,12 +192,12 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<String> options = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             int randomIndex = (int) (Math.random() * words.size());
-            options.add(words.get(randomIndex).getTranslation());
+            options.add(words.get(randomIndex).getTranslation().get(0)); // TODO: 2
             words.remove(randomIndex);
         }
-        options.add(word.getTranslation());
+        options.add(word.getTranslation().get(0)); // TODO: 3
         Collections.shuffle(options);
-        String correctAnswer = options.get(options.indexOf(word.getTranslation()));
+        String correctAnswer = options.get(options.indexOf(word.getTranslation().get(0))); // TODO: 4
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
@@ -263,7 +260,6 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
         }
     }
-
     private void handleStatsCommand(Message message){
         SendMessage msg = SendMessage.builder()
         .chatId(message.getChatId().toString())

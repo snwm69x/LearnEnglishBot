@@ -3,11 +3,11 @@ package com.snwm.englishbot.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.entity.enums.WordType;
+import com.snwm.englishbot.utils.TranslateConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-
 
 @Entity
 @Table(name = "words")
@@ -22,8 +22,8 @@ public class Word {
     private Long id;
     @Column
     private String word;
-    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @Column
+    @Convert(converter = TranslateConverter.class)
     private List<String> translation;
     @Column
     private String transcription;

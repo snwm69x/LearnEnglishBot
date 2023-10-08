@@ -10,8 +10,7 @@ import java.util.Optional;
 
 
 public interface UserWordStatsRepository extends JpaRepository<UserWordStats, UserWordStatsId> {
-    List<UserWordStats> findByUser(User user);
-    List<UserWordStats> findByWord(Word word);
+
     Optional<UserWordStats> findByUserAndWord(User user, Word word);
     
     @Query(value = "SELECT sum(correct_attempts) " +

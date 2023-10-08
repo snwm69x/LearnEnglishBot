@@ -27,10 +27,6 @@ public class WordServiceImpl implements WordService {
         return wordRepository.findWordsByUser(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    @Override
-    public List<Word> getAllWordsInDb() {
-        return wordRepository.findAll();
-    }
 
     @Override
     public void setAllWordToUser(Long id) {
@@ -43,29 +39,15 @@ public class WordServiceImpl implements WordService {
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
         User user = userRepository.findUserByChatId(id);
         List<Word> words = user.getWords();
-        if(words.isEmpty()) {
+        if (words.isEmpty()) {
             words = wordRepository.findAll();
         }
         int randomIndex = (int) (Math.random() * words.size());
         Word word = words.get(randomIndex);
         words.remove(randomIndex);
         user.setWords(words);
-        userRepository.deleteWordById(user.getChatId(), (long)randomIndex);
+        userRepository.deleteWordById(user.getChatId(), (long) randomIndex);
         return word;
-    }
-
-    @Override
-    public Word getRandomWord(Word correctWord) {
-        Word word = wordRepository.findRandomWord();
-        while (word.equals(correctWord)) {
-            word = wordRepository.findRandomWord();
-        }
-        return word;
-    }
-
-    @Override
-    public Word getWordByTranslation(String translation) {
-        return wordRepository.findByTranslation(translation);
     }
 
     @Override
