@@ -2,6 +2,7 @@ package com.snwm.englishbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snwm.englishbot.entity.enums.WordLevel;
+import com.snwm.englishbot.entity.enums.WordType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,13 +22,17 @@ public class Word {
     private Long id;
     @Column
     private String word;
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @Column
-    private String translation;
+    private List<String> translation;
     @Column
     private String transcription;
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "words", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
 
-    @Enumerated
-    private WordLevel wordLevel;
+    @Enumerated(EnumType.STRING)
+    private WordLevel  wordLevel;
+
+    @Enumerated(EnumType.STRING)
+    private WordType wordType;
 }
