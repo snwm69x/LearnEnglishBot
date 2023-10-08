@@ -1,23 +1,12 @@
 package com.snwm.englishbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.snwm.englishbot.entity.enums.WordLevel;
+import com.snwm.englishbot.entity.enums.WordType;
 import lombok.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -33,10 +22,17 @@ public class Word {
     private Long id;
     @Column
     private String word;
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     @Column
-    private String translation;
+    private List<String> translation;
     @Column
     private String transcription;
-    @ManyToMany(mappedBy = "words", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "words", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<User> users;
+
+    @Enumerated(EnumType.STRING)
+    private WordLevel  wordLevel;
+
+    @Enumerated(EnumType.STRING)
+    private WordType wordType;
 }
