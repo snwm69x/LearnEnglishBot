@@ -32,6 +32,7 @@ import javax.annotation.PreDestroy;
 
 @Component
 public class EnglishWordBot extends TelegramLongPollingBot {
+
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private final String token;
     private final String username;
@@ -72,26 +73,37 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         // Обработка неизвестных команд
         if (update.hasMessage() && update.getMessage().hasText()
                 && !update.getMessage().getText().equals("/start")
                 && !update.getMessage().getText().equals("Новое слово 💬")
-                && !update.getMessage().getText().equals("Статистика 🔄")) {
+                && !update.getMessage().getText().equals("Статистика 🔄")
+                && !update.getMessage().getText().equals("Выбрать сложность 📊")) {
             handleUnknownCommand(update.getMessage());
         }
+
         // Обработка команд
         if (update.hasMessage() && update.getMessage().hasText()) {
+
             // Обработка команды "/start"
             if (update.getMessage().getText().equals("/start")) {
                 handleStartCommand(update.getMessage());
             }
+
             // Обработка команды "Новое слово"
             if (update.getMessage().getText().equals("Новое слово 💬")) {
                 handleNewWordCommand(update.getMessage());
             }
+
             // Обработка команды "Статистика 🔄"
             if (update.getMessage().getText().equals("Статистика 🔄")) {
                 handleStatsCommand(update.getMessage());
+            }
+
+            // Обработка команды "Выбрать сложность 📊"
+            if (update.getMessage().getText().equals("Выбрать сложность 📊")) {
+                handleChooseDifficult(update.getMessage());
             }
         }
 
@@ -100,6 +112,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             if (update.getCallbackQuery().getData().startsWith("newword")) {
                 handleNewWordCommandResponse(update.getCallbackQuery());
             }
+            // Обработка ответа на команду "Выбрать сложность"
             if (update.getCallbackQuery().getData().startsWith("difficult")) {
                 try {
                     handleDifficultLevelCommand(update.getCallbackQuery());
@@ -111,7 +124,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleStartCommand(Message message) {
-        User user = userService.findUserByChatId(message.getChatId());
+        User user = userService.getUserByChatId(message.getChatId());
         if (user == null) {
             userService.createNewUser(message);
         }
@@ -140,16 +153,19 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private void handleNewWordCommand(Message message) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
-        List<Word> words = wordService.getAllWordsByUser(message.getChatId());
+        String word_translation = word.getTranslation().get((int) (Math.random() * word.getTranslation().size()));
+        List<Word> words = wordService.getAllWordsByType(word.getWordType());
         List<String> options = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            options.add(words.get(randomIndex).getTranslation().get(0)); // TODO: 2
-            words.remove(randomIndex);
+            if(!words.get(randomIndex).getWord().equals(word.getWord())){
+                options.add(words.get(randomIndex).getTranslation().get((int)(Math.random() * words.get(randomIndex).getTranslation().size()))); // TODO: 2
+                words.remove(randomIndex);
+            }
         }
-        options.add(word.getTranslation().get(0)); // TODO: 3
+        options.add(word_translation); // TODO: 3
         Collections.shuffle(options);
-        String correctAnswer = options.get(options.indexOf(word.getTranslation().get(0))); // TODO: 4
+        String correctAnswer = options.get(options.indexOf(word_translation)); // TODO: 4
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
@@ -164,7 +180,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.getData().split(":");
-        User user = userService.findUserByChatId(callbackQuery.getMessage().getChatId());
+        User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
         Word word = wordService.getWordById(Long.parseLong(data[3]));
         String correctAnswer = data[1];
         String userAnswer = data[2];
@@ -216,7 +232,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private void handleStatsCommand(Message message) {
         SendMessage msg = SendMessage.builder()
                 .chatId(message.getChatId().toString())
-                .text(userWordStatsService.getSuccessRateForUser(message.getChatId()))
+                .text("Статистика @" + message.getFrom().getUserName() + "\n"
+                    + "Всего попыток: " + userWordStatsService.getAllAttempt(message.getChatId()) + "\n"
+                    + "Всего правильных ответов: " + userWordStatsService.getCorrectAttempt(message.getChatId()) + "\n"
+                    + "Процент правильных ответов: " + userWordStatsService.getSuccessRate(message.getChatId()) + "%")
                 .build();
         try {
             execute(msg);
@@ -226,6 +245,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleDifficultLevelCommand(CallbackQuery callbackQuery) throws TelegramApiException {
+        User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
+        if(!user.getWords().isEmpty()){
+            userService.deleteUserWordsByChatId(callbackQuery.getMessage().getChatId());
+        }
         String[] data = callbackQuery.getData().split(":");
         SendMessage msg = SendMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId().toString())
@@ -236,11 +259,12 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
         editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
         editMessageReplyMarkup.setReplyMarkup(keyboardMaker.getSuccessPickedDifficultLevel());
-        User user = userService.findUserByChatId(callbackQuery.getMessage().getChatId());
         WordLevel wordLevel = WordLevel.valueOf(data[1]);
         switch (data[1]) {
             case "A1":
                 if(user.getUserType().equals(UserType.USER)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -248,6 +272,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             case "A2":
                 if(user.getUserType().equals(UserType.USER)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -255,6 +281,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             case "B1":
                 if(user.getUserType().equals(UserType.USER)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -262,6 +290,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             case "B2":
                 if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -275,6 +305,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             case "C1":
                 if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -288,6 +320,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             case "C2":
                 if(user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
                     execute(msg);
                     execute(editMessageReplyMarkup);
@@ -301,6 +335,19 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
             default:
                 break;
+        }
+    }
+
+    private void handleChooseDifficult(Message message) {
+        SendMessage startMessage = new SendMessage();
+        startMessage.setChatId(message.getChatId().toString());
+        startMessage.setText("Выбери сложность:");
+        InlineKeyboardMarkup keyboard = keyboardMaker.getDifficultLevelKeyboard();
+        startMessage.setReplyMarkup(keyboard);
+        try {
+            execute(startMessage);
+        } catch (TelegramApiException e) {
+            logger.error("Error while sending start message: {}", e.getMessage());
         }
     }
 }

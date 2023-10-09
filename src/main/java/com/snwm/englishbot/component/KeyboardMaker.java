@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 @Component
 public class KeyboardMaker {
-
+    
     public ReplyKeyboardMarkup getMainKeyboard() {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
@@ -20,13 +20,18 @@ public class KeyboardMaker {
         List<KeyboardRow> keys= new ArrayList<>();
         // Добавление кнопок
         KeyboardRow row1 = new KeyboardRow();
+        KeyboardRow row2 = new KeyboardRow();
         KeyboardButton button_newWord = new KeyboardButton();
         KeyboardButton button_statistics = new KeyboardButton();
+        KeyboardButton button_chooseDifficult = new KeyboardButton();
         button_newWord.setText("Новое слово 💬");
         button_statistics.setText("Статистика 🔄");
+        button_chooseDifficult.setText("Выбрать сложность 📊");
         row1.add(button_newWord);
         row1.add(button_statistics);
+        row2.add(button_chooseDifficult);
         keys.add(row1);
+        keys.add(row2);
         keyboard.setKeyboard(keys);
         return keyboard;
     }

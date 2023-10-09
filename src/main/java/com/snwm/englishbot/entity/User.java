@@ -2,8 +2,8 @@ package com.snwm.englishbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snwm.englishbot.entity.enums.UserType;
+import com.snwm.englishbot.entity.enums.WordLevel;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @JsonIgnoreProperties({"words"})
 public class User {
+        
     @Id
     @Column(name = "chat_id", unique = true)
     private Long chatId;
@@ -29,7 +30,11 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, 
+    cascade = {CascadeType.DETACH, 
+        CascadeType.MERGE, 
+        CascadeType.PERSIST, 
+        CascadeType.REFRESH})
     @JoinTable(name = "userWords",
             joinColumns =
                     {@JoinColumn(name = "user_id", referencedColumnName = "chat_id")},
@@ -39,4 +44,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    private WordLevel wordLevel;
 }

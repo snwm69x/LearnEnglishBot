@@ -1,12 +1,10 @@
 package com.snwm.englishbot.controller;
 
-import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.service.WordService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController

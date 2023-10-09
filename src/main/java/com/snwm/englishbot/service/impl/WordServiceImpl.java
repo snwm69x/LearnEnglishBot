@@ -3,6 +3,7 @@ package com.snwm.englishbot.service.impl;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.entity.enums.WordLevel;
+import com.snwm.englishbot.entity.enums.WordType;
 import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
@@ -28,21 +29,20 @@ public class WordServiceImpl implements WordService {
         return wordRepository.findWordsByUser(id).orElseThrow(EntityNotFoundException::new);
     }
 
-
     @Override
     public void setAllWordToUser(Long id, WordLevel wordLevel) {
-        User user = userRepository.findUserByChatId(id);
-        user.setWords(wordRepository.findByWordLevel(wordLevel));
+        User user = userRepository.findUserByChatId(id).orElseThrow(EntityNotFoundException::new);
+        user.setWords(wordRepository.findByWordLevel(wordLevel).orElseThrow(EntityNotFoundException::new));
         userRepository.save(user);
     }
 
     @Override
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
-        User user = userRepository.findUserByChatId(id);
-        List<Word> words = user.getWords();
-        if (words.isEmpty()) {
-            words = wordRepository.findAll();
+        User user = userRepository.findUserByChatId(id).orElseThrow(EntityNotFoundException::new);
+        if(user.getWords().isEmpty()){
+            user.setWords(wordRepository.findByWordLevel(user.getWordLevel()).orElseThrow(EntityNotFoundException::new));
         }
+        List<Word> words = user.getWords();
         int randomIndex = (int) (Math.random() * words.size());
         Word word = words.get(randomIndex);
         words.remove(randomIndex);
@@ -59,5 +59,10 @@ public class WordServiceImpl implements WordService {
         } else {
             throw new RuntimeException("Word not found");
         }
+    }
+
+    @Override
+    public List<Word> getAllWordsByType(WordType wordType) {
+        return wordRepository.findByWordType(wordType).orElseThrow(EntityNotFoundException::new);
     }
 }

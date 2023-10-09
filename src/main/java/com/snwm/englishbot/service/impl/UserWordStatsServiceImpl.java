@@ -43,11 +43,19 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
     }
 
     @Override
-    public String getSuccessRateForUser(Long userChatId) {
-        int totalCorrectAttempts = userWordStatsRepository.getCorrectAttempt(userChatId);
-        int totalAttempts = userWordStatsRepository.getAllAttempt(userChatId);
-        return "Total Correct Attempts: " + totalCorrectAttempts +
-                ", Total Attempts: " + totalAttempts + " percentage: " +
-                (double)((totalCorrectAttempts * 100) / totalAttempts);
+    public int getCorrectAttempt(Long userChatId) {
+        return userWordStatsRepository.getCorrectAttempt(userChatId);
+    }
+
+    @Override
+    public int getAllAttempt(Long userChatId) {
+        return userWordStatsRepository.getAllAttempt(userChatId);
+    }
+
+    @Override
+    public double getSuccessRate(Long wordId) {
+        int totalCorrectAttempts = userWordStatsRepository.getCorrectAttempt(wordId);
+        int totalAttempts = userWordStatsRepository.getAllAttempt(wordId);
+        return (double)((totalCorrectAttempts * 100) / totalAttempts);
     }
 }

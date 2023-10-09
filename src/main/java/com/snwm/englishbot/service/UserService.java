@@ -4,6 +4,16 @@ import com.snwm.englishbot.entity.User;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 public interface UserService {
-    User findUserByChatId(Long id);
+    
+    // Получение пользователя по ChatID
+    User getUserByChatId(Long id);
+
+    // Создание нового пользователя / регистрация
     void createNewUser(Message message);
+
+    // Очистка слов пользователя
+    void deleteUserWordsByChatId(Long id);
+
+    // Сохранение User в базу данных
+    void saveUser(User user);
 }
