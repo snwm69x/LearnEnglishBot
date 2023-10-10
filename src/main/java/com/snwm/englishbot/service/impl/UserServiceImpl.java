@@ -1,7 +1,6 @@
 package com.snwm.englishbot.service.impl;
 
 import com.snwm.englishbot.entity.enums.UserType;
-import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.snwm.englishbot.entity.User;
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByChatId(Long id) {
-        return userRepository.findUserByChatId(id).orElseThrow(EntityNotFoundException::new);
+        return userRepository.findUserByChatId(id);
     }
 
     @Override

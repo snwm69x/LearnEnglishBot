@@ -31,16 +31,16 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public void setAllWordToUser(Long id, WordLevel wordLevel) {
-        User user = userRepository.findUserByChatId(id).orElseThrow(EntityNotFoundException::new);
-        user.setWords(wordRepository.findByWordLevel(wordLevel).orElseThrow(EntityNotFoundException::new));
+        User user = userRepository.findUserByChatId(id);
+        user.setWords(wordRepository.findByWordLevel(wordLevel));
         userRepository.save(user);
     }
 
     @Override
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
-        User user = userRepository.findUserByChatId(id).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findUserByChatId(id);
         if(user.getWords().isEmpty()){
-            user.setWords(wordRepository.findByWordLevel(user.getWordLevel()).orElseThrow(EntityNotFoundException::new));
+            user.setWords(wordRepository.findByWordLevel(user.getWordLevel()));
         }
         List<Word> words = user.getWords();
         int randomIndex = (int) (Math.random() * words.size());
@@ -63,6 +63,6 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public List<Word> getAllWordsByType(WordType wordType) {
-        return wordRepository.findByWordType(wordType).orElseThrow(EntityNotFoundException::new);
+        return wordRepository.findByWordType(wordType);
     }
 }

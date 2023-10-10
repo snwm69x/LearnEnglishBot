@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -167,8 +168,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_translation)); // TODO: 4
         SendMessage newWordMessage = new SendMessage();
+        newWordMessage.disableNotification();
+        newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
-        newWordMessage.setText("Слово: " + word.getWord() + "\nТранскрипция: " + word.getTranscription());
+        newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options, word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
@@ -179,6 +182,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
+        String[] msg = callbackQuery.getMessage().getText().split(" ");
+        msg[0] = "<b>" + msg[0] + "</b>";
+        String message = msg[0] + msg[1];
         String[] data = callbackQuery.getData().split(":");
         User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
         Word word = wordService.getWordById(Long.parseLong(data[3]));
@@ -188,41 +194,45 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         System.out.println(userAnswer);
         if (correctAnswer.equals(userAnswer)) {
             userWordStatsService.updateWordStats(user, word, true);
-            EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
-            editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
-            editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             List<InlineKeyboardButton> row = new ArrayList<>();
+            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText("Correct Answer");
             button.setCallbackData(callbackQuery.getData());
+            button.setText("Correct!");
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
+            editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
+            editMessageText.setText(message + " - " + word.getTranslation().toString());
+            editMessageText.enableHtml(true);
+            editMessageText.setReplyMarkup(markup);
             row.add(button);
             keyboard.add(row);
             markup.setKeyboard(keyboard);
-            editMessageReplyMarkup.setReplyMarkup(markup);
             try {
-                execute(editMessageReplyMarkup);
+                execute(editMessageText);
             } catch (TelegramApiException e) {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         } else {
             userWordStatsService.updateWordStats(user, word, false);
-            EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
-            editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
-            editMessageReplyMarkup.setMessageId(callbackQuery.getMessage().getMessageId());
+            EditMessageText editMessageText = new EditMessageText();
+            editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
+            editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
+            editMessageText.enableHtml(true);
+            editMessageText.setText(message + " - " + word.getTranslation().toString());
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText("Wrong Answer");
+            button.setText("Wrong!");
             button.setCallbackData(callbackQuery.getData());
             row.add(button);
             keyboard.add(row);
             markup.setKeyboard(keyboard);
-            editMessageReplyMarkup.setReplyMarkup(markup);
+            editMessageText.setReplyMarkup(markup);
             try {
-                execute(editMessageReplyMarkup);
+                execute(editMessageText);
             } catch (TelegramApiException e) {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
