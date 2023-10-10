@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.snwm.englishbot.entity.User;
 import javax.transaction.Transactional;
+import java.util.List;
+
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -22,4 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "DELETE from user_words where user_id = :user_id", nativeQuery = true)
     void deleteAllWordsByUserId(@Param("user_id") Long userId);
+
+    List<User> findAll();
+
+    
 }

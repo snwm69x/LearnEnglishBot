@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -72,6 +73,21 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         return username;
     }
 
+    @Scheduled(cron = "0 0 0 */3 * *")
+    public void sendMessageToAllUsers() {
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            SendMessage sendMessage = SendMessage.builder()
+                                .chatId(user.getChatId().toString())
+                                .text("Давно не виделись, пора подтянуть английский!")
+                                .build();
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     @Override
     public void onUpdateReceived(Update update) {
 
