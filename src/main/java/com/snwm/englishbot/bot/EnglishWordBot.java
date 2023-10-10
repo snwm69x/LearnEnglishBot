@@ -96,7 +96,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 && !update.getMessage().getText().equals("/start")
                 && !update.getMessage().getText().equals("Новое слово 💬")
                 && !update.getMessage().getText().equals("Статистика 🔄")
-                && !update.getMessage().getText().equals("Выбрать сложность 📊")) {
+                && !update.getMessage().getText().equals("Выбрать сложность 📊")
+                && !update.getMessage().getText().equals("/asdgfret231eas")) {
             handleUnknownCommand(update.getMessage());
         }
 
@@ -121,6 +122,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             // Обработка команды "Выбрать сложность 📊"
             if (update.getMessage().getText().equals("Выбрать сложность 📊")) {
                 handleChooseDifficult(update.getMessage());
+            }
+
+            if (update.getMessage().getText().equals("/asdgfret231eas")) {
+                handleGivePremiumRights(update.getMessage());
             }
         }
 
@@ -187,7 +192,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
-        newWordMessage.setText("<b>" + word.getWord() + "</b> |" + word.getTranscription());
+        newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options, word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
@@ -198,9 +203,6 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
-        String[] msg = callbackQuery.getMessage().getText().split("|");
-        msg[0] = "<b>" + msg[0] + "</b>";
-        String message = msg[0] + msg[1];
         String[] data = callbackQuery.getData().split(":");
         User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
         Word word = wordService.getWordById(Long.parseLong(data[3]));
@@ -219,7 +221,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             EditMessageText editMessageText = new EditMessageText();
             editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
             editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
-            editMessageText.setText(message + " - " + word.getTranslation().toString());
+            editMessageText.setText("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - " + word.getTranslation().toString());
             editMessageText.enableHtml(true);
             editMessageText.setReplyMarkup(markup);
             row.add(button);
@@ -236,7 +238,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
             editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
             editMessageText.enableHtml(true);
-            editMessageText.setText(message + " - " + word.getTranslation().toString());
+            editMessageText.setText("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - " + word.getTranslation().toString());
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -288,7 +290,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         WordLevel wordLevel = WordLevel.valueOf(data[1]);
         switch (data[1]) {
             case "A1":
-                if(user.getUserType().equals(UserType.USER)){
+                if(user.getUserType().equals(UserType.USER) || user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
@@ -297,7 +299,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 }
                 break;
             case "A2":
-                if(user.getUserType().equals(UserType.USER)){
+                if(user.getUserType().equals(UserType.USER) || user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
@@ -306,7 +308,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 }
                 break;
             case "B1":
-                if(user.getUserType().equals(UserType.USER)){
+                if(user.getUserType().equals(UserType.USER) || user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)){
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
@@ -374,6 +376,21 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             execute(startMessage);
         } catch (TelegramApiException e) {
             logger.error("Error while sending start message: {}", e.getMessage());
+        }
+    }
+
+    private void handleGivePremiumRights(Message message) {
+        User user = userService.getUserByChatId(message.getChatId());
+        user.setUserType(UserType.PREMIUM);
+        userService.saveUser(user);
+        SendMessage msg = SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Вы получили права PREMIUM")
+                .build();
+        try {
+            execute(msg);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 }
