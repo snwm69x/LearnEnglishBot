@@ -187,7 +187,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
-        newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
+        newWordMessage.setText("<b>" + word.getWord() + "</b> |" + word.getTranscription());
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options, word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
@@ -198,7 +198,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
-        String[] msg = callbackQuery.getMessage().getText().split(" ");
+        String[] msg = callbackQuery.getMessage().getText().split("|");
         msg[0] = "<b>" + msg[0] + "</b>";
         String message = msg[0] + msg[1];
         String[] data = callbackQuery.getData().split(":");
