@@ -65,4 +65,9 @@ public class WordServiceImpl implements WordService {
     public List<Word> getAllWordsByType(WordType wordType) {
         return wordRepository.findByWordType(wordType);
     }
+
+    @Override
+    public List<Word> getAllWordsByTypeAndLevel(WordType wordType, WordLevel wordLevel) {
+        return wordRepository.findByWordTypeAndWordLevel(wordType, wordLevel);
+    }
 }

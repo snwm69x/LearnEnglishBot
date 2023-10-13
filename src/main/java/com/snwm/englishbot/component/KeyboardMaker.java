@@ -112,4 +112,17 @@ public class KeyboardMaker {
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;
     }
+
+    public InlineKeyboardMarkup checkIfUserSubscribedToChannel(){
+        InlineKeyboardButton button1 = new InlineKeyboardButton();
+        button1.setText("Проверить подписку!");
+        button1.setCallbackData("checksubscription");
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(button1);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row1);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(keyboard);
+        return inlineKeyboardMarkup;
+    }
 }

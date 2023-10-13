@@ -21,4 +21,7 @@ public interface WordService {
 
     // Получение всех слов относящихся к WordType
     List<Word> getAllWordsByType(WordType wordType);
+
+    // Получение всех слов по wordType и wordLevel
+    List<Word> getAllWordsByTypeAndLevel(WordType wordType, WordLevel wordLevel);
 }
