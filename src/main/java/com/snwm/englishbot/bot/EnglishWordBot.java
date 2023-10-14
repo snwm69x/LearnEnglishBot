@@ -50,7 +50,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     @Autowired
     private KeyboardMaker keyboardMaker;
 
-    EnglishWordBot(@Value("${bot.token}") String token, @Value("${bot.username}") String username) {
+    EnglishWordBot(@Value("1789726660:AAGNumzHWAgyXoFPexCud3bc_ibGkVS4M3c") String token, @Value("@FeelTheDifferenceBot") String username) {
         this.token = token;
         this.username = username;
     }
