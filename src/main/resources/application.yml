@@ -8,3 +8,11 @@ spring:
   sql:
     init:
       mode: always
+
+  bot:
+    username: ${PROD_BOT_NAME}
+    token: ${PROD_BOT_TOKEN}
+
+  jpa:
+    hibernate:
+      ddl-auto: create
