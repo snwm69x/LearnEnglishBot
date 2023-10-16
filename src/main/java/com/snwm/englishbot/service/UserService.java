@@ -21,4 +21,6 @@ public interface UserService {
     void saveUser(User user);
 
     List<User> getAllUsers();
+
+    List<User> getUserByUsername(String username);
 }
