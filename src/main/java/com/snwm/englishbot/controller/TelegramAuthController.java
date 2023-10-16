@@ -12,15 +12,15 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.service.UserService;
 
-@RestController
+@Controller
 public class TelegramAuthController {
 
     @Autowired
@@ -57,6 +57,7 @@ public class TelegramAuthController {
             digest = MessageDigest.getInstance("SHA-256");
             secretKey = digest.digest(BOT_TOKEN.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
+            System.out.println("error while SHA256");
             e.printStackTrace();
             return "error";
         }
@@ -74,6 +75,7 @@ public class TelegramAuthController {
             }
             hmac = sb2.toString();
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            System.out.println("error while HMAC");
             e.printStackTrace();
             return "error";
         }
