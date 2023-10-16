@@ -77,7 +77,7 @@ public class TelegramAuthController {
 
         // Сравниваем полученный HMAC с hash, который вам прислал Telegram
         String internalhash = params.get("hash");
-        System.out.println(hash);
+        System.out.println(hash.toString());
         System.out.println(hmac);
         if (hmac.equals(internalhash)) {
             // Если данные подлинные, вы можете авторизовать пользователя
