@@ -50,7 +50,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     @Autowired
     private KeyboardMaker keyboardMaker;
 
-    EnglishWordBot(@Value("1789726660:AAGNumzHWAgyXoFPexCud3bc_ibGkVS4M3c") String token, @Value("@FeelTheDifferenceBot") String username) {
+    EnglishWordBot(@Value("6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY") String token, @Value("@SykaTrydnoBot") String username) {
         this.token = token;
         this.username = username;
     }
@@ -75,21 +75,21 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         return username;
     }
 
-    @Scheduled(cron = "0 0 0 */3 * *")
-    public void sendMessageToAllUsers() {
-        List<User> users = userService.getAllUsers();
-        for (User user : users) {
-            SendMessage sendMessage = SendMessage.builder()
-                    .chatId(user.getChatId().toString())
-                    .text("Давно не виделись, пора подтянуть английский!")
-                    .build();
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    // @Scheduled(cron = "0 0 0 */3 * *")
+    // public void sendMessageToAllUsers() {
+    //     List<User> users = userService.getAllUsers();
+    //     for (User user : users) {
+    //         SendMessage sendMessage = SendMessage.builder()
+    //                 .chatId(user.getChatId().toString())
+    //                 .text("Давно не виделись, пора подтянуть английский!")
+    //                 .build();
+    //         try {
+    //             execute(sendMessage);
+    //         } catch (TelegramApiException e) {
+    //             e.printStackTrace();
+    //         }
+    //     }
+    // }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -99,8 +99,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 && !update.getMessage().getText().equals("/start")
                 && !update.getMessage().getText().equals("Новое слово 💬")
                 && !update.getMessage().getText().equals("Статистика 🔄")
-                && !update.getMessage().getText().equals("Выбрать сложность 📊")
-                && !update.getMessage().getText().equals("/asdgfret231eas")) {
+                && !update.getMessage().getText().equals("Выбрать сложность 📊")) {
             handleUnknownCommand(update.getMessage());
         }
 
@@ -270,8 +269,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                         + "Всего правильных ответов: " + userWordStatsService.getCorrectAttempt(message.getChatId())
                         + "\n"
                         + "Процент правильных ответов: " + userWordStatsService.getSuccessRate(message.getChatId())
-                        + "%\n\n"
-                        + "Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                        + "%\n\n")
                 .build();
 
         User user = userService.getUserByChatId(message.getChatId());
@@ -383,8 +381,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 } else {
                     SendMessage msg2 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню")
+                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
+                    msg2.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg2);
                 }
                 break;
@@ -398,8 +397,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 } else {
                     SendMessage msg3 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню")
+                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
+                    msg3.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg3);
                 }
                 break;
@@ -411,11 +411,12 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     execute(msg);
                     execute(editMessageReplyMarkup);
                 } else {
-                    SendMessage msg3 = SendMessage.builder()
+                    SendMessage msg4 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню")
+                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
-                    execute(msg3);
+                    msg4.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
+                    execute(msg4);
                 }
                 break;
             default:

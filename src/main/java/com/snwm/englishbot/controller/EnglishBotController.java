@@ -20,4 +20,9 @@ public class EnglishBotController {
     public List<Word> getAllWordsByUser(@PathVariable(value = "userId") Long id) {
         return wordService.getAllWordsByUser(id);
     }
+
+    @GetMapping("/admin")
+    public String getAdminPage() {
+        return "admin";
+    }
 }
