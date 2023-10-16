@@ -8,6 +8,6 @@ public class EnglishBotController {
 
     @GetMapping("/login")
     public String getAdminPage() {
-        return "src\\main\\resources\\templates\\login.html";
+        return "login";
     }
 }
