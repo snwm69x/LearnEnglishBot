@@ -9,15 +9,15 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.service.UserService;
 
-@Controller
+@RestController
 public class TelegramAuthController {
 
     @Autowired
@@ -66,11 +66,11 @@ public class TelegramAuthController {
                 if(user.getUserType().equals(UserType.ADMIN)) {
                     return "redirect:/admin";
                 } else {
-                    return "error";
+                    return "errorauth";
                 }
         } else {
             // Если данные не подлинные, вы должны вернуть ошибку
-            return "Login failed";
+            return "error";
         }
     }
 }
