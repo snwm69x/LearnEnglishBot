@@ -11,7 +11,7 @@ public class EnglishBotController {
         return "login";
     }
 
-    @GetMapping("/admin-page")
+    @GetMapping("/admin")
     public String getAdminPage() {
         return "admin";
     }
