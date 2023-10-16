@@ -2,6 +2,7 @@ package com.snwm.englishbot.controller;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,8 +38,12 @@ public class TelegramAuthController {
         sortedParams.remove("hash");
         // Формируем строку в формате name=value
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
-            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
+        for (Iterator<Map.Entry<String, String>> iterator = sortedParams.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, String> entry = iterator.next();
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
+            if (iterator.hasNext()) {
+                sb.append("\n");
+            }
         }
         String data = sb.toString();
         System.out.println(data);
@@ -66,11 +71,11 @@ public class TelegramAuthController {
         if (hmac.equals(hash)) {
             // Если данные подлинные, вы можете авторизовать пользователя
             User user = userService.getUserByUsername(params.get("username")).get(0);
-                if(user.getUserType().equals(UserType.ADMIN)) {
-                    return "redirect:/admin";
-                } else {
-                    return "errorauth";
-                }
+            if (user.getUserType().equals(UserType.ADMIN)) {
+                return "redirect:/admin";
+            } else {
+                return "errorauth";
+            }
         } else {
             // Если данные не подлинные, вы должны вернуть ошибку
             return "error";
