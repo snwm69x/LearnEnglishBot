@@ -33,11 +33,12 @@ public class TelegramAuthController {
     private final String BOT_TOKEN = "6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY";
 
     @GetMapping("/login/telegram")
-    public String handleTelegramAuth(
-            @RequestParam Map<String, String> params) {
+    public String handleTelegramAuth(@RequestParam Map<String, String> params) {
         // Сортируем GET-параметры по их именам в алфавитном порядке
         Map<String, String> sortedParams = new TreeMap<>(params);
+        // Удаляем параметр hash из отсортированных параметров
         sortedParams.remove("hash");
+
         // Формируем строку в формате name=value
         StringBuilder sb = new StringBuilder();
         for (Iterator<Map.Entry<String, String>> iterator = sortedParams.entrySet().iterator(); iterator.hasNext();) {
@@ -47,45 +48,39 @@ public class TelegramAuthController {
                 sb.append("\n");
             }
         }
-        String data = sb.toString();
-        System.out.println(data);
+        String dataCheckString = sb.toString();
 
+        // Вычисляем SHA256 хеш токена бота
         MessageDigest digest;
-        byte[] hash;
+        byte[] secretKey;
         try {
             digest = MessageDigest.getInstance("SHA-256");
-            hash = digest.digest(BOT_TOKEN.getBytes(StandardCharsets.UTF_8));
+            secretKey = digest.digest(BOT_TOKEN.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return "error";
         }
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hash) {
-            hexString.append(String.format("%02x", b));
-        }
-        String hashString = hexString.toString();
-        System.out.println(hashString);
+
         // Формируем HMAC с использованием SHA-256
         String hmac = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKeySpec = new SecretKeySpec(hash, "HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "HmacSHA256");
             mac.init(secretKeySpec);
-            byte[] bytes = mac.doFinal(data.getBytes());
+            byte[] hmacBytes = mac.doFinal(dataCheckString.getBytes());
             StringBuilder sb2 = new StringBuilder();
-            for (byte b : bytes) {
+            for (byte b : hmacBytes) {
                 sb2.append(String.format("%02x", b));
             }
             hmac = sb2.toString();
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();
+            return "error";
         }
 
         // Сравниваем полученный HMAC с hash, который вам прислал Telegram
-        String internalhash = params.get("hash");
-        System.out.println(hashString);
-        System.out.println(hmac);
-        if (hmac.equals(internalhash)) {
+        String receivedHash = params.get("hash");
+        if (hmac.equals(receivedHash)) {
             // Если данные подлинные, вы можете авторизовать пользователя
             User user = userService.getUserByUsername(params.get("username")).get(0);
             if (user.getUserType().equals(UserType.ADMIN)) {
