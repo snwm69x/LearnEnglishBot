@@ -1,6 +1,8 @@
 package com.snwm.englishbot.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,11 +50,20 @@ public class TelegramAuthController {
         String data = sb.toString();
         System.out.println(data);
 
+        MessageDigest digest;
+        byte[] hash;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            hash = digest.digest(BOT_TOKEN.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "error";
+        }
         // Формируем HMAC с использованием SHA-256
         String hmac = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKeySpec = new SecretKeySpec(BOT_TOKEN.getBytes(), "HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(hash, "HmacSHA256");
             mac.init(secretKeySpec);
             byte[] bytes = mac.doFinal(data.getBytes());
             StringBuilder sb2 = new StringBuilder();
@@ -65,10 +76,10 @@ public class TelegramAuthController {
         }
 
         // Сравниваем полученный HMAC с hash, который вам прислал Telegram
-        String hash = params.get("hash");
+        String internalhash = params.get("hash");
         System.out.println(hash);
         System.out.println(hmac);
-        if (hmac.equals(hash)) {
+        if (hmac.equals(internalhash)) {
             // Если данные подлинные, вы можете авторизовать пользователя
             User user = userService.getUserByUsername(params.get("username")).get(0);
             if (user.getUserType().equals(UserType.ADMIN)) {
