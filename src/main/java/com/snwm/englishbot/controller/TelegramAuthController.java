@@ -34,6 +34,7 @@ public class TelegramAuthController {
             @RequestParam Map<String, String> params) {
         // Сортируем GET-параметры по их именам в алфавитном порядке
         Map<String, String> sortedParams = new TreeMap<>(params);
+        sortedParams.remove("hash");
         // Формируем строку в формате name=value
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
