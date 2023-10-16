@@ -59,6 +59,12 @@ public class TelegramAuthController {
             e.printStackTrace();
             return "error";
         }
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            hexString.append(String.format("%02x", b));
+        }
+        String hashString = hexString.toString();
+        System.out.println(hashString);
         // Формируем HMAC с использованием SHA-256
         String hmac = "";
         try {
@@ -77,7 +83,7 @@ public class TelegramAuthController {
 
         // Сравниваем полученный HMAC с hash, который вам прислал Telegram
         String internalhash = params.get("hash");
-        System.out.println(hash.toString());
+        System.out.println(hashString);
         System.out.println(hmac);
         if (hmac.equals(internalhash)) {
             // Если данные подлинные, вы можете авторизовать пользователя
