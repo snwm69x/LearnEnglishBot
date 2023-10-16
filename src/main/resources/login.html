@@ -6,11 +6,6 @@
   </head>
   <body>
     <h1>Login with Telegram</h1>
-    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="FeelTheDifferenceBot" data-size="large" data-userpic="false" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-    <script type="text/javascript">
-      function onTelegramAuth(user) {
-        alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
-      }
-    </script>
+    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="SykaTrydnoBot" data-size="large" data-auth-url="/login/telegram" data-request-access="write"></script>
   </body>
 </html>
