@@ -34,13 +34,13 @@ public class TelegramAuthController {
             @RequestParam Map<String, String> params) {
         // Сортируем GET-параметры по их именам в алфавитном порядке
         Map<String, String> sortedParams = new TreeMap<>(params);
-
         // Формируем строку в формате name=value
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
         }
         String data = sb.toString();
+        System.out.println(data);
 
         // Формируем HMAC с использованием SHA-256
         String hmac = "";
