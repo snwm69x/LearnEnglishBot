@@ -41,6 +41,11 @@ public class EnglishBotController {
             UserWordStats userWordStats = userWordStatsService.getStatsByUser(user);
             userstats.put(user, userWordStats);
         }
+        for (Map.Entry<User, UserWordStats> entry : userstats.entrySet()) {
+            User user = entry.getKey();
+            UserWordStats userWordStats = entry.getValue();
+            System.out.println(user.getUsername() + userWordStats.getIncorrectAttempts());
+        }
         model.addAttribute("users", users);
         model.addAttribute("userstats", userstats);
         return "admin";
