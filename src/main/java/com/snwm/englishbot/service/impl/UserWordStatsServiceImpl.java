@@ -1,6 +1,7 @@
 package com.snwm.englishbot.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.snwm.englishbot.entity.*;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,10 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
         int totalCorrectAttempts = userWordStatsRepository.getCorrectAttempt(wordId);
         int totalAttempts = userWordStatsRepository.getAllAttempt(wordId);
         return (double)((totalCorrectAttempts * 100) / totalAttempts);
+    }
+
+    @Override
+    public UserWordStats getStatsByUser(User user) {
+        return userWordStatsRepository.findByUser(user);
     }
 }

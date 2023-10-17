@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
+
 
 
 public interface UserWordStatsRepository extends JpaRepository<UserWordStats, UserWordStatsId> {
@@ -23,4 +25,6 @@ public interface UserWordStatsRepository extends JpaRepository<UserWordStats, Us
             "WHERE user_id = :userChatId",
             nativeQuery = true)
     int getAllAttempt(@Param("userChatId") Long userChatId);
+
+    UserWordStats findByUser(User user);
 }
