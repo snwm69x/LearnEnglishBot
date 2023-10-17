@@ -2,9 +2,8 @@ package com.snwm.englishbot.utils;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Converter
 public class TranslateConverter implements AttributeConverter<List<String>, String> {
