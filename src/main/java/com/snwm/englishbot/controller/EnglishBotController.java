@@ -1,6 +1,7 @@
 package com.snwm.englishbot.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.UserStatsSummary;
@@ -35,6 +37,37 @@ public class EnglishBotController {
         return "login";
     }
 
+    @GetMapping("/search")
+    public String search(@RequestParam("search") String search, Model model) {
+        List<User> users = new ArrayList<>();
+        if(search == null || search.isEmpty()) {
+            users = userService.getAllUsers();
+        } else {
+            users = userService.getUserByUsername(search);
+        }
+        Map<User, UserStatsSummary> userstats = new HashMap<>();
+        for(User user : users) {
+            List<UserWordStats> userWordStats = userWordStatsService.getStatsByUser(user);
+            UserStatsSummary summary = new UserStatsSummary();
+            LocalDateTime lastAttempt = null;
+            for(UserWordStats stats : userWordStats) {
+                summary.setCorrectAttempts(summary.getCorrectAttempts() + stats.getCorrectAttempts());
+                summary.setIncorrectAttempts(summary.getIncorrectAttempts() + stats.getIncorrectAttempts());
+                if(lastAttempt == null || stats.getLastAttempt().isAfter(lastAttempt)) {
+                    lastAttempt = stats.getLastAttempt();
+                }
+            }
+            summary.setLastAttempt(lastAttempt);
+            if(summary.getCorrectAttempts() + summary.getIncorrectAttempts() > 0) {
+                summary.setSuccessRate((double)summary.getCorrectAttempts() / (summary.getCorrectAttempts() + summary.getIncorrectAttempts()));
+            }
+            userstats.put(user, summary);
+        }
+        model.addAttribute("users", users);
+        model.addAttribute("userstats", userstats);
+        return "users";
+    }
+
     @GetMapping("/admin")
     public String getAdminPage(Model model) {
         List<User> users = userService.getAllUsers();
@@ -52,7 +85,8 @@ public class EnglishBotController {
             }
             summary.setLastAttempt(lastAttempt);
             if (summary.getCorrectAttempts() + summary.getIncorrectAttempts() > 0) {
-                summary.setSuccessRate((double) summary.getCorrectAttempts() / (summary.getCorrectAttempts() + summary.getIncorrectAttempts()));
+                summary.setSuccessRate((double) summary.getCorrectAttempts()
+                        / (summary.getCorrectAttempts() + summary.getIncorrectAttempts()));
             }
             userstats.put(user, summary);
         }
@@ -61,5 +95,3 @@ public class EnglishBotController {
         return "admin";
     }
 }
-
-

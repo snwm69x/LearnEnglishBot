@@ -3,9 +3,57 @@
 <html>
   <head>
     <title>Login Page</title>
+    <!-- Add Bootstrap stylesheet -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    <style>
+      /* Set background color */
+      body {
+        background-color: #212121;
+        font-family: 'Roboto', sans-serif;
+        color: #fff;
+      }
+      /* Center the login form */
+      .login-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      /* Center the login with Telegram button */
+      .telegram-login-button {
+        display: flex;
+        justify-content: center;
+      }
+      /* Add rounded corners to container */
+      .container {
+        border-radius: 0px;
+        background-color: transparent;
+        padding: 20px;
+      }
+      /* Set font family and color for h1 */
+      h1 {
+        font-family: 'Roboto', sans-serif;
+        color: #fff;
+        font-size: 80%;
+      }
+    </style>
   </head>
   <body>
-    <h1>Login with Telegram</h1>
-    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="SykaTrydnoBot" data-size="large" data-auth-url="/login/telegram" data-request-access="write"></script>
+    <div class="login-form">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1 class="text-center">Login to EnglishWordBot with Telegram</h1>
+            <div class="telegram-login-button">
+              <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="SykaTrydnoBot" data-size="large" data-auth-url="/login/telegram" data-request-access="write"></script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add Bootstrap JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   </body>
 </html>
