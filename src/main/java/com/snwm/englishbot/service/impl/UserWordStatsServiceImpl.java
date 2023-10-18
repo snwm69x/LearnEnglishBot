@@ -1,6 +1,7 @@
 package com.snwm.englishbot.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.snwm.englishbot.entity.*;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
     }
 
     @Override
-    public UserWordStats getStatsByUser(User user) {
+    public List<UserWordStats> getStatsByUser(User user) {
         return userWordStatsRepository.findByUser(user);
     }
 }
