@@ -195,8 +195,8 @@
                                     <td style="border: none;" th:text="${user.getWordLevel()}"></td>
                                     <td style="border: none;" th:text="${userstats.get(user).getCorrectAttempts()}"></td>
                                     <td style="border: none;" th:text="${userstats.get(user).getIncorrectAttempts()}"></td>
-                                    <td style="border: none;" th:text="${userstats.get(user).getSuccessRate()}"></td>
-                                    <td style="border: none;" th:text="${userstats.get(user).getLastAttempt()}"></td>
+                                    <td style="border: none;" th:text="${#numbers.formatDecimal(userstats.get(user).getSuccessRate() * 100, 1, 2)} + '%'"></td>
+                                    <td style="border: none;" th:text="${#dates.format(userstats.get(user).getLastAttempt(), 'dd-MM-yyyy HH:mm:ss')}"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -215,4 +215,4 @@
             feather.replace()
         </script>
     </body>
-</html></html>
+</html>

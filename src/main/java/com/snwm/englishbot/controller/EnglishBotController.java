@@ -73,6 +73,11 @@ public class EnglishBotController {
         return "users";
     }
 
+    @GetMapping("/words")
+    public String getWordsPage() {
+        return "words";
+    }
+
     @GetMapping("/admin")
     public String getAdminPage(Model model) {
         List<User> users = userService.getAllUsers();
