@@ -2,217 +2,261 @@
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Users</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
-        <style>
-            .nav-link {
-                color: #fff;
-                text-decoration: none;
-                display: flex;
-                align-items: center;
-            }
-            .nav-link span {
-                margin-right: 10px;
-            }
-            .nav-link:hover {
-                color: #fff;
-                text-decoration: none;
-            }
-            .nav-link.active {
-                color: #fff;
-                text-decoration: none;
-            }
-            .nav-item {
-                list-style-type: none;
-                padding: 10px 0;
-            }
+
+<head>
+    <title>Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    <style>
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link span {
+            margin-right: 10px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-link.active {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-item {
+            list-style-type: none;
+            padding: 10px 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            width: 200px;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 #8774e1;
+        }
+
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+            height: calc(100vh - 48px);
+            padding-top: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .sidebar .nav-link .feather {
+            margin-right: 4px;
+            color: #999;
+        }
+
+        .sidebar .nav-link.active {
+            color: #007bff;
+        }
+
+        .sidebar .nav-link:hover .feather,
+        .sidebar .nav-link.active .feather {
+            color: inherit;
+        }
+
+        .sidebar-heading {
+            font-size: .75rem;
+            text-transform: uppercase;
+        }
+
+        [role="main"] {
+            padding-top: 133px;
+        }
+
+        @media (min-width: 768px) {
             .sidebar {
-                position: fixed;
-                top: 0;
-                width: 200px;
-                bottom: 0;
-                left: 0;
-                z-index: 100;
-                padding: 48px 0 0;
-                box-shadow: inset -1px 0 0 #8774e1;
+                padding-top: 112px;
             }
-            .sidebar-sticky {
-                position: relative;
-                top: 0;
-                height: calc(100vh - 48px);
-                padding-top: .5rem;
-                overflow-x: hidden;
-                overflow-y: auto;
-            }
-            .sidebar .nav-link {
-                font-weight: 500;
-                color: #fff;
-            }
-            .sidebar .nav-link .feather {
-                margin-right: 4px;
-                color: #999;
-            }
-            .sidebar .nav-link.active {
-                color: #007bff;
-            }
-            .sidebar .nav-link:hover .feather,
-            .sidebar .nav-link.active .feather {
-                color: inherit;
-            }
-            .sidebar-heading {
-                font-size: .75rem;
-                text-transform: uppercase;
-            }
+
             [role="main"] {
-                padding-top: 133px;
+                padding-top: 64px;
             }
-            @media (min-width: 768px) {
-                .sidebar {
-                    padding-top: 112px;
-                }
-                [role="main"] {
-                    padding-top: 64px;
-                }
-            }
-            body {
-                font-family: 'Roboto', sans-serif;
-                background-color: #252525;
-                color: #fff;
-            }
-            .search-container {
-                display: flex;
-                align-items: center;
-                margin-top: 50px;
-                margin-right: 50%;
-                justify-content: center;
-            }
-            .search-container input[type=text] {
-                padding: 10px;
-                margin-right: 10px;
-                border: none;
-                border-radius: 5px;
-                background-color: #f2f2f2;
-            }
-            .search-container button {
-                padding: 10px;
-                border: none;
-                border-radius: 5px;
-                background-color: #007bff;
-                color: #fff;
-            }
-            .search-container button:hover {
-                background-color: #0069d9;
-            }
-            .table-responsive {
-                margin-left: 50%;
-                transform: translateX(-50%);
-            }
-            table {
-                margin-top: 50px;
-            }
-        </style>
-    </head>
-    <body>
-        <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-            <a class="navbar-brand col-md-5 col-lg-4 mr-0 px-3" style="font-weight: bold;">LearnEnglishBot</a>
-            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </nav>
+        }
 
-        <div class="container-fluid">
-            <div class="row">
-                <nav id="sidebarMenu" class="col-md-5 col-lg-4 d-md-block bg-light sidebar collapse">
-                    <div class="sidebar-sticky pt-3">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="/users">
-                                    <span data-feather="users"></span>
-                                    Пользователи
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/words">
-                                    <span data-feather="book"></span>
-                                    Слова
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/newsletter">
-                                    <span data-feather="send"></span>
-                                    Рассылка
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/settings">
-                                    <span data-feather="settings"></span>
-                                    Настройки
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/logout">
-                                    <span data-feather="log-out"></span>
-                                    Выход
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #252525;
+            color: #fff;
+        }
 
-                <main role="main" class="col-md-7 ml-sm-auto col-lg-8 px-md-4">
-                    <div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <div class="search-container">
-                            <form action="/search" method="GET">
-                                <input type="text" placeholder="Username" name="search">
-                                <button type="submit">Поиск</button>
-                            </form>
-                        </div>
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-top: 50px;
+            margin-right: 50%;
+            justify-content: center;
+        }
+
+        .search-container input[type=text] {
+            padding: 10px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+        }
+
+        .search-container button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .search-container button:hover {
+            background-color: #0069d9;
+        }
+
+        .table-responsive {
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        table {
+            margin-top: 50px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+        <a class="navbar-brand col-md-5 col-lg-4 mr-0 px-3" style="font-weight: bold;">LearnEnglishBot</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
+            data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-5 col-lg-4 d-md-block bg-light sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/users">
+                                <span data-feather="users"></span>
+                                Пользователи
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/words">
+                                <span data-feather="book"></span>
+                                Слова
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/newsletter">
+                                <span data-feather="send"></span>
+                                Рассылка
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/settings">
+                                <span data-feather="settings"></span>
+                                Настройки
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">
+                                <span data-feather="log-out"></span>
+                                Выход
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-7 ml-sm-auto col-lg-8 px-md-4">
+                <div
+                    class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <div class="search-container">
+                        <form action="/search" method="GET">
+                            <input type="text" placeholder="Username" name="search">
+                            <button type="submit">Поиск</button>
+                        </form>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th style="border: none;">ChatID</th>
-                                    <th style="border: none;">Username</th>
-                                    <th style="border: none;">Firstname</th>
-                                    <th style="border: none;">Lastname</th>
-                                    <th style="border: none;">UserType</th>
-                                    <th style="border: none;">WordLevel</th>
-                                    <th style="border: none;">CorrectAttempts</th>
-                                    <th style="border: none;">IncorrectAttempts</th>
-                                    <th style="border: none;">SuccessRate</th>
-                                    <th style="border: none;">LastAttempt</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td style="border: none;" th:text="${user.getChatId()}"></td>
-                                    <td style="border: none;" th:text="${user.getUsername()}"></td>
-                                    <td style="border: none;" th:text="${user.getFirstName()}"></td>
-                                    <td style="border: none;" th:text="${user.getLastName()}"></td>
-                                    <td style="border: none;" th:text="${user.getUserType()}"></td>
-                                    <td style="border: none;" th:text="${user.getWordLevel()}"></td>
-                                    <td style="border: none;" th:text="${userstats.get(user).getCorrectAttempts()}"></td>
-                                    <td style="border: none;" th:text="${userstats.get(user).getIncorrectAttempts()}"></td>
-                                    <td style="border: none;" th:text="${#numbers.formatDecimal(userstats.get(user).getSuccessRate() * 100, 1, 2)} + '%'"></td>
-                                    <td style="border: none;" th:text="${#dates.format(userstats.get(user).getLastAttempt(), 'dd-MM-yyyy HH:mm:ss')}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                        </table>
-                    </div>
-                </main>
-            </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Firstname</th>
+                                <th>Lastname</th>
+                                <th>UserType</th>
+                                <th>WordLevel</th>
+                                <th>CorrectAnswers</th>
+                                <th>IncorrectAnswers</th>
+                                <th>SuccessRate</th>
+                                <th>LastAttempt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.getChatId()}"></td>
+                                <td th:text="${user.getUsername()}"></td>
+                                <td th:text="${user.getFirstName()}"></td>
+                                <td th:text="${user.getLastName()}"></td>
+                                <td th:text="${user.getUserType()}"></td>
+                                <td th:text="${user.getWordLevel()}"></td>
+                                <td th:text="${userstats.get(user).getCorrectAttempts()}"></td>
+                                <td th:text="${userstats.get(user).getIncorrectAttempts()}"></td>
+                                <td th:text="${#numbers.formatDecimal(userstats.get(user).getSuccessRate() * 100, 1, 2)} + '%'"></td>
+                                <td th:if="${userstats.get(user).getLastAttempt() != null}" th:text="${#temporals.format(userstats.get(user).getLastAttempt(), 'dd-MM-yyyy HH:mm:ss')}"></td>
+                                <td th:if="${userstats.get(user).getLastAttempt() == null}">N/A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
         </div>
+    </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-        <script>
-            feather.replace()
-        </script>
-    </body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        feather.replace()
+    </script>
+</body>
+
 </html>
