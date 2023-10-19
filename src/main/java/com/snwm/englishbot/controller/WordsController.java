@@ -93,6 +93,11 @@ public class WordsController {
             @RequestParam("wordLevel") String wordLevel,
             @RequestParam("wordType") String wordType,
             RedirectAttributes redirectAttributes) {
+                System.out.println(word);
+                System.out.println(translation);
+                System.out.println(transcription);
+                System.out.println(wordLevel);
+                System.out.println(wordType);
         Word slovo = new Word();
         slovo.setWord(word);
         slovo.setTranslation(Arrays.asList(translation.split(";")));
