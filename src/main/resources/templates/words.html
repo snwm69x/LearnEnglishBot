@@ -17,8 +17,15 @@
 
         .container {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 25%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fileupload {
+            position: absolute;
+            top: 25%;
+            left: 60%;
             transform: translate(-50%, -50%);
         }
 
@@ -167,7 +174,7 @@
             <main role="main" class="col-md-7 ml-sm-auto col-lg-8 px-md-4">
                 <div class="container">
                     <h2>Добавить слово</h2>
-                    <form action="/add-word" method="post">
+                    <form action="/words/add-word" method="post">
                         <div class="form-group">
                             <label for="word">Слово:</label>
                             <input type="text" class="form-control" id="word" name="word">
@@ -200,6 +207,27 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Добавить</button>
                     </form>
+                    <div th:if="${message}" class="alert alert-success mt-3" role="alert">
+                        <p th:text="${message}"></p>
+                    </div>
+                    <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                        <p th:text="${error}"></p>
+                    </div>
+                </div>
+                <div class="fileupload">
+                <form action="/words/upload-file" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Выберите файл:</label>
+                        <input type="file" id="file" name="file" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Загрузить</button>
+                </form>
+                <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                    <p th:text="${error}"></p>
+                </div>
+                <div th:if="${success}" class="alert alert-success mt-3" role="alert">
+                    <p th:text="${success}"></p>
+                </div>
                 </div>
             </main>
         </div>

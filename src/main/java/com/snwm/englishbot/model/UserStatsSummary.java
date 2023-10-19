@@ -1,4 +1,4 @@
-package com.snwm.englishbot.entity;
+package com.snwm.englishbot.model;
 
 import java.time.LocalDateTime;
 

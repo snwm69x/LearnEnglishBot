@@ -27,4 +27,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     List<Word> findByWordType(WordType wordType);
 
     List<Word> findByWordTypeAndWordLevel(WordType wordType, WordLevel wordLevel);
+
 }

@@ -6,6 +6,8 @@ import com.snwm.englishbot.entity.enums.WordType;
 import com.snwm.englishbot.utils.TranslateConverter;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import java.util.List;
 
 @Entity
@@ -22,13 +24,16 @@ public class Word {
     private Long id;
 
     @Column
+    @NotBlank(message = "Word cannot be empty")
     private String word;
 
     @Column
     @Convert(converter = TranslateConverter.class)
+    @NotBlank(message = "Translation cannot be empty")
     private List<String> translation;
 
     @Column
+    @NotBlank(message = "Transcription cannot be empty")
     private String transcription;
 
     @ManyToMany(fetch = FetchType.EAGER,
@@ -40,8 +45,10 @@ public class Word {
     private List<User> users;
 
     @Enumerated(EnumType.STRING)
+    @NotBlank(message = "WordLevel cannot be empty")
     private WordLevel  wordLevel;
 
     @Enumerated(EnumType.STRING)
+    @NotBlank(message = "WordType cannot be empty")
     private WordType wordType;
 }

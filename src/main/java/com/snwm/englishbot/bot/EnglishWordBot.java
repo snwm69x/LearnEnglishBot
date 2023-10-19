@@ -175,6 +175,20 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommand(Message message) {
+        // Если у пользователя не выбрана сложность, предлагает ее выбрать
+        if(userService.getUserByChatId(message.getChatId()).getWordLevel().equals(null)) {
+            SendMessage sendMessage = SendMessage.builder()
+                        .chatId(message.getChatId().toString())
+                        .text("У вас не выбрана сложность.")
+                        .build();
+            sendMessage.setReplyMarkup(keyboardMaker.getDifficultLevelKeyboard());
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+                                
+        }
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
         String word_translation = word.getTranslation().get((int) (Math.random() * word.getTranslation().size()));
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
