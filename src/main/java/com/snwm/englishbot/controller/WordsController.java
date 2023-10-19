@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.naming.Binding;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,12 +86,21 @@ public class WordsController {
     }
 
     @PostMapping("/add-word")
-    public String addWord(@Valid @ModelAttribute Word word, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            return "words";
-        }
+    public String addWord(
+            @RequestParam("word") String word,
+            @RequestParam("translation") String translation,
+            @RequestParam("transcription") String transcription,
+            @RequestParam("wordLevel") String wordLevel,
+            @RequestParam("wordType") String wordType,
+            RedirectAttributes redirectAttributes) {
+        Word slovo = new Word();
+        slovo.setWord(word);
+        slovo.setTranslation(Arrays.asList(translation.split(";")));
+        slovo.setTranscription(transcription);
+        slovo.setWordLevel(WordLevel.valueOf(wordLevel));
+        slovo.setWordType(WordType.valueOf(wordType));
         try {
-            wordService.addWord(word);
+            wordService.addWord(slovo);
             redirectAttributes.addFlashAttribute("message", "Word added successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to add word");
