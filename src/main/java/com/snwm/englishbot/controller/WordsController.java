@@ -1,6 +1,7 @@
 package com.snwm.englishbot.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +38,7 @@ public class WordsController {
 
     @PostMapping("/upload-file")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
         if (file.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Failed to upload file. Please select a file and try again.");
             return "error";
@@ -46,7 +48,7 @@ public class WordsController {
             // Получить содержимое файла в виде массива байтов
             byte[] bytes = file.getBytes();
             // Преобразовать содержимое файла в нужный формат
-            String content = new String(bytes);
+            String content = new String(bytes, StandardCharsets.UTF_8);
             // Разделить содержимое файла на строки
             String[] lines = content.split("\\r?\\n");
             // Пройтись по каждой строке и добавить слово в базу данных, если оно
@@ -82,22 +84,14 @@ public class WordsController {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Failed to upload file. Please try again.");
         }
-        return "words";
+        return "redirect:/words";
     }
 
     @PostMapping("/add-word")
-    public String addWord(
-            @RequestParam("word") String word,
-            @RequestParam("translation") String translation,
-            @RequestParam("transcription") String transcription,
-            @RequestParam("wordLevel") String wordLevel,
-            @RequestParam("wordType") String wordType,
-            RedirectAttributes redirectAttributes) {
-                System.out.println(word);
-                System.out.println(translation);
-                System.out.println(transcription);
-                System.out.println(wordLevel);
-                System.out.println(wordType);
+    public String addWord(  @RequestParam("word") String word, @RequestParam("translation") String translation,
+                            @RequestParam("transcription") String transcription, @RequestParam("wordLevel") String wordLevel,
+                            @RequestParam("wordType") String wordType, RedirectAttributes redirectAttributes) {
+
         Word slovo = new Word();
         slovo.setWord(word);
         slovo.setTranslation(Arrays.asList(translation.split(";")));
