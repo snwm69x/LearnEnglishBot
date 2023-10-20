@@ -92,7 +92,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
+        
         // Обработка неизвестных команд
         if (update.hasMessage() && update.getMessage().hasText()
                 && !update.getMessage().getText().equals("/start")

@@ -12,6 +12,14 @@
         display: flex;
         align-items: center;
       }
+      .user {
+        position: absolute;
+        left: 0%;
+        bottom: 10%;
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+      }
       .nav-link span {
         margin-right: 10px;
       }
@@ -125,14 +133,17 @@
                   Выход
                 </a>
               </li>
+              <div class="user">
+                <li class="nav-item">
+                  <span class="nav-link">Logged as <span th:text="${user.getUsername()}"></span> with role <span th:text="${user.getUserType()}"></span></span>
+                </li>
+              </div>
             </ul>
           </div>
         </nav>
 
         <main role="main" class="col-md-7 ml-sm-auto col-lg-8 px-md-4">
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"></div>
-
-          
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"></div>      
         </main>
       </div>
     </div>
