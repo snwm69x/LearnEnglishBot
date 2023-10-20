@@ -1,59 +1,253 @@
 <!-- FILEPATH: /c:/programming/snwm/LearnEnglishBot/src/main/resources/login.html -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Login Page</title>
-    <!-- Add Bootstrap stylesheet -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
-    <style>
-      /* Set background color */
-      body {
-        background-color: #212121;
-        font-family: 'Roboto', sans-serif;
-        color: #fff;
+
+<head>
+  <title>Login Page</title>
+  <!-- Add Bootstrap stylesheet -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap");
+
+    :root {
+      --bg: #000000;
+      --clr-1: #00c2ff;
+      --clr-2: #33ff8c;
+      --clr-3: #ffc640;
+      --clr-4: #e54cff;
+
+      --blur: 1rem;
+      --fs: clamp(3rem, 8vw, 7rem);
+      --ls: clamp(-1.75px, -0.25vw, -3.5px);
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background-color: var(--bg);
+      color: #fff;
+      font-family: "Inter", "DM Sans", Arial, sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .content {
+      text-align: center;
+    }
+
+    .title {
+      font-size: var(--fs);
+      font-weight: 800;
+      letter-spacing: var(--ls);
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      margin: 0;
+    }
+
+    .subtitle {
+      font-family: "Inter", "DM Sans", Arial, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 0;
+      margin-bottom: 2rem;
+    }
+
+    .aurora {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      mix-blend-mode: darken;
+      pointer-events: none;
+    }
+
+    .aurora__item {
+      overflow: hidden;
+      position: absolute;
+      width: 60vw;
+      height: 60vw;
+      background-color: var(--clr-1);
+      border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+      filter: blur(var(--blur));
+      mix-blend-mode: overlay;
+    }
+
+    .aurora__item:nth-of-type(1) {
+      top: -50%;
+      animation: aurora-border 6s ease-in-out infinite,
+        aurora-1 12s ease-in-out infinite alternate;
+    }
+
+    .aurora__item:nth-of-type(2) {
+      background-color: var(--clr-3);
+      right: 0;
+      top: 0;
+      animation: aurora-border 6s ease-in-out infinite,
+        aurora-2 12s ease-in-out infinite alternate;
+    }
+
+    .aurora__item:nth-of-type(3) {
+      background-color: var(--clr-2);
+      left: 0;
+      bottom: 0;
+      animation: aurora-border 6s ease-in-out infinite,
+        aurora-3 8s ease-in-out infinite alternate;
+    }
+
+    .aurora__item:nth-of-type(4) {
+      background-color: var(--clr-4);
+      right: 0;
+      bottom: -50%;
+      animation: aurora-border 6s ease-in-out infinite,
+        aurora-4 24s ease-in-out infinite alternate;
+    }
+
+    @keyframes aurora-1 {
+      0% {
+        top: 0;
+        right: 0;
       }
-      /* Center the login form */
-      .login-form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+
+      50% {
+        top: 100%;
+        right: 75%;
       }
-      /* Center the login with Telegram button */
-      .telegram-login-button {
-        display: flex;
-        justify-content: center;
+
+      75% {
+        top: 100%;
+        right: 25%;
       }
-      /* Add rounded corners to container */
-      .container {
-        border-radius: 0px;
-        background-color: transparent;
-        padding: 20px;
+
+      100% {
+        top: 0;
+        right: 0;
       }
-      /* Set font family and color for h1 */
-      h1 {
-        font-family: 'Roboto', sans-serif;
-        color: #fff;
-        font-size: 80%;
+    }
+
+    @keyframes aurora-2 {
+      0% {
+        top: -50%;
+        left: 0%;
       }
-    </style>
-  </head>
-  <body>
-    <div class="login-form">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <h1 class="text-center">Login to EnglishWordBot with Telegram</h1>
-            <div class="telegram-login-button">
-              <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="SykaTrydnoBot" data-size="large" data-auth-url="/login/telegram" data-request-access="write"></script>
-            </div>
-          </div>
-        </div>
+
+      60% {
+        top: 100%;
+        left: 75%;
+      }
+
+      85% {
+        top: 100%;
+        left: 25%;
+      }
+
+      100% {
+        top: -50%;
+        left: 0%;
+      }
+    }
+
+    @keyframes aurora-3 {
+      0% {
+        bottom: 0;
+        left: 0;
+      }
+
+      40% {
+        bottom: 100%;
+        left: 75%;
+      }
+
+      65% {
+        bottom: 40%;
+        left: 50%;
+      }
+
+      100% {
+        bottom: 0;
+        left: 0;
+      }
+    }
+
+    @keyframes aurora-4 {
+      0% {
+        bottom: -50%;
+        right: 0;
+      }
+
+      50% {
+        bottom: 0%;
+        right: 40%;
+      }
+
+      90% {
+        bottom: 50%;
+        right: 25%;
+      }
+
+      100% {
+        bottom: -50%;
+        right: 0;
+      }
+    }
+
+    @keyframes aurora-border {
+      0% {
+        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+      }
+
+      25% {
+        border-radius: 47% 29% 39% 49% / 61% 19% 66% 26%;
+      }
+
+      50% {
+        border-radius: 57% 23% 47% 72% / 63% 17% 66% 33%;
+      }
+
+      75% {
+        border-radius: 28% 49% 29% 100% / 93% 20% 64% 25%;
+      }
+
+      100% {
+        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+      }
+    }
+
+    /* Center the login with Telegram button */
+    .telegram-login-button {
+      display: flex;
+      justify-content: center;
+      height: 125%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <h1 class="title">EnglishWordBot
+      <div class="aurora">
+        <div class="aurora__item"></div>
+        <div class="aurora__item"></div>
+        <div class="aurora__item"></div>
+        <div class="aurora__item"></div>
       </div>
-    </div>
-    <!-- Add Bootstrap JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  </body>
+    </h1>
+    <p class="subtitle">Login via Telegram</p>
+  </div>
+  <div class="telegram-login-button">
+    <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="SykaTrydnoBot"
+      data-size="large" data-auth-url="/login/telegram" data-request-access="write"></script>
+  </div>
+
+</body>
+
 </html>

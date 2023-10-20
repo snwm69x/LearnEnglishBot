@@ -3,6 +3,7 @@ package com.snwm.englishbot.bot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
@@ -39,6 +40,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private final String token;
     private final String username;
+    private Random random = new Random();
 
     @Autowired
     private WordService wordService;
@@ -92,7 +94,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        
+
         // Обработка неизвестных команд
         if (update.hasMessage() && update.getMessage().hasText()
                 && !update.getMessage().getText().equals("/start")
@@ -124,6 +126,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             if (update.getMessage().getText().equals("Выбрать сложность 📊")) {
                 handleChooseDifficult(update.getMessage());
             }
+
+            // if (update.getMessage().getText().equals("Рейтинг 🏆")) {
+            //     handleRatingCommand(update.getMessage());
+            // }
         }
 
         if (update.hasCallbackQuery()) {
@@ -189,6 +195,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
                                 
         }
+        if(random.nextBoolean()){
+            findTranslation(message);
+        } else {
+            findWordByTranslation(message);
+        }
+    }
+
+    private void findTranslation(Message message) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
         String word_translation = word.getTranslation().get((int) (Math.random() * word.getTranslation().size()));
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
@@ -215,6 +229,38 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         try {
             execute(newWordMessage);
         } catch (TelegramApiException e) {
+            System.out.println("error while sending msg in method findTranslation");
+            e.printStackTrace();
+        }
+    }
+
+    private void findWordByTranslation(Message message) {
+        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
+        String word_name = word.getWord();
+        List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
+        List<String> options = new ArrayList<>();
+        while (options.size() != 3) {
+            int randomIndex = (int) (Math.random() * words.size());
+            if (!words.get(randomIndex).getWord().equals(word_name)) {
+                options.add(words.get(randomIndex).getWord());
+                words.remove(randomIndex);
+            }
+        }
+        options.add(word_name);
+        Collections.shuffle(options);
+        String correctAnswer = options.get(options.indexOf(word_name));
+        SendMessage newWordMessage = new SendMessage();
+        newWordMessage.disableNotification();
+        newWordMessage.enableHtml(true);
+        newWordMessage.setChatId(message.getChatId().toString());
+        newWordMessage.setText("<b>" + word.getTranslation() + "</b>");
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options,
+                word.getId());
+        newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
+        try {
+            execute(newWordMessage);
+        } catch (TelegramApiException e) {
+            System.out.println("error while sending msg in method findWordByTranslation");
             e.printStackTrace();
         }
     }

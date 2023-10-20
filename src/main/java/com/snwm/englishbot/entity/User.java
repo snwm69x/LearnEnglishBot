@@ -47,4 +47,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private WordLevel wordLevel;
+
+    // @Column(name = "rating")
+    // private Integer rating;
 }
