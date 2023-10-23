@@ -13,6 +13,8 @@ public interface WordService {
     // Установить все слова пользователю.
     void setAllWordToUser(Long id, WordLevel wordLevel);
 
+    public void set30WordsToUser(Long id, WordLevel wordLevel);
+
     // Получить случайное слово пользователя и удалить его из списка слов пользователя.
     Word getRandomWordByUserChatIdAndDeleteIt(Long id);
 

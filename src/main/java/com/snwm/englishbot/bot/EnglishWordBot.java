@@ -181,8 +181,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommand(Message message) {
+        User user = userService.getUserByChatId(message.getChatId());
         // Если у пользователя не выбрана сложность, предлагает ее выбрать
-        if(userService.getUserByChatId(message.getChatId()).getWordLevel().equals(null)) {
+        if(user.getWordLevel().equals(null)) {
             SendMessage sendMessage = SendMessage.builder()
                         .chatId(message.getChatId().toString())
                         .text("У вас не выбрана сложность.")
@@ -190,10 +191,13 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(keyboardMaker.getDifficultLevelKeyboard());
             try {
                 execute(sendMessage);
+                return;
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-                                
+        }
+        if(user.getWords().isEmpty()) {
+            wordService.set30WordsToUser(message.getChatId(), user.getWordLevel());
         }
         if(random.nextBoolean()){
             findTranslation(message);
@@ -253,7 +257,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
-        newWordMessage.setText("<b>" + word.getTranslation() + "</b>");
+        newWordMessage.setText("<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options,
                 word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);

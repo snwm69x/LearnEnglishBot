@@ -28,4 +28,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     List<Word> findByWordTypeAndWordLevel(WordType wordType, WordLevel wordLevel);
 
+    @Query(value = "SELECT * FROM words WHERE word_level = :wordLevel ORDER BY RAND() LIMIT 30", nativeQuery = true)
+    List<Word> find30RandomWordsByWordLevel(@Param("wordLevel") WordLevel wordLevel);
+
 }

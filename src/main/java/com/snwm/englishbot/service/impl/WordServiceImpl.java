@@ -37,6 +37,13 @@ public class WordServiceImpl implements WordService {
     }
 
     @Override
+    public void set30WordsToUser(Long id, WordLevel wordLevel) {
+        User user = userRepository.findUserByChatId(id);
+        user.setWords(wordRepository.find30RandomWordsByWordLevel(wordLevel));
+        userRepository.save(user);
+    }
+
+    @Override
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
         User user = userRepository.findUserByChatId(id);
         if(user.getWords().isEmpty()){
