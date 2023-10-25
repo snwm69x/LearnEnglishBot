@@ -122,7 +122,7 @@ VALUES ('To be', 'Быть', '[tə biː]', 'A1', 'VERB'),
 ('To hesitate', 'Сомневаться', '[ˈhezɪteɪt]', 'A1', 'VERB');
 
 -- существительные NOUN
-
+-- 
 INSERT INTO words (word, translation, transcription, word_level, word_type)
 VALUES ('Air', 'Воздух', '[ən eə(r)]', 'A1', 'NOUN'),
     ('Wind', 'Ветер', '[wɪnd]', 'A1', 'NOUN'),
