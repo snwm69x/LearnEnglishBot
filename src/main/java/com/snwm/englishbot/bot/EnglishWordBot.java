@@ -38,6 +38,7 @@ import javax.annotation.PreDestroy;
 public class EnglishWordBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
+    private static final String ADMIN_PAGE_URL = "learnenglishbot-production-73dd.up.railway.app/admin";
     private final String token;
     private final String username;
     private Random random = new Random();
@@ -51,7 +52,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     @Autowired
     private KeyboardMaker keyboardMaker;
 
-    EnglishWordBot(@Value("6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY") String token, @Value("@SykaTrydnoBot") String username) {
+    EnglishWordBot(@Value("6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY") String token,
+            @Value("@SykaTrydnoBot") String username) {
         this.token = token;
         this.username = username;
     }
@@ -76,22 +78,6 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         return username;
     }
 
-    // @Scheduled(cron = "0 0 0 */3 * *")
-    // public void sendMessageToAllUsers() {
-    //     List<User> users = userService.getAllUsers();
-    //     for (User user : users) {
-    //         SendMessage sendMessage = SendMessage.builder()
-    //                 .chatId(user.getChatId().toString())
-    //                 .text("Давно не виделись, пора подтянуть английский!")
-    //                 .build();
-    //         try {
-    //             execute(sendMessage);
-    //         } catch (TelegramApiException e) {
-    //             e.printStackTrace();
-    //         }
-    //     }
-    // }
-
     @Override
     public void onUpdateReceived(Update update) {
 
@@ -100,7 +86,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 && !update.getMessage().getText().equals("/start")
                 && !update.getMessage().getText().equals("Новое слово 💬")
                 && !update.getMessage().getText().equals("Статистика 🔄")
-                && !update.getMessage().getText().equals("Выбрать сложность 📊")) {
+                && !update.getMessage().getText().equals("Выбрать сложность 📊")
+                && !update.getMessage().getText().equals("/admin")) {
             handleUnknownCommand(update.getMessage());
         }
 
@@ -127,8 +114,12 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 handleChooseDifficult(update.getMessage());
             }
 
+            if (update.getMessage().getText().equals("/admin")) {
+                handleAdminMessage(update.getMessage());
+            }
+
             // if (update.getMessage().getText().equals("Рейтинг 🏆")) {
-            //     handleRatingCommand(update.getMessage());
+            // handleRatingCommand(update.getMessage());
             // }
         }
 
@@ -148,6 +139,34 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
             if (update.getCallbackQuery().getData().equals("checksubscription")) {
                 handleUserSubscriptionRespone(update.getCallbackQuery());
+            }
+        }
+    }
+
+    private void handleAdminMessage(Message message) {
+        User user = userService.getUserByChatId(message.getChatId());
+        if (user.getUserType().equals(UserType.ADMIN)) {
+            SendMessage msg = SendMessage.builder()
+                    .chatId(message.getChatId().toString())
+                    .text("Вы администратор")
+                    .build();
+            msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
+            try {
+                execute(msg);
+            } catch (TelegramApiException e) {
+                System.out.println("failder while sending admin message");
+                e.printStackTrace();
+            }
+        } else {
+            SendMessage msg2 = SendMessage.builder()
+                    .chatId(message.getChatId().toString())
+                    .text("У вас нету прав Администратора")
+                    .build();
+            try {
+                execute(msg2);
+            } catch (TelegramApiException e) {
+                System.out.println("Failed while sending message to user without admin rights");
+                e.printStackTrace();
             }
         }
     }
@@ -183,11 +202,11 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private void handleNewWordCommand(Message message) {
         User user = userService.getUserByChatId(message.getChatId());
         // Если у пользователя не выбрана сложность, предлагает ее выбрать
-        if(user.getWordLevel().equals(null)) {
+        if (user.getWordLevel().equals(null)) {
             SendMessage sendMessage = SendMessage.builder()
-                        .chatId(message.getChatId().toString())
-                        .text("У вас не выбрана сложность.")
-                        .build();
+                    .chatId(message.getChatId().toString())
+                    .text("У вас не выбрана сложность.")
+                    .build();
             sendMessage.setReplyMarkup(keyboardMaker.getDifficultLevelKeyboard());
             try {
                 execute(sendMessage);
@@ -196,10 +215,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
-        if(user.getWords().isEmpty()) {
+        if (user.getWords().isEmpty()) {
             wordService.set30WordsToUser(message.getChatId(), user.getWordLevel());
         }
-        if(random.nextBoolean()){
+        if (random.nextBoolean()) {
             findTranslation(message);
         } else {
             findWordByTranslation(message);
@@ -257,7 +276,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
-        newWordMessage.setText("<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
+        newWordMessage.setText(
+                "<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options,
                 word.getId());
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);

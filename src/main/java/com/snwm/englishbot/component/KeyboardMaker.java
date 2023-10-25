@@ -39,6 +39,19 @@ public class KeyboardMaker {
         return keyboard;
     }
 
+    public InlineKeyboardMarkup getAdminPageButton(String url) {
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setUrl(url);
+        button.setText("Админка");
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(button);
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        keyboard.add(row);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(keyboard);
+        return inlineKeyboardMarkup;
+    }
+
     public InlineKeyboardMarkup getDifficultLevelKeyboard() {
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         button1.setText("A1 - Elementary");

@@ -3,8 +3,13 @@ package com.snwm.englishbot.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.entity.enums.WordLevel;
+
 import lombok.*;
 import javax.persistence.*;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.List;
 
 @Entity
@@ -14,9 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@JsonIgnoreProperties({"words"})
+@JsonIgnoreProperties({ "words" })
 public class User {
-        
+
     @Id
     @Column(name = "chat_id", unique = true)
     private Long chatId;
@@ -30,16 +35,13 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.EAGER, 
-    cascade = {CascadeType.DETACH, 
-        CascadeType.MERGE, 
-        CascadeType.PERSIST, 
-        CascadeType.REFRESH})
-    @JoinTable(name = "userWords",
-            joinColumns =
-                    {@JoinColumn(name = "user_id", referencedColumnName = "chat_id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "word_id", referencedColumnName = "id")})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH })
+    @JoinTable(name = "userWords", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "chat_id") }, inverseJoinColumns = {
+                    @JoinColumn(name = "word_id", referencedColumnName = "id") })
     private List<Word> words;
 
     @Enumerated(EnumType.STRING)
@@ -48,6 +50,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private WordLevel wordLevel;
 
-    // @Column(name = "rating")
-    // private Integer rating;
+    @Column(name = "rating")
+    private Integer rating;
 }
