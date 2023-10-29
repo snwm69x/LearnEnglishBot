@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
                 .firstName(message.getFrom().getFirstName())
                 .lastName(message.getFrom().getLastName())
                 .userType(UserType.USER)
+                .rating(0)
                 .build();
         userRepository.save(user);
     }

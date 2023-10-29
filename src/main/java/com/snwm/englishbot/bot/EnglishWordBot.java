@@ -140,7 +140,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
 
             if (update.getCallbackQuery().getData().equals("checksubscription")) {
-                handleUserSubscriptionRespone(update.getCallbackQuery());
+                handleUserSubscriptionResponse(update.getCallbackQuery());
             }
         }
     }
@@ -456,7 +456,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         }
     }
 
-    private void handleUserSubscriptionRespone(CallbackQuery callbackQuery) {
+    private void handleUserSubscriptionResponse(CallbackQuery callbackQuery) {
         User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
         GetChatMember getChatMember = new GetChatMember();
         getChatMember.setChatId("-1001672871308");
