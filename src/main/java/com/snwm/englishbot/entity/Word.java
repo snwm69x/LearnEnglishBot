@@ -3,7 +3,8 @@ package com.snwm.englishbot.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.entity.enums.WordType;
-import com.snwm.englishbot.utils.AnswerConverter;
+import com.snwm.englishbot.utils.TranslateConverter;
+
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -28,12 +29,11 @@ public class Word {
     private String word;
 
     @Column
-    @Convert(converter = AnswerConverter.class)
+    @Convert(converter = TranslateConverter.class)
     @NotBlank(message = "Translation cannot be empty")
     private List<String> translation;
 
     @Column
-    @NotBlank(message = "Transcription cannot be empty")
     private String transcription;
 
     @ManyToMany(fetch = FetchType.EAGER,
