@@ -2,6 +2,7 @@ package com.snwm.englishbot.bot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -118,9 +119,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 handleAdminMessage(update.getMessage());
             }
 
-            // if (update.getMessage().getText().equals("Рейтинг 🏆")) {
-            // handleRatingCommand(update.getMessage());
-            // }
+            if (update.getMessage().getText().equals("Рейтинг 🏆")) {
+                handleRatingCommand(update.getMessage());
+            }
         }
 
         if (update.hasCallbackQuery()) {
@@ -140,6 +141,26 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             if (update.getCallbackQuery().getData().equals("checksubscription")) {
                 handleUserSubscriptionRespone(update.getCallbackQuery());
             }
+        }
+    }
+
+    private void handleRatingCommand(Message message) {
+        boolean top10 = false;
+        User user = userService.getUserByChatId(message.getChatId());
+        List<User> users = userService.getAllUsers();
+        if(users.indexOf(user) < 10) {
+            top10 = true;
+        }
+        users.sort(Comparator.comparing(User::getRating).reversed());
+        StringBuilder text = new StringBuilder("Рейтинг пользователей:\n");
+        for (int i = 0; i < Math.min(users.size(), 10); i++) {
+            User usr = users.get(i);
+            text.append(i + 1).append(". @").append(usr.getUsername()).append(" - ").append(usr.getRating()).append("\n");
+        }
+        if(top10) {
+            text.append("\n Вы в топ 10 пользователей!");
+        } else {
+            text.append("\n" + "Ваш рейтинг: ").append(user.getRating());
         }
     }
 
@@ -296,6 +317,29 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         String correctAnswer = data[1];
         String userAnswer = data[2];
         if (correctAnswer.equals(userAnswer)) {
+            switch (user.getWordLevel()) {
+                case A1:
+                    user.setRating(user.getRating() + 1);
+                    break;
+                case A2:
+                    user.setRating(user.getRating() + 2);
+                    break;
+                case B1:
+                    user.setRating(user.getRating() + 3);
+                    break;
+                case B2:
+                    user.setRating(user.getRating() + 4);
+                    break;
+                case C1:
+                    user.setRating(user.getRating() + 5);
+                    break;
+                case C2:
+                    user.setRating(user.getRating() + 6);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
+            }
+            user.setRating(user.getRating() + 1);
             userWordStatsService.updateWordStats(user, word, true);
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -319,6 +363,28 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         } else {
+            switch (user.getWordLevel()) {
+                case A1:
+                    user.setRating(user.getRating() - 1);
+                    break;
+                case A2:
+                    user.setRating(user.getRating() - 2);
+                    break;
+                case B1:
+                    user.setRating(user.getRating() - 3);
+                    break;
+                case B2:
+                    user.setRating(user.getRating() - 4);
+                    break;
+                case C1:
+                    user.setRating(user.getRating() - 5);
+                    break;
+                case C2:
+                    user.setRating(user.getRating() - 6);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
+            }
             userWordStatsService.updateWordStats(user, word, false);
             EditMessageText editMessageText = new EditMessageText();
             editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
