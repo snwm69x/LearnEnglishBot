@@ -88,7 +88,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 && !update.getMessage().getText().equals("Новое слово 💬")
                 && !update.getMessage().getText().equals("Статистика 🔄")
                 && !update.getMessage().getText().equals("Выбрать сложность 📊")
-                && !update.getMessage().getText().equals("/admin")) {
+                && !update.getMessage().getText().equals("/admin")
+                && !update.getMessage().getText().equals("Рейтинг 🏆")) {
             handleUnknownCommand(update.getMessage());
         }
 
@@ -339,7 +340,6 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 default:
                     throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
             }
-            user.setRating(user.getRating() + 1);
             userWordStatsService.updateWordStats(user, word, true);
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -408,6 +408,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         }
+        userService.saveUser(user);
     }
 
     private void handleStatsCommand(Message message) {
