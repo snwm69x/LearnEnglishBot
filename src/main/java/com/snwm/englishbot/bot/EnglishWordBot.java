@@ -163,6 +163,16 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         } else {
             text.append("\n" + "Ваш рейтинг: ").append(user.getRating());
         }
+        SendMessage msg = SendMessage.builder()
+                            .chatId(message.getChatId().toString())
+                            .text(text.toString())
+                            .build();
+        try {
+            execute(msg);
+        } catch (TelegramApiException e) {
+            System.out.println("error while sending rationg message");
+            e.printStackTrace();
+        }
     }
 
     private void handleAdminMessage(Message message) {
