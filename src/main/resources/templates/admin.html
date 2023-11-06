@@ -1,159 +1,147 @@
-<!-- FILEPATH: /c:/programming/snwm/LearnEnglishBot/src/main/resources/templates/admin.html -->
+<!doctype html>
+<html lang="ru">
 
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Admin Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
-    <style>
-      .nav-link {
-        color: #fff;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-      }
-      .user {
-        position: absolute;
-        left: 0%;
-        bottom: 10%;
-        width: 100%;
-        padding: 10px 0;
-        text-align: center;
-      }
-      .nav-link span {
-        margin-right: 10px;
-      }
-      .nav-link:hover {
-        color: #fff;
-        text-decoration: none;
-      }
-      .nav-link.active {
-        color: #fff;
-        text-decoration: none;
-      }
-      .nav-item {
-        list-style-type: none;
-        padding: 10px 0;
-      }
-      .sidebar {
-        position: fixed;
-        top: 0;
-        width: 200px;
-        bottom: 0;
-        left: 0;
-        z-index: 100;
-        padding: 48px 0 0;
-        box-shadow: inset -1px 0 0 #8774e1;
-      }
-      .sidebar-sticky {
-        position: relative;
-        top: 0;
-        height: calc(100vh - 48px);
-        padding-top: .5rem;
-        overflow-x: hidden;
-        overflow-y: auto;
-      }
-      .sidebar .nav-link {
-        font-weight: 500;
-        color: #fff;
-      }
-      .sidebar .nav-link .feather {
-        margin-right: 4px;
-        color: #999;
-      }
-      .sidebar .nav-link.active {
-        color: #007bff;
-      }
-      .sidebar .nav-link:hover .feather,
-      .sidebar .nav-link.active .feather {
-        color: inherit;
-      }
-      .sidebar-heading {
-        font-size: .75rem;
-        text-transform: uppercase;
-      }
-      [role="main"] {
-        padding-top: 133px;
-      }
-      @media (min-width: 768px) {
-        .sidebar {
-          padding-top: 112px;
-        }
-        [role="main"] {
-          padding-top: 64px;
-        }
-      }
-      body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #252525;
-        color: #fff;
-      }
-    </style>
-  </head>
-  <body>
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-      <a class="navbar-brand col-md-5 col-lg-4 mr-0 px-3" style="font-weight: bold;">LearnEnglishBot</a>
-      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+<head>
+  <!-- Обязательные метатеги -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+
+  <title>Dashboard: Home</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+    }
+
+    .card {
+      background-color: #f8f9fa;
+      color: #333;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+      background-color: #6c757d38;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">EnglishWordBot</a>
+      <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+        aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-    </nav>
-
-    <div class="container-fluid">
-      <div class="row">
-        <nav id="sidebarMenu" class="col-md-5 col-lg-4 d-md-block bg-light sidebar collapse">
-          <div class="sidebar-sticky pt-3">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link" href="/users">
-                  <span data-feather="users"></span>
-                  Пользователи
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/words">
-                  <span data-feather="book"></span>
-                  Слова
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/newsletter">
-                  <span data-feather="send"></span>
-                  Рассылка
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/settings">
-                  <span data-feather="settings"></span>
-                  Настройки
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/logout">
-                  <span data-feather="log-out"></span>
-                  Выход
-                </a>
-              </li>
-              <div class="user">
-                <li class="nav-item">
-                  <span class="nav-link">Logged as <span th:text="${user.getUsername()}"></span> with role <span th:text="${user.getUserType()}"></span></span>
-                </li>
-              </div>
+      <div class="collapse navbar-collapse" id="collapsibleNavId">
+        <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin" aria-current="page"><i class="bi bi-house"></i> Home <span
+                class="visually-hidden">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/users"><i class="bi bi-people"></i> Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/newsletter"><i class="bi bi-chat-left-dots"></i> Newsletter</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="wordsDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-file-earmark-word"></i> Words
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="wordsDropdown">
+              <li><a class="dropdown-item" href="/words/add">Add words</a></li>
+              <li><a class="dropdown-item" href="/words/find">Find words</a></li>
             </ul>
-          </div>
-        </nav>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/settings">
+              <i class="bi bi-gear-wide-connected"></i>
+              Settings
+            </a>
+          </li>
+        </ul>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle"></i>
+            Имя пользователя
+          </a>
 
-        <main role="main" class="col-md-7 ml-sm-auto col-lg-8 px-md-4">
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"></div>      
-        </main>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Профиль</a></li>
+            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="/logout">Выход</a></li>
+          </ul>
+        </div>
       </div>
     </div>
+  </nav>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script>
-      feather.replace()
-    </script>
-  </body>
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <div class="card">
+          <div class="card-header">
+            Состояние бота
+          </div>
+          <div class="card-body">
+            <p class="card-text">Бот работает</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Время работы: <span th:text="${uptime}"></span></li>
+              <li class="list-group-item">Обработано сообщений: <span th:text="${handledmessages}"></span></li>
+              <li class="list-group-item">Активных пользователей: <span th:text="${allusers}"></span></< /li>
+              <li class="list-group-item">Ошибок: <span th:text="${errors}"></span></li>
+              <li class="list-group-item">Среднее время ответа: <span th:text="${averageresponsetime}"></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 mb-4">
+        <!-- Общая статистика -->
+        <div class="card">
+          <div class="card-header">
+            Общая статистика
+          </div>
+          <div class="card-body">
+            <p class="card-text">Активных пользователей: ?</p>
+            <p class="card-text">Сообщений за день: ?</p>
+            <p class="card-text">Новых пользователей за неделю: <span th:text="${newusers}"></span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 mb-4">
+        <!-- Последние действия -->
+        <div class="card">
+          <div class="card-header">
+            Последние действия
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:each="action : ${recentActions}" th:text="${action}"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <!-- Обязательные метатеги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+
+    <title>Dashboard: Add word</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            color: #333;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #6c757d38;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">EnglishWordBot</a>
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapsibleNavId" aria-controls="collapsibleNavId" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavId">
+                <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" aria-current="page"><i class="bi bi-house"></i> Home <span
+                                class="visually-hidden">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-chat-left-dots"></i> Newsletter</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="wordsDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-word"></i> Words
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="wordsDropdown">
+                            <li><a class="dropdown-item" href="#">Add words</a></li>
+                            <li><a class="dropdown-item" href="#">Find words</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear-wide-connected"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
+                        Имя пользователя
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Профиль</a></li>
+                        <li><a class="dropdown-item" href="#">Настройки</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="/logout">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Карточка добавления слов через форму -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Добавление одного слова</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/words/add-word" method="post">
+                            <div class="form-group mb-3">
+                                <label for="word">Слово:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-type"></i></span>
+                                    <input type="text" class="form-control" id="word" name="word">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="translation">Перевод:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                                    <input type="text" class="form-control" id="translation" name="translation">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="transcription">Транскрипция:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    <input type="text" class="form-control" id="transcription" name="transcription">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="wordLevel">Уровень слова:</label>
+                                <select class="form-control" id="wordLevel" name="wordLevel">
+                                    <option value="A1">A1 - (Beginner)</option>
+                                    <option value="A2">A2 - (Pre-Intermediate)</option>
+                                    <option value="B1">B1 - (Intermediate)</option>
+                                    <option value="B2">B2 - (Upper-Intermediate)</option>
+                                    <option value="C1">C1 - (Advanced)</option>
+                                    <option value="C2">C2 - (Proficiency)</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="wordType">Тип слова:</label>
+                                <select class="form-control" id="wordType" name="wordType">
+                                    <option value="NOUN">NOUN (Существительное)</option>
+                                    <option value="VERB">VERB (Глагол)</option>
+                                    <option value="ADJECTIVE">ADJECTIVE (Прилагательное)</option>
+                                    <option value="ADVERB">ADVERB (Наречие)</option>
+                                    <option value="PREPOSITIONS">PREPOSITIONS (Предлоги)</option>
+                                    <option value="CONJUNCTION">CONJUNCTION (Союз)</option>
+                                    <option value="CONJUNCTION">PHRASE (Фраза)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i>
+                                Добавить</button>
+                        </form>
+                        <div th:if="${message}" class="alert alert-success mt-3" role="alert">
+                            <p th:text="${message}"></p>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Карточка добавления слов через файл -->
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Добавление нескольких слов через файл</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/words/upload-file" method="post" enctype="multipart/form-data" class="mb-3">
+                            <div class="form-group">
+                                <label for="file" class="form-label">Выберите файл:</label>
+                                <input type="file" id="file" name="file" required class="form-control mb-3">
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i>
+                                Добавить</button>
+                        </form>
+                        <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
+                        <div th:if="${success}" class="alert alert-success mt-3" role="alert">
+                            <p th:text="${success}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Блок полезной информации -->
+        <div class="row mt-4">
+            <div class="col-md-6 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Полезная информация</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-0">Добавление одного слова:</h6>
+                        <ul>
+                            <li class="mb-0">Если у слова несколько вариантов перевода, то напиши их без пробела через
+                                ТОЧКУ С ЗАПЯТОЙ (;)</li>
+                            <li class="mb-0">Транскрипцию писать внутри квадратных скобок - []</li>
+                        </ul>
+                        <h6 class="fw-bold mb-0">Добавление нескольких слов через файл:</h6>
+                        <ul>
+                            <li class="mb-0">Каждое поле слова нужно писать с разделяющим знаком (|)</li>
+                            <li class="mb-0">Если у слова несколько вариантов перевода, то напиши их без пробела через
+                                ТОЧКУ С ЗАПЯТОЙ (;)</li>
+                            <li class="mb-0">Транскрипцию писать внутри квадратных скобок - []</li>
+                        </ul>
+                        <p class="mb-0 fw-bold">Пример:</p>
+                        <p class="mb-0">Painkiller|Болеутоляющее;Обезболивающее|[ˈpān-ˌki-lər]|A2|NOUN</p>
+                        <p class="mb-0">Shadow|Тень|[ˈsha-(ˌ)dō]|A2|NOUN</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
