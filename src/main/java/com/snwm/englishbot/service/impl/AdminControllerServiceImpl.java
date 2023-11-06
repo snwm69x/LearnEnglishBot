@@ -52,7 +52,7 @@ public class AdminControllerServiceImpl implements AdminControllerService {
     }
 
     public double getAverageResponseTime() {
-        return (double) totalResponseTime / handledMessages;
+        return (double) totalResponseTime / handledMessages / 1000;
     }
 
     @Override

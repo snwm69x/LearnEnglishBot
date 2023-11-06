@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.entity.enums.WordType;
@@ -32,12 +36,18 @@ public class WordsController {
     }
 
     @GetMapping("/add")
-    public String getWordsAddPage() {
+    public String getWordsAddPage(Model model) {
+        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        model.addAttribute("user", user);
         return "addwords";
     }
 
     @GetMapping("/find")
-    public String getWordsFindPage() {
+    public String getWordsFindPage(Model model) {
+        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        model.addAttribute("user", user);
         return "findwords";
     }
 

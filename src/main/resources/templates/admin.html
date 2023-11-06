@@ -74,12 +74,13 @@
           <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="bi bi-person-circle"></i>
-            Имя пользователя
+            <span th:text="${user.getUsername()}">Имя пользователя</span>
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Профиль</a></li>
-            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li><a class="dropdown-item disabled" href="#"><span th:text="${user.getChatId()}">Id</span></a></li>
+            <li><a class="dropdown-item disabled" href="#"><span th:text="${user.getUserType()}">UserType</span></a>
+            </li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -105,7 +106,8 @@
               <li class="list-group-item">Обработано сообщений: <span th:text="${handledmessages}"></span></li>
               <li class="list-group-item">Активных пользователей: <span th:text="${allusers}"></span></li>
               <li class="list-group-item">Ошибок: <span th:text="${errors}"></span></li>
-              <li class="list-group-item">Среднее время ответа: <span th:text="${averageresponsetime}"></span></li>
+              <li class="list-group-item">Среднее время ответа: <span th:text="${averageresponsetime}"></span> секунд
+              </li>
             </ul>
           </div>
         </div>
