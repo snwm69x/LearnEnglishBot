@@ -1,7 +1,6 @@
 package com.snwm.englishbot.service.impl;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
