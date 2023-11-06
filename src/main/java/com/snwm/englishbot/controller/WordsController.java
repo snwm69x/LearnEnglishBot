@@ -31,9 +31,14 @@ public class WordsController {
         this.wordService = wordService;
     }
 
-    @GetMapping
-    public String getWordsPage() {
-        return "words";
+    @GetMapping("/add")
+    public String getWordsAddPage() {
+        return "addwords";
+    }
+
+    @GetMapping("/find")
+    public String getWordsFindPage() {
+        return "findwords";
     }
 
     @PostMapping("/upload-file")
@@ -84,13 +89,13 @@ public class WordsController {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Failed to upload file. Please try again.");
         }
-        return "redirect:/words";
+        return "redirect:/addwords";
     }
 
     @PostMapping("/add-word")
-    public String addWord(  @RequestParam("word") String word, @RequestParam("translation") String translation,
-                            @RequestParam("transcription") String transcription, @RequestParam("wordLevel") String wordLevel,
-                            @RequestParam("wordType") String wordType, RedirectAttributes redirectAttributes) {
+    public String addWord(@RequestParam("word") String word, @RequestParam("translation") String translation,
+            @RequestParam("transcription") String transcription, @RequestParam("wordLevel") String wordLevel,
+            @RequestParam("wordType") String wordType, RedirectAttributes redirectAttributes) {
 
         Word slovo = new Word();
         slovo.setWord(word);
@@ -104,6 +109,6 @@ public class WordsController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to add word");
         }
-        return "redirect:/words";
+        return "redirect:/addwords";
     }
 }
