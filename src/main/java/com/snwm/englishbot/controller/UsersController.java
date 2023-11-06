@@ -39,7 +39,7 @@ public class UsersController {
     public String getUsersPage(Model model) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        model.addAttribute("user", user);
+        model.addAttribute("admin", user);
         return "users";
     }
 
