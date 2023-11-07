@@ -137,11 +137,11 @@
         <ul class="pagination">
             <li class="page-item" th:class="${wordPage.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"
-                    th:href="@{/find(page=${wordPage.getNumber()-1}, size=${wordPage.getSize()})}">Previous</a>
+                    th:href="@{/words/find(page=${wordPage.getNumber()-1}, size=${wordPage.getSize()})}">Previous</a>
             </li>
             <li class="page-item" th:class="${wordPage.isLast() ? 'disabled' : ''}">
                 <a class="page-link"
-                    th:href="@{/find(page=${wordPage.getNumber()+1}, size=${wordPage.getSize()})}">Next</a>
+                    th:href="@{/words/find(page=${wordPage.getNumber()+1}, size=${wordPage.getSize()})}">Next</a>
             </li>
         </ul>
     </nav>
