@@ -135,11 +135,11 @@
 
     <nav class="container mt-4">
         <ul class="pagination">
-            <li class="page-item" th:class="${wordPage.getFirst() ? 'disabled' : ''}">
+            <li class="page-item" th:class="${wordPage.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"
                     th:href="@{/find(page=${wordPage.getNumber()-1}, size=${wordPage.getSize()})}">Previous</a>
             </li>
-            <li class="page-item" th:class="${wordPage.getLast() ? 'disabled' : ''}">
+            <li class="page-item" th:class="${wordPage.isLast() ? 'disabled' : ''}">
                 <a class="page-link"
                     th:href="@{/find(page=${wordPage.getNumber()+1}, size=${wordPage.getSize()})}">Next</a>
             </li>
