@@ -47,10 +47,15 @@ public class WordsController {
     }
 
     @GetMapping("/find")
-    public String getWordsFindPage(Model model) {
+    public String getWordsFindPage(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         model.addAttribute("user", user);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Word> wordPage = wordService.getAllWords(pageable);
+        model.addAttribute("wordPage", wordPage);
         return "findwords";
     }
 
