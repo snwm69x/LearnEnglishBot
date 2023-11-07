@@ -150,11 +150,11 @@
         <ul class="pagination">
             <li class="page-item" th:class="${users != null && users.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"
-                    th:href="${search != null && !search.isEmpty() ? @{/users/search(search=${search}, page=${users.getNumber()-1}, size=${users.getSize()})} : @{/users(page=${users.getNumber()-1}, size=${users.getSize()})}}">Previous</a>
+                    th:href="'/users' + (search != null && !search.isEmpty() ? '/search?search=' + search + '&page=' + (users.getNumber()-1) + '&size=' + users.getSize() : '?page=' + (users.getNumber()-1) + '&size=' + users.getSize())">Previous</a>
             </li>
             <li class="page-item" th:class="${users != null && users.isLast() ? 'disabled' : ''}">
                 <a class="page-link"
-                    th:href="${search != null && !search.isEmpty() ? @{/users/search(search=${search}, page=${users.getNumber()+1}, size=${users.getSize()})} : @{/users(page=${users.getNumber()+1}, size=${users.getSize()})}}">Next</a>
+                    th:href="'/users' + (search != null && !search.isEmpty() ? '/search?search=' + search + '&page=' + (users.getNumber()+1) + '&size=' + users.getSize() : '?page=' + (users.getNumber()+1) + '&size=' + users.getSize())">Next</a>
             </li>
         </ul>
     </nav>
