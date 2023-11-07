@@ -61,6 +61,9 @@ public class UsersController {
         } else {
             users = userService.getUserByUsername(search, pageable);
         }
+        if (users == null) {
+            users = Page.empty(); // create an empty page
+        }
         Map<User, UserStatsSummary> userstats = new HashMap<>();
         for (User user : users) {
             List<UserWordStats> userWordStats = userWordStatsService.getStatsByUser(user);
