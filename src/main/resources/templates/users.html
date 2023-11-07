@@ -148,13 +148,13 @@
 
     <nav class="container mt-4">
         <ul class="pagination">
-            <li class="page-item" th:class="${users.isFirst() ? 'disabled' : ''}">
+            <li class="page-item" th:class="${users != null && users.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"
                     th:href="@{/users/search(search=${search}, page=${users.getNumber()-1}, size=${users.getSize()})}">Previous</a>
             </li>
-            <li class="page-item" th:class="${users.isLast() ? 'disabled' : ''}">
-                <a class="page-link"
-                    th:href="@{/users/search(search=${search}, page=${users.getNumber()+1}, size=${users.getSize()})}">Next</a>
+            <li class="page-item" th:class="${users != null && users.isLast() ? 'disabled' : ''}"></li>
+            <a class="page-link"
+                th:href="@{/users/search(search=${search}, page=${users.getNumber()+1}, size=${users.getSize()})}">Next</a>
             </li>
         </ul>
     </nav>
