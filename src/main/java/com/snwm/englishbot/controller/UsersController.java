@@ -1,7 +1,6 @@
 package com.snwm.englishbot.controller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +37,14 @@ public class UsersController {
         this.userWordStatsService = userWordStatsService;
     }
 
-    @GetMapping
-    public String getUsersPage(Model model) {
-        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        model.addAttribute("admin", user);
-        return "users";
-    }
+    // @GetMapping
+    // public String getUsersPage(Model model) {
+    // Authentication auth = (Authentication)
+    // SecurityContextHolder.getContext().getAuthentication();
+    // User user = (User) auth.getPrincipal();
+    // model.addAttribute("admin", user);
+    // return "users";
+    // }
 
     @GetMapping({ "/", "/search" })
     public String search(@RequestParam(required = false) String search,
