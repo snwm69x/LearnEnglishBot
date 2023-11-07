@@ -37,33 +37,43 @@ public class UsersController {
         this.userWordStatsService = userWordStatsService;
     }
 
-    // @GetMapping
-    // public String getUsersPage(Model model) {
-    // Authentication auth = (Authentication)
-    // SecurityContextHolder.getContext().getAuthentication();
-    // User user = (User) auth.getPrincipal();
-    // model.addAttribute("admin", user);
-    // return "users";
-    // }
-
-    @GetMapping({ "/", "/search" })
-    public String search(@RequestParam(required = false) String search,
+    @GetMapping
+    public String getUsersPage(Model model,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            @RequestParam(defaultValue = "10") int size) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User adminUser = (User) auth.getPrincipal();
         model.addAttribute("admin", adminUser);
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> users;
-        if (search == null || search.isEmpty()) {
-            users = userService.findAll(pageable);
-        } else {
-            users = userService.getUserByUsername(search, pageable);
-        }
+        Page<User> users = userService.findAll(pageable);
         if (users == null) {
             users = Page.empty(); // create an empty page
         }
+        populateUserStats(model, users);
+        model.addAttribute("users", users);
+        return "users";
+    }
+
+    @GetMapping("/search")
+    public String searchUsers(Model model,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        User adminUser = (User) auth.getPrincipal();
+        model.addAttribute("admin", adminUser);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> users = userService.getUserByUsername(search, pageable);
+        if (users == null) {
+            users = Page.empty(); // create an empty page
+        }
+        populateUserStats(model, users);
+        model.addAttribute("users", users);
+        model.addAttribute("search", search);
+        return "users";
+    }
+
+    private void populateUserStats(Model model, Page<User> users) {
         Map<User, UserStatsSummary> userstats = new HashMap<>();
         for (User user : users) {
             List<UserWordStats> userWordStats = userWordStatsService.getStatsByUser(user);
@@ -83,10 +93,7 @@ public class UsersController {
             }
             userstats.put(user, summary);
         }
-        model.addAttribute("users", users);
         model.addAttribute("userstats", userstats);
-        model.addAttribute("search", search);
-        return "users";
     }
 
 }
