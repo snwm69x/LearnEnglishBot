@@ -135,16 +135,13 @@
 
     <nav class="container mt-4">
         <ul class="pagination">
-            <li class="page-item" th:class="${wordPage.first ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/words(page=${wordPage.number-1}, size=${wordPage.size})}">Previous</a>
+            <li class="page-item" th:class="${wordPage.getFirst() ? 'disabled' : ''}">
+                <a class="page-link"
+                    th:href="@{/find(page=${wordPage.getNumber()-1}, size=${wordPage.getSize()})}">Previous</a>
             </li>
-            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, wordPage.totalPages-1)}"
-                th:class="${pageNumber == wordPage.number ? 'active' : ''}">
-                <a class="page-link" th:href="@{/words(page=${pageNumber}, size=${wordPage.size})}"
-                    th:text="${pageNumber + 1}"></a>
-            </li>
-            <li class="page-item" th:class="${wordPage.last ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/words(page=${wordPage.number+1}, size=${wordPage.size})}">Next</a>
+            <li class="page-item" th:class="${wordPage.getLast() ? 'disabled' : ''}">
+                <a class="page-link"
+                    th:href="@{/find(page=${wordPage.getNumber()+1}, size=${wordPage.getSize()})}">Next</a>
             </li>
         </ul>
     </nav>
