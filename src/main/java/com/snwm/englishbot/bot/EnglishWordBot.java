@@ -1,6 +1,8 @@
 package com.snwm.englishbot.bot;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -317,7 +319,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         String correctAnswer = options.get(options.indexOf(word_translation));
         System.out.println("Word: " + word.getWord());
         System.out.println("Word translation: " + word_translation);
-        System.out.println("Options: " + options);
+        System.out.println("Options: " + Arrays.toString(options.toString().getBytes(StandardCharsets.UTF_8)));
         System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
         System.out.println("Size of options: " + options.toString().getBytes().length);
         System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
@@ -358,7 +360,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         String correctAnswer = options.get(options.indexOf(word_name));
         System.out.println("Word: " + word.getWord());
         System.out.println("Word translation: " + word_name);
-        System.out.println("Options: " + options);
+        System.out.println("Options: " + Arrays.toString(options.toString().getBytes(StandardCharsets.UTF_8)));
         System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
         System.out.println("Size of options: " + options.toString().getBytes().length);
         System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
