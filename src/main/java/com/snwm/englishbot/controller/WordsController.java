@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -48,6 +51,25 @@ public class WordsController {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         model.addAttribute("user", user);
+        return "findwords";
+    }
+
+    @GetMapping("/search")
+    public String searchWords(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String query) {
+        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        model.addAttribute("user", user);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Word> wordPage;
+        if (query != null && !query.isEmpty()) {
+            wordPage = wordService.findWord(query, pageable);
+        } else {
+            wordPage = wordService.getAllWords(pageable);
+        }
+        model.addAttribute("wordPage", wordPage);
         return "findwords";
     }
 

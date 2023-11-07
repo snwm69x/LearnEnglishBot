@@ -7,6 +7,9 @@ import com.snwm.englishbot.entity.enums.WordType;
 import com.snwm.englishbot.repository.UserRepository;
 import com.snwm.englishbot.repository.WordRepository;
 import com.snwm.englishbot.service.WordService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -46,7 +49,7 @@ public class WordServiceImpl implements WordService {
     @Override
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
         User user = userRepository.findUserByChatId(id);
-        if(user.getWords().isEmpty()){
+        if (user.getWords().isEmpty()) {
             user.setWords(wordRepository.findByWordLevel(user.getWordLevel()));
         }
         List<Word> words = user.getWords();
@@ -81,5 +84,15 @@ public class WordServiceImpl implements WordService {
     @Override
     public void addWord(Word word) {
         wordRepository.save(word);
+    }
+
+    @Override
+    public Page<Word> getAllWords(Pageable pageable) {
+        return wordRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Word> findWord(String word, Pageable pageable) {
+        return wordRepository.findByWord(word, pageable);
     }
 }

@@ -4,9 +4,13 @@ import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.entity.enums.WordType;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface WordService {
-    
+
     // Получить все слова принадлежащие пользователю.
     List<Word> getAllWordsByUser(Long id);
 
@@ -15,7 +19,8 @@ public interface WordService {
 
     public void set30WordsToUser(Long id, WordLevel wordLevel);
 
-    // Получить случайное слово пользователя и удалить его из списка слов пользователя.
+    // Получить случайное слово пользователя и удалить его из списка слов
+    // пользователя.
     Word getRandomWordByUserChatIdAndDeleteIt(Long id);
 
     // Поиск слова по его ID
@@ -28,4 +33,8 @@ public interface WordService {
     List<Word> getAllWordsByTypeAndLevel(WordType wordType, WordLevel wordLevel);
 
     void addWord(Word word);
+
+    Page<Word> getAllWords(Pageable pageable);
+
+    Page<Word> findWord(String word, Pageable pageable);
 }

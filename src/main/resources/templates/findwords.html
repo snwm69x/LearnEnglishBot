@@ -116,109 +116,42 @@
                         <th>Transcription</th>
                         <th>Word Level</th>
                         <th>Word Type</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Здесь будут результаты поиска -->
-                    <tr th:each="word : ${words}">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <a th:href="@{/words/edit/{id}(id=${word.getId()})}" class="btn btn-primary btn-sm">Edit</a>
-                            <a th:href="@{/words/delete/{id}(id=${word.getId()})}"
-                                class="btn btn-danger btn-sm">Delete</a>
-                        </td>
+                    <tr th:each="word : ${wordPage.content}">
+                        <td th:text="${word.getId()}"></td>
+                        <td th:text="${word.getWord()}"></td>
+                        <td th:text="${word.getTranslation().join(', ')}"></td>
+                        <td th:text="${word.getTranscription()}"></td>
+                        <td th:text="${word.getWordLevel()}"></td>
+                        <td th:text="${word.getWordType()}"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Модальное окно для редактирования -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Word</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Здесь будет форма для редактирования слова -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно для удаления -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Word</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this word?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <nav class="container mt-4">
+        <ul class="pagination">
+            <li class="page-item" th:class="${wordPage.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/words(page=${wordPage.number-1}, size=${wordPage.size})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, wordPage.totalPages-1)}"
+                th:class="${pageNumber == wordPage.number ? 'active' : ''}">
+                <a class="page-link" th:href="@{/words(page=${pageNumber}, size=${wordPage.size})}"
+                    th:text="${pageNumber + 1}"></a>
+            </li>
+            <li class="page-item" th:class="${wordPage.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/words(page=${wordPage.number+1}, size=${wordPage.size})}">Next</a>
+            </li>
+        </ul>
+    </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
-    <script>
-        // Получаем модальные окна
-        var editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-
-        // Получаем кнопки "Edit" и "Delete"
-        var editButtons = document.querySelectorAll('.btn-edit');
-        var deleteButtons = document.querySelectorAll('.btn-delete');
-
-        // Добавляем обработчики событий для кнопок "Edit"
-        editButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                // Получаем данные о слове
-                var wordId = button.getAttribute('data-id');
-                var wordText = button.getAttribute('data-word');
-                var wordTranslation = button.getAttribute('data-translation');
-
-                // Заполняем форму редактирования данными
-                document.getElementById('editWordId').value = wordId;
-                document.getElementById('editWordText').value = wordText;
-                document.getElementById('editWordTranslation').value = wordTranslation;
-
-                editModal.show();
-            });
-        });
-
-        // Добавляем обработчики событий для кнопок "Delete"
-        deleteButtons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                // Получаем ID слова
-                var wordId = button.getAttribute('data-id');
-
-                // Заполняем форму удаления ID слова
-                document.getElementById('deleteWordId').value = wordId;
-
-                deleteModal.show();
-            });
-        });
-    </script>
 </body>
 
 </html>
