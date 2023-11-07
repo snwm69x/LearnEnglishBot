@@ -315,6 +315,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         options.add(word_translation);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_translation));
+        System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
+        System.out.println("Size of options: " + options.toString().getBytes().length);
+        System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
@@ -350,6 +353,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         options.add(word_name);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_name));
+        System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
+        System.out.println("Size of options: " + options.toString().getBytes().length);
+        System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
