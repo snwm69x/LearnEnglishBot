@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -43,16 +46,20 @@ public class UsersController {
         return "users";
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam("search") String search, Model model) {
+    @GetMapping({ "/", "/search" })
+    public String search(@RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User adminUser = (User) auth.getPrincipal();
         model.addAttribute("admin", adminUser);
-        List<User> users = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> users;
         if (search == null || search.isEmpty()) {
-            users = userService.getAllUsers();
+            users = userService.findAll(pageable);
         } else {
-            users = userService.getUserByUsername(search);
+            users = userService.getUserByUsername(search, pageable);
         }
         Map<User, UserStatsSummary> userstats = new HashMap<>();
         for (User user : users) {
@@ -75,6 +82,7 @@ public class UsersController {
         }
         model.addAttribute("users", users);
         model.addAttribute("userstats", userstats);
+        model.addAttribute("search", search);
         return "users";
     }
 

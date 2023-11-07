@@ -4,6 +4,8 @@ import com.snwm.englishbot.entity.User;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 public interface UserService {
@@ -23,4 +25,8 @@ public interface UserService {
     List<User> getAllUsers();
 
     List<User> getUserByUsername(String username);
+
+    Page<User> findAll(Pageable pageable);
+
+    Page<User> getUserByUsername(String username, Pageable pageable);
 }

@@ -4,6 +4,8 @@ import com.snwm.englishbot.entity.enums.UserType;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.snwm.englishbot.entity.User;
@@ -55,5 +57,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Page<User> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<User> getUserByUsername(String username, Pageable pageable) {
+        return userRepository.findByUsername(username, pageable);
     }
 }

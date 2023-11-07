@@ -4,7 +4,6 @@ import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.entity.enums.WordType;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
