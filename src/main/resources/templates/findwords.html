@@ -120,7 +120,7 @@
                 </thead>
                 <tbody>
                     <!-- Здесь будут результаты поиска -->
-                    <tr th:each="word : ${wordPage.content}">
+                    <tr th:each="word : ${wordPage.getContent()}">
                         <td th:text="${word.getId()}"></td>
                         <td th:text="${word.getWord()}"></td>
                         <td th:text="${word.getTranslation().join(', ')}"></td>
