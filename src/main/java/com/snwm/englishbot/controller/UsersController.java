@@ -45,6 +45,9 @@ public class UsersController {
 
     @GetMapping("/search")
     public String search(@RequestParam("search") String search, Model model) {
+        Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
+        User adminUser = (User) auth.getPrincipal();
+        model.addAttribute("admin", adminUser);
         List<User> users = new ArrayList<>();
         if (search == null || search.isEmpty()) {
             users = userService.getAllUsers();
