@@ -31,6 +31,7 @@ public class AdminController {
     public String getAdminPage(Model model) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
+        model.addAttribute("user", user);
         model.addAttribute("uptime", adminControllerServiceImpl.getUptime());
         model.addAttribute("handledmessages", adminControllerServiceImpl.getHandledMessages());
         model.addAttribute("errors", adminControllerServiceImpl.getErrors());
@@ -38,7 +39,6 @@ public class AdminController {
         model.addAttribute("allusers", userService.getAllUsers().size());
         model.addAttribute("recentnews", adminControllerServiceImpl.getRecentNews());
         model.addAttribute("averageresponsetime", adminControllerServiceImpl.getAverageResponseTime());
-        model.addAttribute("user", user);
         return "admin";
     }
 }
