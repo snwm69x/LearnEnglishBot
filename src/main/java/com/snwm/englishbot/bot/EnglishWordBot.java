@@ -59,8 +59,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     @Autowired
     private AdminControllerServiceImpl adminControllerServiceImpl;
 
-    EnglishWordBot(@Value("6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY") String token,
-            @Value("@SykaTrydnoBot") String username) {
+    EnglishWordBot(@Value("${bot.token}") String token,
+            @Value("${bot.username}") String username) {
         this.token = token;
         this.username = username;
     }
