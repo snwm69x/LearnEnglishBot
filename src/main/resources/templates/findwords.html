@@ -123,7 +123,7 @@
                     <tr th:each="word : ${wordPage.getContent()}">
                         <td th:text="${word.getId()}"></td>
                         <td th:text="${word.getWord()}"></td>
-                        <td th:text="${word.getTranslation().join(', ')}"></td>
+                        <td th:text="${T(java.lang.String).join(', ', word.getTranslation())}"></td>
                         <td th:text="${word.getTranscription()}"></td>
                         <td th:text="${word.getWordLevel()}"></td>
                         <td th:text="${word.getWordType()}"></td>
