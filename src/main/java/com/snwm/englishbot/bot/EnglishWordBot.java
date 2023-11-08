@@ -421,7 +421,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             markup.setKeyboard(keyboard);
             AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
-            answerCallbackQuery.setShowAlert(true);
+            answerCallbackQuery.setShowAlert(false);
             answerCallbackQuery.setText("Correct!");
 
             try {
@@ -474,8 +474,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             editMessageText.setReplyMarkup(markup);
             AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
-            answerCallbackQuery.setShowAlert(true);
-            answerCallbackQuery.setText("Correct!");
+            answerCallbackQuery.setShowAlert(false);
+            answerCallbackQuery.setText("Incorrect!");
             try {
                 execute(editMessageText);
                 execute(answerCallbackQuery);
