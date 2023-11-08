@@ -408,7 +408,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setCallbackData(callbackQuery.getData());
-            button.setText("Correct!");
+            button.setText("Правильно");
             EditMessageText editMessageText = new EditMessageText();
             editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
             editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
@@ -422,7 +422,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
             answerCallbackQuery.setShowAlert(false);
-            answerCallbackQuery.setText("Correct!");
+            answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
 
             try {
                 execute(editMessageText);
@@ -466,7 +466,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText("Wrong!");
+            button.setText("Неверно");
             button.setCallbackData(callbackQuery.getData());
             row.add(button);
             keyboard.add(row);
@@ -475,7 +475,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
             answerCallbackQuery.setShowAlert(false);
-            answerCallbackQuery.setText("Incorrect!");
+            answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
             try {
                 execute(editMessageText);
                 execute(answerCallbackQuery);
@@ -539,20 +539,28 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         try {
             ChatMember chatMember = execute(getChatMember);
             if (chatMember.getStatus().equals("left") && user.getUserType().equals(UserType.USER)) {
-                EditMessageText editMessageText = new EditMessageText();
-                editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
-                editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
-                editMessageText.setText("Вы не подписаны на канал @english_in_use_channel");
-                editMessageText.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
-                execute(editMessageText);
+                // EditMessageText editMessageText = new EditMessageText();
+                // editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
+                // editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
+                // editMessageText.setText("Вы не подписаны на канал @english_in_use_channel");
+                // editMessageText.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
+                AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
+                answerCallbackQuery.setText("Вы не подписаны на канал @english_in_use_channel");
+                // execute(editMessageText);
+                execute(answerCallbackQuery);
             } else {
                 user.setUserType(UserType.PREMIUM);
                 userService.saveUser(user);
-                EditMessageText editMessageText = new EditMessageText();
-                editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
-                editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
-                editMessageText.setText("Вы получили права PREMIUM");
-                execute(editMessageText);
+                // EditMessageText editMessageText = new EditMessageText();
+                // editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
+                // editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
+                // editMessageText.setText("Вы получили права PREMIUM");
+                AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
+                answerCallbackQuery.setText("Вы получили права PREMIUM");
+                execute(answerCallbackQuery);
+                // execute(editMessageText);
             }
         } catch (TelegramApiException e) {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
