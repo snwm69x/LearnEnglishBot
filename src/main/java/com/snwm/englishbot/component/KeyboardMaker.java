@@ -12,12 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 @Component
 public class KeyboardMaker {
-    
+
     public ReplyKeyboardMarkup getMainKeyboard() {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(false);
-        List<KeyboardRow> keys= new ArrayList<>();
+        List<KeyboardRow> keys = new ArrayList<>();
         // Добавление кнопок
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
@@ -90,27 +90,27 @@ public class KeyboardMaker {
     }
 
     public InlineKeyboardMarkup getNewWordKeyboard(String correctAnswer, List<String> options, Long wordid) {
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText(options.get(0));
-        button1.setCallbackData("newword:" + correctAnswer + ":" + options.get(0) + ":" + wordid);
-        InlineKeyboardButton button2 = new InlineKeyboardButton();
-        button2.setText(options.get(1));
-        button2.setCallbackData("newword:" + correctAnswer + ":" + options.get(1) + ":" + wordid);
-        InlineKeyboardButton button3 = new InlineKeyboardButton();
-        button3.setText(options.get(2));
-        button3.setCallbackData("newword:" + correctAnswer + ":" + options.get(2) + ":" + wordid);
-        InlineKeyboardButton button4 = new InlineKeyboardButton();
-        button4.setText(options.get(3));
-        button4.setCallbackData("newword:" + correctAnswer + ":" + options.get(3) + ":" + wordid);
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(button1);
-        row1.add(button2);
         List<InlineKeyboardButton> row2 = new ArrayList<>();
-        row2.add(button3);
-        row2.add(button4);
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        for (int i = 0; i < options.size(); i++) {
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(options.get(i));
+            button.setCallbackData("nw:" + correctAnswer + ":" + options.get(i) + ":" + wordid);
+
+            if (i < 2) {
+                row1.add(button);
+            } else {
+                row2.add(button);
+            }
+        }
+
         keyboard.add(row1);
-        keyboard.add(row2);
+        if (!row2.isEmpty()) {
+            keyboard.add(row2);
+        }
+
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;
@@ -129,7 +129,7 @@ public class KeyboardMaker {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup checkIfUserSubscribedToChannel(){
+    public InlineKeyboardMarkup checkIfUserSubscribedToChannel() {
         InlineKeyboardButton button1 = new InlineKeyboardButton();
         button1.setText("Проверить подписку!");
         button1.setCallbackData("checksubscription");

@@ -2,11 +2,11 @@ package com.snwm.englishbot.bot;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
@@ -146,7 +146,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
         if (update.hasCallbackQuery()) {
             // Обработка ответа на команду "Новое слово"
-            if (update.getCallbackQuery().getData().startsWith("newword")) {
+            if (update.getCallbackQuery().getData().startsWith("nw")) {
                 logger.info("Handling user answer for command New Word by User: {}",
                         update.getCallbackQuery().getFrom().getUserName());
                 handleNewWordCommandResponse(update.getCallbackQuery());
@@ -318,6 +318,27 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         options.add(word_translation);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_translation));
+
+        while ((correctAnswer + options.toString()).getBytes(StandardCharsets.UTF_8).length > 64) {
+            String longestOption = options.stream()
+                    .filter(option -> !option.equals(correctAnswer))
+                    .max(Comparator.comparingInt(String::length))
+                    .orElse(null);
+
+            if (longestOption != null) {
+                options.remove(longestOption);
+            } else {
+                List<String> incorrectOptions = options.stream()
+                        .filter(option -> !option.equals(correctAnswer))
+                        .collect(Collectors.toList());
+
+                if (!incorrectOptions.isEmpty()) {
+                    String randomOption = incorrectOptions.get(new Random().nextInt(incorrectOptions.size()));
+                    options.remove(randomOption);
+                }
+            }
+        }
+
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
@@ -354,6 +375,27 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         options.add(word_name);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_name));
+
+        while ((correctAnswer + options.toString()).getBytes(StandardCharsets.UTF_8).length > 64) {
+            String longestOption = options.stream()
+                    .filter(option -> !option.equals(correctAnswer))
+                    .max(Comparator.comparingInt(String::length))
+                    .orElse(null);
+
+            if (longestOption != null) {
+                options.remove(longestOption);
+            } else {
+                List<String> incorrectOptions = options.stream()
+                        .filter(option -> !option.equals(correctAnswer))
+                        .collect(Collectors.toList());
+
+                if (!incorrectOptions.isEmpty()) {
+                    String randomOption = incorrectOptions.get(new Random().nextInt(incorrectOptions.size()));
+                    options.remove(randomOption);
+                }
+            }
+        }
+
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
