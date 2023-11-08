@@ -47,10 +47,14 @@ public class NewsletterServiceImpl implements NewsletterService {
             try {
                 englishWordBot.execute(message);
                 successMessages++;
+                Thread.sleep(1000);
             } catch (TelegramApiException e) {
                 errorMessages.add("Ошибка во время отправки сообщения пользователю: " + usr.getUsername());
                 failedMessages++;
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                // Обработка исключения, если поток был прерван во время сна
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -70,10 +74,14 @@ public class NewsletterServiceImpl implements NewsletterService {
                         .build();
                 englishWordBot.execute(sendPhoto);
                 successMessages++;
+                Thread.sleep(1000);
             } catch (TelegramApiException | IOException e) {
                 errorMessages.add("Ошибка во время отправки сообщения пользователю: " + user.getUsername());
                 failedMessages++;
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                // Обработка исключения, если поток был прерван во время сна
+                Thread.currentThread().interrupt();
             }
 
         }
@@ -96,10 +104,14 @@ public class NewsletterServiceImpl implements NewsletterService {
                         .build();
                 englishWordBot.execute(sendPhoto);
                 successMessages++;
+                Thread.sleep(1000);
             } catch (TelegramApiException | IOException e) {
                 errorMessages.add("Ошибка во время отправки сообщения пользователю: " + user.getUsername());
                 failedMessages++;
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                // Обработка исключения, если поток был прерван во время сна
+                Thread.currentThread().interrupt();
             }
         }
     }

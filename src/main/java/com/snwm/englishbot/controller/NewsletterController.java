@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.service.UserService;
@@ -29,46 +30,47 @@ public class NewsletterController {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         model.addAttribute("user", user);
+        model.addAttribute("activeusers", userService.getAllUsers().size());
         return "newsletter";
     }
 
     @PostMapping("/sendmessage")
     public String sendNewsletter(@RequestParam(value = "image", required = false) MultipartFile image,
             @RequestParam(value = "text", required = false) String text,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
         if ((image == null || image.isEmpty()) && (text == null || text.trim().isEmpty())) {
-            model.addAttribute("error", "You must provide at least an image or text.");
-            return "newsletter";
+            redirectAttributes.addFlashAttribute("error", "You must provide at least an image or text.");
+            return "redirect:/newsletter";
         }
         if (image == null || image.isEmpty()) {
             newsletterServiceImpl.runPromotion(text);
-            model.addAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
-            model.addAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
-            model.addAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
-            model.addAttribute("message", "Newsletter sent successfully.");
-            model.addAttribute("users", userService.getAllUsers().size());
-            return "newsletter";
+            redirectAttributes.addFlashAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
+            redirectAttributes.addFlashAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
+            redirectAttributes.addFlashAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
+            redirectAttributes.addFlashAttribute("message", "Newsletter sent successfully.");
+            redirectAttributes.addFlashAttribute("activeusers", userService.getAllUsers().size());
+            return "redirect:/newsletter";
         }
         if (text == null || text.trim().isEmpty()) {
             newsletterServiceImpl.runPromotion(image);
-            model.addAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
-            model.addAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
-            model.addAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
-            model.addAttribute("message", "Newsletter sent successfully.");
-            model.addAttribute("users", userService.getAllUsers().size());
-            return "newsletter";
+            redirectAttributes.addFlashAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
+            redirectAttributes.addFlashAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
+            redirectAttributes.addFlashAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
+            redirectAttributes.addFlashAttribute("message", "Newsletter sent successfully.");
+            redirectAttributes.addFlashAttribute("activeusers", userService.getAllUsers().size());
+            return "redirect:/newsletter";
         }
         if (text != null && image != null) {
             newsletterServiceImpl.runPromotion(text, image);
-            model.addAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
-            model.addAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
-            model.addAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
-            model.addAttribute("message", "Newsletter sent successfully.");
-            model.addAttribute("users", userService.getAllUsers().size());
-            return "newsletter";
+            redirectAttributes.addFlashAttribute("successMsg", newsletterServiceImpl.getSuccessMessages());
+            redirectAttributes.addFlashAttribute("failedMsg", newsletterServiceImpl.getFailedMessages());
+            redirectAttributes.addFlashAttribute("errorMessages", newsletterServiceImpl.getErrorMessages());
+            redirectAttributes.addFlashAttribute("message", "Newsletter sent successfully.");
+            redirectAttributes.addFlashAttribute("activeusers", userService.getAllUsers().size());
+            return "redirect:/newsletter";
         }
-        model.addAttribute("message", "Newsletter sent successfully.");
-        return "newsletter";
+        redirectAttributes.addFlashAttribute("message", "Newsletter sent successfully.");
+        return "redirect:/newsletter";
     }
 
 }
