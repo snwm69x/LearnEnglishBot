@@ -94,58 +94,51 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Информация о боте -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Bot Information</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Bot token:</strong> <span th:text="${botToken}">Your Bot Name</span></p>
-                <p><strong>Bot username:</strong> <span th:text="${botUsername}">@your_bot_username</span></p>
-            </div>
-        </div>
-
-        <!-- Настройки бота -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Bot Settings</h5>
-            </div>
-            <div class="card-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="welcomeMessage" class="form-label">Welcome Message</label>
-                        <input type="text" class="form-control" id="welcomeMessage">
+        <div class="row">
+            <!-- Информация о боте -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Bot Information</h5>
                     </div>
-                    <!-- Добавьте здесь другие настройки -->
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
+                    <div class="card-body">
+                        <p><strong>Bot token:</strong> <span th:text="${botToken}">Your Bot Name</span></p>
+                        <p><strong>Bot username:</strong> <span th:text="${botUsername}">@your_bot_username</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Настройки бота -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Bot Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="welcomeMessage" class="form-label">Welcome Message</label>
+                                <input type="text" class="form-control" id="welcomeMessage">
+                            </div>
+                            <!-- Добавьте здесь другие настройки -->
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Other Settings</h5>
+                    </div>
+                    <!-- ... -->
+                </div>
             </div>
         </div>
 
-        <!-- Управление пользователями -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>User Management</h5>
-            </div>
-            <div class="card-body">
-                <!-- Здесь может быть таблица пользователей с кнопками для управления -->
-            </div>
-        </div>
-
-        <!-- Управление контентом -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Content Management</h5>
-            </div>
-            <div class="card-body">
-                <!-- Здесь может быть форма для добавления нового контента -->
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+            crossorigin="anonymous"></script>
 </body>
 
 </html>

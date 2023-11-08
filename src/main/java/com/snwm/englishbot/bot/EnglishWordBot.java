@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -277,6 +278,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleNewWordCommand(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         User user = userService.getUserByChatId(message.getChatId());
         // Если у пользователя не выбрана сложность, предлагает ее выбрать
         if (user.getWordLevel().equals(null)) {
