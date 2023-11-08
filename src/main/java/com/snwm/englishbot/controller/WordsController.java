@@ -126,7 +126,7 @@ public class WordsController {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Failed to upload file. Please try again.");
         }
-        return "redirect:/addwords";
+        return "redirect:/words/add";
     }
 
     @PostMapping("/add-word")
@@ -146,6 +146,6 @@ public class WordsController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to add word");
         }
-        return "redirect:/addwords";
+        return "redirect:/words/add";
     }
 }
