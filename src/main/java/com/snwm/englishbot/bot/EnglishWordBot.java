@@ -309,9 +309,17 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<String> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).getWord().equals(word.getWord())) {
-                options.add(words.get(randomIndex).getTranslation()
-                        .get((int) (Math.random() * words.get(randomIndex).getTranslation().size())));
+            String potentialOption = words.get(randomIndex).getTranslation()
+                    .get((int) (Math.random() * words.get(randomIndex).getTranslation().size()));
+
+            int currentSize = options.toString().getBytes(StandardCharsets.UTF_8).length;
+            int potentialOptionSize = potentialOption.getBytes(StandardCharsets.UTF_8).length;
+            int correctAnswerSize = word_translation.getBytes(StandardCharsets.UTF_8).length;
+
+            if (currentSize + potentialOptionSize + correctAnswerSize > 63) {
+                options.clear();
+            } else if (!words.get(randomIndex).getWord().equals(word.getWord())) {
+                options.add(potentialOption);
                 words.remove(randomIndex);
             }
         }
@@ -352,8 +360,16 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<String> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).getWord().equals(word_name)) {
-                options.add(words.get(randomIndex).getWord());
+            String potentialOption = words.get(randomIndex).getWord();
+
+            int currentSize = options.toString().getBytes(StandardCharsets.UTF_8).length;
+            int potentialOptionSize = potentialOption.getBytes(StandardCharsets.UTF_8).length;
+            int correctAnswerSize = word_name.getBytes(StandardCharsets.UTF_8).length;
+
+            if (currentSize + potentialOptionSize + correctAnswerSize > 63) {
+                options.clear();
+            } else if (!potentialOption.equals(word_name)) {
+                options.add(potentialOption);
                 words.remove(randomIndex);
             }
         }
