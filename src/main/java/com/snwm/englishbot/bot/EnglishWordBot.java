@@ -175,6 +175,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleRatingCommand(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         boolean top10 = false;
         User user = userService.getUserByChatId(message.getChatId());
         List<User> users = userService.getAllUsers();
@@ -208,6 +217,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleAdminMessage(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         User user = userService.getUserByChatId(message.getChatId());
         if (user.getUserType().equals(UserType.ADMIN)) {
             SendMessage msg = SendMessage.builder()
@@ -239,6 +257,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleStartCommand(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         User user = userService.getUserByChatId(message.getChatId());
         if (user == null) {
             adminControllerServiceImpl.setNewUsers(adminControllerServiceImpl.getNewUsers() + 1);
@@ -262,6 +289,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleUnknownCommand(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         logger.info("Unknown command by User: {} msg: {}", message.getFrom().getUserName(), message.getText());
         SendMessage unknownMessage = new SendMessage();
         unknownMessage.setChatId(message.getChatId().toString());
@@ -688,6 +724,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     }
 
     private void handleChooseDifficult(Message message) {
+        SendChatAction sendChatAction = SendChatAction.builder()
+                .chatId(message.getChatId().toString())
+                .action("typing")
+                .build();
+        try {
+            execute(sendChatAction);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         SendMessage startMessage = new SendMessage();
         startMessage.setChatId(message.getChatId().toString());
         startMessage.setText("Выбери сложность:");
