@@ -328,7 +328,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             execute(newWordMessage);
         } catch (TelegramApiException e) {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
-            System.out.println("error while sending msg in method findTranslation");
+            System.out.println("Error while sending message in method findTranslation. Word: " + word.getWord()
+                    + " Options: " + options.toString());
             e.printStackTrace();
         }
         adminControllerServiceImpl.endMessageProcessing();
@@ -365,7 +366,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             execute(newWordMessage);
         } catch (TelegramApiException e) {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
-            System.out.println("error while sending msg in method findWordByTranslation");
+            System.out.println("Error while sending message in method findWordByTranslation. Word: " + word.getWord()
+                    + " Options: " + options.toString());
             e.printStackTrace();
         }
         adminControllerServiceImpl.endMessageProcessing();
