@@ -25,6 +25,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -552,15 +553,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             } else {
                 user.setUserType(UserType.PREMIUM);
                 userService.saveUser(user);
-                // EditMessageText editMessageText = new EditMessageText();
-                // editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
-                // editMessageText.setMessageId(callbackQuery.getMessage().getMessageId());
-                // editMessageText.setText("Вы получили права PREMIUM");
+                DeleteMessage deleteMessage = new DeleteMessage();
+                deleteMessage.setChatId(callbackQuery.getMessage().getChatId().toString());
+                deleteMessage.setMessageId(callbackQuery.getMessage().getMessageId());
                 AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
                 answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
                 answerCallbackQuery.setText("Вы получили права PREMIUM");
+                execute(deleteMessage);
                 execute(answerCallbackQuery);
-                // execute(editMessageText);
             }
         } catch (TelegramApiException e) {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
@@ -581,6 +581,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 .chatId(callbackQuery.getMessage().getChatId().toString())
                 .text("Выбран уровень сложности: " + data[1])
                 .build();
+        AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .text("Выбран уровень сложности: " + data[1])
+                .build();
         msg.setReplyMarkup(keyboardMaker.getMainKeyboard());
         EditMessageReplyMarkup editMessageReplyMarkup = new EditMessageReplyMarkup();
         editMessageReplyMarkup.setChatId(callbackQuery.getMessage().getChatId().toString());
@@ -594,7 +598,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
-                    execute(msg);
+                    execute(answerCallbackQuery);
                     execute(editMessageReplyMarkup);
                 }
                 break;
@@ -604,7 +608,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
-                    execute(msg);
+                    execute(answerCallbackQuery);
                     execute(editMessageReplyMarkup);
                 }
                 break;
@@ -614,7 +618,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     user.setWordLevel(wordLevel);
                     userService.saveUser(user);
                     wordService.setAllWordToUser(callbackQuery.getMessage().getChatId(), wordLevel);
-                    execute(msg);
+                    execute(answerCallbackQuery);
                     execute(editMessageReplyMarkup);
                 }
                 break;
@@ -628,7 +632,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 } else {
                     SendMessage msg2 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
                     msg2.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg2);
@@ -644,7 +648,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 } else {
                     SendMessage msg3 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
                     msg3.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg3);
@@ -660,7 +664,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 } else {
                     SendMessage msg4 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \n Чтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
                             .build();
                     msg4.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg4);
