@@ -302,27 +302,24 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private void findTranslation(Message message) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
-        String word_translation = word.getTranslation().get((int) (Math.random() * word.getTranslation().size()));
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
-        List<String> options = new ArrayList<>();
+        List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).getWord().equals(word.getWord())) {
-                options.add(words.get(randomIndex).getTranslation()
-                        .get((int) (Math.random() * words.get(randomIndex).getTranslation().size())));
+            if (!words.get(randomIndex).equals(word)) {
+                options.add(words.get(randomIndex));
                 words.remove(randomIndex);
             }
         }
-        options.add(word_translation);
+        options.add(word);
         Collections.shuffle(options);
-        String correctAnswer = options.get(options.indexOf(word_translation));
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options,
-                word.getId());
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options,
+                false);
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             execute(newWordMessage);
@@ -335,32 +332,30 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         adminControllerServiceImpl.endMessageProcessing();
         adminControllerServiceImpl
                 .recordNews("Новое слово для пользователя: " + message.getFrom().getUserName() + " с ID: "
-                        + message.getChatId() + " is " + word.getWord() + " - " + word_translation);
+                        + message.getChatId() + " is " + word.getWord() + " - "
+                        + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())));
     }
 
     private void findWordByTranslation(Message message) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
-        String word_name = word.getWord();
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
-        List<String> options = new ArrayList<>();
+        List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).getWord().equals(word_name)) {
-                options.add(words.get(randomIndex).getWord());
+            if (!words.get(randomIndex).equals(word)) {
+                options.add(words.get(randomIndex));
                 words.remove(randomIndex);
             }
         }
-        options.add(word_name);
+        options.add(word);
         Collections.shuffle(options);
-        String correctAnswer = options.get(options.indexOf(word_name));
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
         newWordMessage.setChatId(message.getChatId().toString());
         newWordMessage.setText(
                 "<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(correctAnswer, options,
-                word.getId());
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options, true);
         newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             execute(newWordMessage);
@@ -373,16 +368,16 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         adminControllerServiceImpl.endMessageProcessing();
         adminControllerServiceImpl
                 .recordNews("Новое слово для пользователя: " + message.getFrom().getUserName() + " с ID: "
-                        + message.getChatId() + " is " + word_name + " - "
+                        + message.getChatId() + " is " + word.getWord() + " - "
                         + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())));
     }
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
         String[] data = callbackQuery.getData().split(":");
         User user = userService.getUserByChatId(callbackQuery.getMessage().getChatId());
-        Word word = wordService.getWordById(Long.parseLong(data[3]));
-        String correctAnswer = data[1];
-        String userAnswer = data[2];
+        Word word = wordService.getWordById(Long.parseLong(data[1]));
+        Long correctAnswer = Long.parseLong(data[1]);
+        Long userAnswer = Long.parseLong(data[2]);
         if (correctAnswer.equals(userAnswer)) {
             switch (user.getWordLevel()) {
                 case A1:

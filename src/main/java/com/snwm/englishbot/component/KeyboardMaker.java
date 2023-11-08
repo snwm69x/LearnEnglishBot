@@ -10,6 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import com.snwm.englishbot.entity.Word;
+
 @Component
 public class KeyboardMaker {
 
@@ -89,15 +91,21 @@ public class KeyboardMaker {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getNewWordKeyboard(String correctAnswer, List<String> options, Long wordid) {
+    public InlineKeyboardMarkup getNewWordKeyboard(Word word, List<Word> options, boolean isTranslated) {
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
         for (int i = 0; i < options.size(); i++) {
+            Word currentWord = options.get(i);
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(options.get(i));
-            button.setCallbackData("nw:" + correctAnswer + ":" + options.get(i) + ":" + wordid);
+            if (isTranslated) {
+                button.setText(currentWord.getWord());
+            } else {
+                button.setText(
+                        currentWord.getTranslation().get((int) (Math.random() * currentWord.getTranslation().size())));
+            }
+            button.setCallbackData("nw:" + word.getId() + ":" + currentWord.getId());
 
             if (i < 2) {
                 row1.add(button);
