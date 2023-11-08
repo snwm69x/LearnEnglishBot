@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -418,8 +419,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             row.add(button);
             keyboard.add(row);
             markup.setKeyboard(keyboard);
+            AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+            answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
+            answerCallbackQuery.setShowAlert(true);
+            answerCallbackQuery.setText("Correct!");
+
             try {
                 execute(editMessageText);
+                execute(answerCallbackQuery);
             } catch (TelegramApiException e) {
                 adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
@@ -465,8 +472,13 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             keyboard.add(row);
             markup.setKeyboard(keyboard);
             editMessageText.setReplyMarkup(markup);
+            AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+            answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
+            answerCallbackQuery.setShowAlert(true);
+            answerCallbackQuery.setText("Correct!");
             try {
                 execute(editMessageText);
+                execute(answerCallbackQuery);
             } catch (TelegramApiException e) {
                 adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
