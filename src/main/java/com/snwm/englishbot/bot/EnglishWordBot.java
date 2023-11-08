@@ -309,29 +309,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<String> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            String potentialOption = words.get(randomIndex).getTranslation()
-                    .get((int) (Math.random() * words.get(randomIndex).getTranslation().size()));
-
-            int currentSize = options.toString().getBytes(StandardCharsets.UTF_8).length;
-            int potentialOptionSize = potentialOption.getBytes(StandardCharsets.UTF_8).length;
-            int correctAnswerSize = word_translation.getBytes(StandardCharsets.UTF_8).length;
-
-            if (currentSize + potentialOptionSize + correctAnswerSize > 63) {
-                options.clear();
-            } else if (!words.get(randomIndex).getWord().equals(word.getWord())) {
-                options.add(potentialOption);
+            if (!words.get(randomIndex).getWord().equals(word.getWord())) {
+                options.add(words.get(randomIndex).getTranslation()
+                        .get((int) (Math.random() * words.get(randomIndex).getTranslation().size())));
                 words.remove(randomIndex);
             }
         }
         options.add(word_translation);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_translation));
-        System.out.println("Word: " + word.getWord());
-        System.out.println("Word translation: " + word_translation);
-        System.out.println("Options: " + Arrays.toString(options.toString().getBytes(StandardCharsets.UTF_8)));
-        System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
-        System.out.println("Size of options: " + options.toString().getBytes().length);
-        System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
@@ -360,28 +346,14 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<String> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            String potentialOption = words.get(randomIndex).getWord();
-
-            int currentSize = options.toString().getBytes(StandardCharsets.UTF_8).length;
-            int potentialOptionSize = potentialOption.getBytes(StandardCharsets.UTF_8).length;
-            int correctAnswerSize = word_name.getBytes(StandardCharsets.UTF_8).length;
-
-            if (currentSize + potentialOptionSize + correctAnswerSize > 63) {
-                options.clear();
-            } else if (!potentialOption.equals(word_name)) {
-                options.add(potentialOption);
+            if (!words.get(randomIndex).getWord().equals(word_name)) {
+                options.add(words.get(randomIndex).getWord());
                 words.remove(randomIndex);
             }
         }
         options.add(word_name);
         Collections.shuffle(options);
         String correctAnswer = options.get(options.indexOf(word_name));
-        System.out.println("Word: " + word.getWord());
-        System.out.println("Word translation: " + word_name);
-        System.out.println("Options: " + Arrays.toString(options.toString().getBytes(StandardCharsets.UTF_8)));
-        System.out.println("Size of correctAnswer: " + correctAnswer.getBytes().length);
-        System.out.println("Size of options: " + options.toString().getBytes().length);
-        System.out.println("Size of word.getId(): " + String.valueOf(word.getId()).getBytes().length);
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
