@@ -255,8 +255,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             logger.error("Error while sending start message: {}", e.getMessage());
         }
         adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl.recordNews("New user: " + message.getFrom().getUserName() + " with chatId: "
-                + message.getChatId() + " joined the bot");
+        adminControllerServiceImpl.recordNews("Новый пользователь: " + message.getFrom().getUserName() + " с ID: "
+                + message.getChatId() + " начал использовать бота");
     }
 
     private void handleUnknownCommand(Message message) {
@@ -270,8 +270,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
             logger.error("Error while sending unknown command message: {}", e.getMessage());
         }
-        adminControllerServiceImpl.recordNews("Unknown command by User: " + message.getFrom().getUserName() + " msg: "
-                + message.getText());
+        adminControllerServiceImpl
+                .recordNews("Неизвестная команда от пользователя: " + message.getFrom().getUserName() + " Сообщение: "
+                        + message.getText());
     }
 
     private void handleNewWordCommand(Message message) {
@@ -339,8 +340,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
         adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl.recordNews("New word for user: " + message.getFrom().getUserName() + " with chatId: "
-                + message.getChatId() + " is " + word.getWord() + " - " + word_translation);
+        adminControllerServiceImpl
+                .recordNews("Новое слово для пользователя: " + message.getFrom().getUserName() + " с ID: "
+                        + message.getChatId() + " is " + word.getWord() + " - " + word_translation);
     }
 
     private void findWordByTranslation(Message message) {
@@ -381,9 +383,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
         adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl.recordNews("New word for user: " + message.getFrom().getUserName() + " with chatId: "
-                + message.getChatId() + " is " + word_name + " - "
-                + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())));
+        adminControllerServiceImpl
+                .recordNews("Новое слово для пользователя: " + message.getFrom().getUserName() + " с ID: "
+                        + message.getChatId() + " is " + word_name + " - "
+                        + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())));
     }
 
     private void handleNewWordCommandResponse(CallbackQuery callbackQuery) {
@@ -488,8 +491,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         }
         userService.saveUser(user);
         adminControllerServiceImpl.setHandledCallbacks(adminControllerServiceImpl.getHandledCallbacks() + 1);
-        adminControllerServiceImpl.recordNews("User: " + callbackQuery.getFrom().getUserName() + " with chatId: "
-                + callbackQuery.getMessage().getChatId() + " answered " + userAnswer + " to word: " + word.getWord()
+        adminControllerServiceImpl.recordNews("Пользователь: " + callbackQuery.getFrom().getUserName() + " с ID: "
+                + callbackQuery.getMessage().getChatId() + " ответил " + userAnswer + " на слово: " + word.getWord()
                 + " - " + word.getTranslation().toString());
     }
 
@@ -529,8 +532,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
         adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl.recordNews("User: " + message.getFrom().getUserName() + " with chatId: "
-                + message.getChatId() + " requested stats");
+        adminControllerServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                + message.getChatId() + " запросил статистику");
     }
 
     private void handleUserSubscriptionResponse(CallbackQuery callbackQuery) {
@@ -561,8 +564,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
         adminControllerServiceImpl.setHandledCallbacks(adminControllerServiceImpl.getHandledCallbacks() + 1);
-        adminControllerServiceImpl.recordNews("User: " + callbackQuery.getFrom().getUserName() + " with chatId: "
-                + callbackQuery.getMessage().getChatId() + " subscribed to channel");
+        adminControllerServiceImpl.recordNews("Пользователь: " + callbackQuery.getFrom().getUserName() + " с ID: "
+                + callbackQuery.getMessage().getChatId() + " подписался на канал");
     }
 
     private void handleDifficultLevelCommand(CallbackQuery callbackQuery) throws TelegramApiException {
@@ -664,8 +667,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 break;
         }
         adminControllerServiceImpl.setHandledCallbacks(adminControllerServiceImpl.getHandledCallbacks() + 1);
-        adminControllerServiceImpl.recordNews("User: " + callbackQuery.getFrom().getUserName() + " with chatId: "
-                + callbackQuery.getMessage().getChatId() + " picked difficult level: " + data[1]);
+        adminControllerServiceImpl.recordNews("Пользователь: " + callbackQuery.getFrom().getUserName() + " с ID: "
+                + callbackQuery.getMessage().getChatId() + " выбрал уровень сложности: " + data[1]);
     }
 
     private void handleChooseDifficult(Message message) {
@@ -681,7 +684,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             logger.error("Error while sending start message: {}", e.getMessage());
         }
         adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl.recordNews("User: " + message.getFrom().getUserName() + " with chatId: "
-                + message.getChatId() + " requested to choose difficult level");
+        adminControllerServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                + message.getChatId() + " запросил выбор сложности");
     }
 }

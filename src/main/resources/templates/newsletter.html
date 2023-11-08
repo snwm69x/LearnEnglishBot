@@ -112,14 +112,16 @@
                                 <label for="text">Текст рассылки:</label>
                                 <textarea class="form-control" id="text" name="text" rows="3"></textarea>
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="sendtime">Время для отложенной отправки:</label>
-                                <input type="datetime-local" class="form-control" id="sendtime" name="sendtime">
-                            </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-send"></i>
                                 Отправить
                             </button>
+                            <div th:if="${message}" class="alert alert-success mt-3" role="alert">
+                                <p th:text="${message}"></p>
+                            </div>
+                            <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                                <p th:text="${error}"></p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -131,9 +133,22 @@
                         <h5 class="mb-0">Статистика для рассылки</h5>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">Количество пользователей который получат рассылку: ?</p>
-                        <p class="card-text">Отложенные посты: ?</p>
-                        <p class="card-text">Успешно выполненные рассылки: ?</p>
+                        <p class="card-text">Количество пользователей который получат рассылку: <span
+                                th:text="${users}"></span></p>
+                        <p class="card-text">Успешно отправленных сообщений: <span th:text="${successMsg}"></span></p>
+                        <p class="card-text">Ошибок во время отправки сообщений: <span th:text="${failedMsg}"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="card mt-4" style="height: 400px;">
+                    <div class="card-header">
+                        <h5 class="mb-0">Сообщения об ошибках</h5>
+                    </div>
+                    <div class="card-body overflow-auto">
+                        <ul class="list-group">
+                            <li th:each="errorMsg : ${errorMessages}" class="list-group-item" th:text="${errorMsg}">
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
