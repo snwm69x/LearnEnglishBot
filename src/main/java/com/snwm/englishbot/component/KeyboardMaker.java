@@ -24,17 +24,17 @@ public class KeyboardMaker {
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
         KeyboardButton button_newWord = new KeyboardButton();
-        KeyboardButton button_statistics = new KeyboardButton();
+        // KeyboardButton button_statistics = new KeyboardButton();
         KeyboardButton button_chooseDifficult = new KeyboardButton();
         KeyboardButton button_rating = new KeyboardButton();
         button_newWord.setText("Новое слово 💬");
-        button_statistics.setText("Статистика 🔄");
+        // button_statistics.setText("Статистика 🔄");
         button_chooseDifficult.setText("Выбрать сложность 📊");
         button_rating.setText("Рейтинг 🏆");
         row1.add(button_newWord);
-        row1.add(button_statistics);
+        // row1.add(button_statistics);
         row2.add(button_chooseDifficult);
-        row2.add(button_rating);
+        row1.add(button_rating);
         keys.add(row1);
         keys.add(row2);
         keyboard.setKeyboard(keys);
@@ -44,7 +44,7 @@ public class KeyboardMaker {
     public InlineKeyboardMarkup getAdminPageButton(String url) {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setUrl(url);
-        button.setText("Админка");
+        button.setText("Admin Dashboard");
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(button);
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
