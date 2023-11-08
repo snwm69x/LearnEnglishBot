@@ -104,7 +104,6 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item">Время работы: <span th:text="${uptime}"></span></li>
               <li class="list-group-item">Обработано сообщений: <span th:text="${handledmessages}"></span></li>
-              <li class="list-group-item">Активных пользователей: <span th:text="${allusers}"></span></li>
               <li class="list-group-item">Ошибок: <span th:text="${errors}"></span></li>
               <li class="list-group-item">Среднее время ответа: <span
                   th:text="${#numbers.formatDecimal(averageresponsetime, 1, 2)}"></span> секунд
@@ -121,20 +120,19 @@
             Общая статистика
           </div>
           <div class="card-body">
-            <p class="card-text">Активных пользователей: ?</p>
-            <p class="card-text">Сообщений за день: ?</p>
-            <p class="card-text">Новых пользователей за неделю: <span th:text="${newusers}"></span></p>
+            <p class="card-text">Активных пользователей: <span th:text="${allusers}"></span></p>
+            <p class="card-text">Новых пользователей: <span th:text="${newusers}"></span></p>
           </div>
         </div>
       </div>
 
       <div class="col-lg-4 mb-4">
         <!-- Последние действия -->
-        <div class="card">
+        <div class="card" style="height: 500px;">
           <div class="card-header">
             Последние действия
           </div>
-          <ul class="list-group list-group-flush">
+          <ul class="list-group list-group-flush overflow-auto">
             <li class="list-group-item" th:each="action : ${recentnews}" th:text="${action}"></li>
           </ul>
         </div>

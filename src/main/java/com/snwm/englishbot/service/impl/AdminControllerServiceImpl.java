@@ -57,7 +57,7 @@ public class AdminControllerServiceImpl implements AdminControllerService {
 
     @Override
     public void recordNews(String action) {
-        if (recentNews.size() >= 5) {
+        if (recentNews.size() >= 15) {
             recentNews.removeFirst();
         }
         recentNews.add(action);
