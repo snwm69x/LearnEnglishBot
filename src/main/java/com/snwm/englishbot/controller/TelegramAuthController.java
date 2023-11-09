@@ -38,15 +38,12 @@ public class TelegramAuthController {
         this.userService = userService;
     }
 
-
     @GetMapping("/login/telegram")
     public String handleTelegramAuth(@RequestParam Map<String, String> params) {
-        // Сортируем GET-параметры по их именам в алфавитном порядке
+
         Map<String, String> sortedParams = new TreeMap<>(params);
-        // Удаляем параметр hash из отсортированных параметров
         sortedParams.remove("hash");
 
-        // Формируем строку в формате name=value
         StringBuilder sb = new StringBuilder();
         for (Iterator<Map.Entry<String, String>> iterator = sortedParams.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry<String, String> entry = iterator.next();
@@ -57,7 +54,6 @@ public class TelegramAuthController {
         }
         String dataCheckString = sb.toString();
 
-        // Вычисляем SHA256 хеш токена бота
         MessageDigest digest;
         byte[] secretKey;
         try {
@@ -69,7 +65,6 @@ public class TelegramAuthController {
             return "error";
         }
 
-        // Формируем HMAC с использованием SHA-256
         String hmac = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
@@ -87,10 +82,8 @@ public class TelegramAuthController {
             return "error";
         }
 
-        // Сравниваем полученный HMAC с hash, который вам прислал Telegram
         String receivedHash = params.get("hash");
         if (hmac.equals(receivedHash)) {
-            // Если данные подлинные, вы можете авторизовать пользователя
             User user = userService.getUserByUsername(params.get("username")).get(0);
             if (user.getUserType().equals(UserType.ADMIN)) {
                 List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -98,10 +91,9 @@ public class TelegramAuthController {
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 return "redirect:/admin";
             } else {
-                return "errorauth";
+                return "accessdenied";
             }
         } else {
-            // Если данные не подлинные, вы должны вернуть ошибку
             return "error";
         }
     }

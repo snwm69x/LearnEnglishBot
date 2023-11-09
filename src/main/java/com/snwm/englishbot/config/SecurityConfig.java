@@ -17,34 +17,38 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeRequests(requests -> requests
-                        .antMatchers("/login/**").permitAll()
-                        .antMatchers("/admin/**").hasRole("ADMIN")
-                        .antMatchers("/words/**").hasRole("ADMIN")
-                        .antMatchers("/users/**").hasRole("ADMIN")
-                        .antMatchers("/newsletter/**").hasRole("ADMIN")
-                        .antMatchers("/settings/**").hasRole("ADMIN")
-                        .anyRequest().permitAll())
-                .formLogin(login -> login
-                        .loginPage("/login")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll())
-                .httpBasic(basic -> basic
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-        return http.build();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeRequests(requests -> requests
+                                                .antMatchers("/login/**").permitAll()
+                                                .antMatchers("/access-denied").permitAll()
+                                                .antMatchers("/admin/**").hasRole("ADMIN")
+                                                .antMatchers("/words/**").hasRole("ADMIN")
+                                                .antMatchers("/users/**").hasRole("ADMIN")
+                                                .antMatchers("/newsletter/**").hasRole("ADMIN")
+                                                .antMatchers("/settings/**").hasRole("ADMIN")
+                                                .anyRequest().hasRole("ADMIN"))
+                                .formLogin(login -> login
+                                                .loginPage("/login")
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                                                .logoutSuccessUrl("/login")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID")
+                                                .permitAll())
+                                .exceptionHandling(exceptionHandling -> exceptionHandling
+                                                .accessDeniedPage("/access-denied"))
+                                .httpBasic(basic -> basic
+                                                .authenticationEntryPoint(
+                                                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+                return http.build();
+        }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication();
-    }
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+                auth.inMemoryAuthentication();
+        }
 }
