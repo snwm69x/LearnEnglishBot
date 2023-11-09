@@ -30,7 +30,7 @@ public class KeyboardMaker {
         button_newWord.setText("Новое слово 💬");
         // button_statistics.setText("Статистика 🔄");
         button_chooseDifficult.setText("Выбрать сложность 📊");
-        button_rating.setText("Рейтинг 🏆");
+        button_rating.setText("Таблица лидеров 🏆");
         row1.add(button_newWord);
         // row1.add(button_statistics);
         row2.add(button_chooseDifficult);

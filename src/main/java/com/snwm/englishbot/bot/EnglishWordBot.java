@@ -142,7 +142,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 handleAdminMessage(update.getMessage());
             }
 
-            if (update.getMessage().getText().equals("Рейтинг 🏆")) {
+            if (update.getMessage().getText().equals("Таблица лидеров 🏆")) {
                 adminControllerServiceImpl.startMessageProcessing();
                 logger.info("Handling Rating command for user: {}", update.getMessage().getFrom().getUserName());
                 handleRatingCommand(update.getMessage());
@@ -206,14 +206,21 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             top10 = true;
         }
         users.sort(Comparator.comparing(User::getRating).reversed());
-        StringBuilder text = new StringBuilder("Рейтинг пользователей:\n");
+        StringBuilder text = new StringBuilder("Таблица лидеров:\n");
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
+            if (i == 0) {
+                text.append("👑 ");
+            } else if (i == 1) {
+                text.append("🥈 ");
+            } else if (i == 2) {
+                text.append("🥉 ");
+            }
             text.append(i + 1).append(". @").append(usr.getUsername()).append(" - ").append(usr.getRating())
                     .append("\n");
         }
         if (top10) {
-            text.append("\n Вы в топ 10 пользователей!");
+            text.append("\nПоздравляем вы входите в 10ку лидеров!");
         } else {
             text.append("\n" + "Ваш рейтинг: ").append(user.getRating());
         }
