@@ -221,6 +221,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 .chatId(message.getChatId().toString())
                 .text(text.toString())
                 .build();
+        msg.disableNotification();
         try {
             execute(msg);
         } catch (TelegramApiException e) {
@@ -755,6 +756,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         startMessage.setText("Выбери сложность:");
         InlineKeyboardMarkup keyboard = keyboardMaker.getDifficultLevelKeyboard();
         startMessage.setReplyMarkup(keyboard);
+        startMessage.disableNotification();
         try {
             execute(startMessage);
         } catch (TelegramApiException e) {
