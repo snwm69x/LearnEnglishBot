@@ -44,7 +44,7 @@ public class KeyboardMaker {
     public InlineKeyboardMarkup getAdminPageButton(String url) {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setUrl(url);
-        button.setText("Admin Dashboard");
+        button.setText("Open");
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(button);
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();

@@ -255,7 +255,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (user.getUserType().equals(UserType.ADMIN)) {
             SendMessage msg = SendMessage.builder()
                     .chatId(message.getChatId().toString())
-                    .text("Вы администратор")
+                    .text("Admin Dashboard")
                     .build();
             msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
             try {
