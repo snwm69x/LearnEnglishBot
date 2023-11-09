@@ -96,11 +96,11 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         // Обработка неизвестных команд
         if (update.hasMessage() && update.getMessage().hasText()
                 && !update.getMessage().getText().equals("/start")
-                && !update.getMessage().getText().equals("Новое слово 💬")
+                && !update.getMessage().getText().equals("Новое слово 💭")
                 && !update.getMessage().getText().equals("Статистика 🔄")
-                && !update.getMessage().getText().equals("Выбрать сложность 📊")
+                && !update.getMessage().getText().equals("Выбрать сложность ⚙️")
                 && !update.getMessage().getText().equals("/admin")
-                && !update.getMessage().getText().equals("Рейтинг 🏆")) {
+                && !update.getMessage().getText().equals("Таблица лидеров 🏆")) {
             handleUnknownCommand(update.getMessage());
         }
 
@@ -115,7 +115,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
 
             // Обработка команды "Новое слово"
-            if (update.getMessage().getText().equals("Новое слово 💬")) {
+            if (update.getMessage().getText().equals("Новое слово 💭")) {
                 adminControllerServiceImpl.startMessageProcessing();
                 logger.info("Handling New Word command for user: {}", update.getMessage().getFrom().getUserName());
                 handleNewWordCommand(update.getMessage());
@@ -129,7 +129,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
 
             // Обработка команды "Выбрать сложность 📊"
-            if (update.getMessage().getText().equals("Выбрать сложность 📊")) {
+            if (update.getMessage().getText().equals("Выбрать сложность ⚙️")) {
                 adminControllerServiceImpl.startMessageProcessing();
                 logger.info("Handling Choose Difficult command for user: {}",
                         update.getMessage().getFrom().getUserName());

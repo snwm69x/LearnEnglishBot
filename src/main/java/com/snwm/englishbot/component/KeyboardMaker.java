@@ -27,9 +27,9 @@ public class KeyboardMaker {
         // KeyboardButton button_statistics = new KeyboardButton();
         KeyboardButton button_chooseDifficult = new KeyboardButton();
         KeyboardButton button_rating = new KeyboardButton();
-        button_newWord.setText("Новое слово 💬");
+        button_newWord.setText("Новое слово 💭");
         // button_statistics.setText("Статистика 🔄");
-        button_chooseDifficult.setText("Выбрать сложность 📊");
+        button_chooseDifficult.setText("Выбрать сложность ⚙️");
         button_rating.setText("Таблица лидеров 🏆");
         row1.add(button_newWord);
         // row1.add(button_statistics);
