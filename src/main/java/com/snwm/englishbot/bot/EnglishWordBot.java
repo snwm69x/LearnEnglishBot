@@ -151,6 +151,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasCallbackQuery()) {
             // Обработка ответа на команду "Новое слово"
             if (update.getCallbackQuery().getData().startsWith("nw")) {
+                System.out.println(update.getCallbackQuery().getId());
                 if (processedCallbackIds.contains(update.getCallbackQuery().getId())) {
                     return;
                 }
