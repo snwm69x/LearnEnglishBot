@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -206,27 +207,31 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             top10 = true;
         }
         users.sort(Comparator.comparing(User::getRating).reversed());
-        StringBuilder text = new StringBuilder("Таблица лидеров:\n");
+        StringBuilder text = new StringBuilder("*🏆 Таблица лидеров:*\n\n");
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
             if (i == 0) {
-                text.append("👑 ");
+                text.append("*👑 ");
             } else if (i == 1) {
                 text.append("🥈 ");
             } else if (i == 2) {
                 text.append("🥉 ");
             }
-            text.append(i + 1).append(". @").append(usr.getUsername()).append(" - ").append(usr.getRating())
-                    .append("\n");
+            text.append(i + 1).append(". @").append(usr.getUsername());
+            if (i == 0) {
+                text.append("*");
+            }
+            text.append(" - ").append(usr.getRating()).append(" pts\n");
         }
         if (top10) {
-            text.append("\nПоздравляем вы входите в 10ку лидеров!");
+            text.append("\n_Поздравляем, вы входите в 🔝10 лидеров!🎉_");
         } else {
-            text.append("\n" + "Ваш рейтинг: ").append(user.getRating());
+            text.append("\n_Ваш рейтинг:_ ").append(user.getRating());
         }
         SendMessage msg = SendMessage.builder()
                 .chatId(message.getChatId().toString())
                 .text(text.toString())
+                .parseMode(ParseMode.MARKDOWNV2)
                 .build();
         msg.disableNotification();
         try {
