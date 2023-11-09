@@ -3,8 +3,10 @@ package com.snwm.englishbot.bot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
@@ -45,6 +47,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private static final String ADMIN_PAGE_URL = "learnenglishbot-production-73dd.up.railway.app/admin";
+    private final Set<String> processedCallbackIds = Collections.synchronizedSet(new HashSet<>());
     private final String token;
     private final String username;
     private Random random = new Random();
@@ -148,9 +151,13 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasCallbackQuery()) {
             // Обработка ответа на команду "Новое слово"
             if (update.getCallbackQuery().getData().startsWith("nw")) {
+                if (processedCallbackIds.contains(update.getCallbackQuery().getId())) {
+                    return;
+                }
                 logger.info("Handling user answer for command New Word by User: {}",
                         update.getCallbackQuery().getFrom().getUserName());
                 handleNewWordCommandResponse(update.getCallbackQuery());
+                processedCallbackIds.add(update.getCallbackQuery().getId());
             }
             // Обработка ответа на команду "Выбрать сложность"
             if (update.getCallbackQuery().getData().startsWith("difficult")) {
@@ -355,8 +362,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).equals(word)) {
-                options.add(words.get(randomIndex));
+            Word randomWord = words.get(randomIndex);
+            if (!randomWord.equals(word) && !options.contains(randomWord)) {
+                options.add(randomWord);
                 words.remove(randomIndex);
             }
         }
@@ -391,8 +399,9 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
-            if (!words.get(randomIndex).equals(word)) {
-                options.add(words.get(randomIndex));
+            Word randomWord = words.get(randomIndex);
+            if (!randomWord.equals(word) && !options.contains(randomWord)) {
+                options.add(randomWord);
                 words.remove(randomIndex);
             }
         }
