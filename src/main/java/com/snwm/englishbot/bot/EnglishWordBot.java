@@ -3,10 +3,11 @@ package com.snwm.englishbot.bot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.Word;
@@ -47,7 +48,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
 
     private static final Logger logger = LoggerFactory.getLogger(EnglishWordBot.class);
     private static final String ADMIN_PAGE_URL = "learnenglishbot-production-73dd.up.railway.app/admin";
-    private final Set<String> processedCallbackIds = Collections.synchronizedSet(new HashSet<>());
+    private final Map<Long, LinkedList<Long>> userLastWordMap = new HashMap<>();
     private final String token;
     private final String username;
     private Random random = new Random();
@@ -151,14 +152,20 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         if (update.hasCallbackQuery()) {
             // Обработка ответа на команду "Новое слово"
             if (update.getCallbackQuery().getData().startsWith("nw")) {
-                System.out.println(update.getCallbackQuery().getId());
-                if (processedCallbackIds.contains(update.getCallbackQuery().getId())) {
-                    return;
+                Long userId = update.getCallbackQuery().getFrom().getId();
+                Long wordId = Long.parseLong(update.getCallbackQuery().getData().split(":")[1]);
+                LinkedList<Long> lastWords = userLastWordMap.getOrDefault(userId, new LinkedList<>());
+                if (lastWords.contains(wordId)) {
+                    return; // This word has already been processed for this user, so return
+                }
+                if (lastWords.size() == 5) {
+                    lastWords.removeFirst(); // Remove the oldest word
                 }
                 logger.info("Handling user answer for command New Word by User: {}",
                         update.getCallbackQuery().getFrom().getUserName());
                 handleNewWordCommandResponse(update.getCallbackQuery());
-                processedCallbackIds.add(update.getCallbackQuery().getId());
+                lastWords.add(wordId);
+                userLastWordMap.put(userId, lastWords);
             }
             // Обработка ответа на команду "Выбрать сложность"
             if (update.getCallbackQuery().getData().startsWith("difficult")) {
