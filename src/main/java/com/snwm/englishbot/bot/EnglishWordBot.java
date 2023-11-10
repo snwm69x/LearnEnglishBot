@@ -51,7 +51,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private final Map<Long, LinkedList<Long>> userLastWordMap = new HashMap<>();
     private final String token;
     private final String username;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Autowired
     private WordService wordService;
@@ -206,18 +206,19 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             top10 = true;
         }
         users.sort(Comparator.comparing(User::getRating).reversed());
-        StringBuilder text = new StringBuilder("Таблица лидеров:\n");
+        StringBuilder text = new StringBuilder("<b>Таблица лидеров:</b>\n\n");
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
             if (i == 0) {
-                text.append("👑 ");
+                text.append("👑 @");
             } else if (i == 1) {
-                text.append("🥈 ");
+                text.append("🥈 @");
             } else if (i == 2) {
-                text.append("🥉 ");
+                text.append("🥉 @");
+            } else {
+                text.append(i + 1).append(". @");
             }
-            text.append(i + 1).append(". @").append(usr.getUsername()).append(" - ").append(usr.getRating())
-                    .append("\n");
+            text.append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
         }
         if (top10) {
             text.append("\nПоздравляем вы входите в 10ку лидеров!");
