@@ -32,7 +32,7 @@ public class TelegramAuthController {
 
     @Autowired
     private final UserService userService;
-    private final String BOT_TOKEN = "6566742010:AAHYTvo8_s_CZ95VYzLiz2a6t51PaSiTycY";
+    private final String BOT_TOKEN = "6834770884:AAFemvRgrQmFf9DtPv8yNG0uYLFEoo9lA2M";
 
     public TelegramAuthController(UserService userService) {
         this.userService = userService;
