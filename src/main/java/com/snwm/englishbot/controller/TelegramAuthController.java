@@ -14,6 +14,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,10 +33,11 @@ public class TelegramAuthController {
 
     @Autowired
     private final UserService userService;
-    private final String BOT_TOKEN = "6834770884:AAFemvRgrQmFf9DtPv8yNG0uYLFEoo9lA2M";
+    private final String BOT_TOKEN;
 
-    public TelegramAuthController(UserService userService) {
+    public TelegramAuthController(UserService userService, @Value("${PROD_BOT_TOKEN}") String token) {
         this.userService = userService;
+        this.BOT_TOKEN = token;
     }
 
     @GetMapping("/login/telegram")
