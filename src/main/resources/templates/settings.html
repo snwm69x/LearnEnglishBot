@@ -112,16 +112,39 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Bot Settings</h5>
+                        <h5>Promoted Channel Settings</h5>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form action="/settings/update-promoted-channel" method="post">
                             <div class="mb-3">
-                                <label for="welcomeMessage" class="form-label">Welcome Message</label>
-                                <input type="text" class="form-control" id="welcomeMessage">
+                                <label for="chatId" class="form-label">Chat ID:</label>
+                                <input type="text" name="chatId" class="form-control" id="chatId"
+                                    th:placeholder="${promotedChannel.getChatId()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelName" class="form-label">Channel name:</label>
+                                <input type="text" name="channelName" class="form-control" id="channelName"
+                                    th:placeholder="${promotedChannel.getChannelName()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelLink" class="form-label">Channel link:</label>
+                                <input type="text" name="channelLink" class="form-control" id="channelLink"
+                                    th:placeholder="${promotedChannel.getChannelLink()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelDescription" class="form-label">Channel description:</label>
+                                <input type="text" name="channelDescription" class="form-control"
+                                    id="channelDescription" th:placeholder="${promotedChannel.getChannelDescription()}">
                             </div>
                             <!-- Добавьте здесь другие настройки -->
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="submit" class="btn btn-primary mb-3">Save changes</button>
+                            <div th:if="${message}" class="alert alert-success mb-3" role="alert">
+                                <p th:text="${message}"></p>
+                            </div>
+                            <!-- Сообщение об ошибке -->
+                            <div th:if="${error}" class="alert alert-danger mb-3" role="alert">
+                                <p th:text="${error}"></p>
+                            </div>
                         </form>
                     </div>
                 </div>

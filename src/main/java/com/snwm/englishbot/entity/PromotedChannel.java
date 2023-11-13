@@ -20,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PromotedChatId {
+public class PromotedChannel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,14 @@ public class PromotedChatId {
 
     @Column(name = "chat_id", unique = true)
     private Long chatId;
+
+    @Column(name = "channel_name")
+    private String channelName;
+
+    @Column(name = "channel_link")
+    private String channelLink;
+
+    @Column(name = "channel_description")
+    private String channelDescription;
+
 }

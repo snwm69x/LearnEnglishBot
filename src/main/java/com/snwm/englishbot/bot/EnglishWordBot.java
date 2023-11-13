@@ -14,6 +14,7 @@ import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.entity.enums.WordLevel;
+import com.snwm.englishbot.service.PromotedChannelService;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
@@ -52,7 +53,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private final Map<Long, LinkedList<Long>> userLastWordMap = new HashMap<>();
     private final String token;
     private final String username;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Autowired
     private WordService wordService;
@@ -64,6 +65,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private KeyboardMaker keyboardMaker;
     @Autowired
     private AdminControllerServiceImpl adminControllerServiceImpl;
+    @Autowired
+    private PromotedChannelService promotedChannelService;
 
     EnglishWordBot(@Value("${PROD_BOT_TOKEN}") String token,
             @Value("${PROD_BOT_NAME}") String username) {
@@ -211,14 +214,15 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
             if (i == 0) {
-                text.append("👑 ");
+                text.append("👑 @");
             } else if (i == 1) {
-                text.append("🥈 ");
+                text.append("🥈 @");
             } else if (i == 2) {
-                text.append("🥉 ");
+                text.append("🥉 @");
+            } else {
+                text.append(i + 1).append(". @");
             }
-            text.append(i + 1).append(". @").append(usr.getUsername()).append(" - ").append(usr.getRating())
-                    .append(" pts\n");
+            text.append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
         }
         if (top10) {
             text.append("\nПоздравляем, вы входите в 🔝10 лидеров!🎉");

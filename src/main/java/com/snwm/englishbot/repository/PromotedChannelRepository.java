@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.snwm.englishbot.entity.PromotedChatId;
+import com.snwm.englishbot.entity.PromotedChannel;
 
 @Repository
-public interface PromotedChatIdRepository extends JpaRepository<PromotedChatId, Long> {
-    Optional<PromotedChatId> findFirstByOrderByIdAsc();
+public interface PromotedChannelRepository extends JpaRepository<PromotedChannel, Long> {
+    Optional<PromotedChannel> findById(Long id);
 }
