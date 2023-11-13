@@ -3,11 +3,13 @@ package com.snwm.englishbot.service.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.snwm.englishbot.entity.PromotedChannel;
 import com.snwm.englishbot.repository.PromotedChannelRepository;
 import com.snwm.englishbot.service.PromotedChannelService;
 
+@Service
 public class PromotedChannelServiceImpl implements PromotedChannelService {
 
     @Autowired
