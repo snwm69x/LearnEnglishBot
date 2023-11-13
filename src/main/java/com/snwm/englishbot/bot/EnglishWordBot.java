@@ -14,6 +14,7 @@ import com.snwm.englishbot.entity.Word;
 import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.entity.enums.WordLevel;
+import com.snwm.englishbot.service.PromotedChannelService;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
@@ -63,6 +64,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
     private KeyboardMaker keyboardMaker;
     @Autowired
     private AdminControllerServiceImpl adminControllerServiceImpl;
+    @Autowired
+    private PromotedChannelService promotedChannelService;
 
     EnglishWordBot(@Value("${PROD_BOT_TOKEN}") String token,
             @Value("${PROD_BOT_NAME}") String username) {

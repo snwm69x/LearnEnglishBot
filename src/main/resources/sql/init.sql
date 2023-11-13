@@ -19,3 +19,6 @@ CREATE INDEX idx_user_word_stats_user_id_word_id ON user_word_stats (user_id, wo
 -- LEFT JOIN user_word_stats ON user_data.chat_id = user_word_stats.user_id
 -- GROUP BY user_data.chat_id;
 
+INSERT INTO promoted_channel (chat_id, channel_name, channel_link, channel_description)
+VALUES (-1001672871308, 'English In Use', '@english_in_use_channel', 'Pro100English');
+
