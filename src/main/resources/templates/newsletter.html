@@ -27,7 +27,7 @@
         }
 
         .card-header {
-            background-color: #6c757d38;
+            background-color: #0c73fe;
         }
 
         #loader {
@@ -62,6 +62,26 @@
             100% {
                 transform: rotate(360deg);
             }
+        }
+
+        /* Определение анимации */
+        @keyframes card-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Применение анимации к карточкам */
+        .card {
+            animation: card-appear 0.5s ease-out forwards;
+            opacity: 0;
+            /* Сделайте карточки изначально невидимыми */
         }
     </style>
 </head>
@@ -135,7 +155,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Создание рассылки</h5>
+                        <h5 class="mb-0" style="color:white;">Создание рассылки</h5>
                     </div>
                     <div class="card-body">
                         <form action="/newsletter/sendmessage" method="post" enctype="multipart/form-data">
@@ -165,7 +185,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Статистика для рассылки</h5>
+                        <h5 class="mb-0" style="color:white;">Статистика для рассылки</h5>
                     </div>
                     <div class="card-body">
                         <p class="card-text">Количество пользователей который получат рассылку: <span
@@ -178,7 +198,7 @@
                 <!-- 3 карточка -->
                 <div class="card mt-4" style="height: 220px;">
                     <div class="card-header">
-                        <h5 class="mb-0">Сообщения об ошибках</h5>
+                        <h5 class="mb-0" style="color:white;">Сообщения об ошибках</h5>
                     </div>
                     <div class="card-body overflow-auto">
                         <ul class="list-group">
@@ -199,6 +219,21 @@
         window.addEventListener('load', function () {
             const loader = document.getElementById('loader');
             loader.style.display = 'none';
+        });
+
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'none';
+
+            // Получите все карточки
+            const cards = document.querySelectorAll('.card');
+
+            // Пройдитесь по карточкам и начните анимацию
+            cards.forEach((card, index) => {
+                // Задержите начало анимации для каждой карточки
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animationPlayState = 'running';
+            });
         });
     </script>
 </body>
