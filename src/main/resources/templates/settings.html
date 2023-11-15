@@ -235,8 +235,8 @@
                                 <label for="reminderMessageId" class="form-label">Выберите сообщение для
                                     рассылки:</label>
                                 <select name="reminderMessageId" id="reminderMessageId" class="form-control" size="3">
-                                    <option th:each="message : ${messages}" th:value="${message.id}"
-                                        th:text="${message.text}"></option>
+                                    <option th:each="message : ${allReminderMessages}" th:value="${message.getId()}"
+                                        th:text="${message.getMessage()}"></option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Выбрать сообщение</button>

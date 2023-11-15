@@ -43,6 +43,7 @@ public class SettingsController {
         model.addAttribute("botUsername", BOT_USERNAME);
         model.addAttribute("promotedChannel", promotedChannelService.getChannel());
         model.addAttribute("reminderMessage", reminderMessageServiceImpl.getCurrentMessage());
+        model.addAttribute("allReminderMessages", reminderMessageServiceImpl.getAllReminderMessages());
         return "settings";
     }
 
