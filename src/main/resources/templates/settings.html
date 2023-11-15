@@ -160,22 +160,22 @@
                             <div class="mb-3">
                                 <label for="chatId" class="form-label">Chat ID:</label>
                                 <input type="text" name="chatId" class="form-control" id="chatId"
-                                    th:placeholder="${promotedChannel.getChatId()}">
+                                    th:value="${promotedChannel.getChatId()}">
                             </div>
                             <div class="mb-3">
                                 <label for="channelName" class="form-label">Channel name:</label>
                                 <input type="text" name="channelName" class="form-control" id="channelName"
-                                    th:placeholder="${promotedChannel.getChannelName()}">
+                                    th:value="${promotedChannel.getChannelName()}">
                             </div>
                             <div class="mb-3">
                                 <label for="channelLink" class="form-label">Channel link:</label>
                                 <input type="text" name="channelLink" class="form-control" id="channelLink"
-                                    th:placeholder="${promotedChannel.getChannelLink()}">
+                                    th:value="${promotedChannel.getChannelLink()}">
                             </div>
                             <div class="mb-3">
                                 <label for="channelDescription" class="form-label">Channel description:</label>
                                 <textarea name="channelDescription" class="form-control" id="channelDescription"
-                                    th:placeholder="${promotedChannel.getChannelDescription()}"></textarea>
+                                    th:value="${promotedChannel.getChannelDescription()}"></textarea>
                             </div>
                             <!-- Добавьте здесь другие настройки -->
                             <button type="submit" class="btn btn-primary mb-3">Save changes</button>
