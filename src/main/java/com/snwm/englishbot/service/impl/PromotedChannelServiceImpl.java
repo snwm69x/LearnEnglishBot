@@ -30,20 +30,16 @@ public class PromotedChannelServiceImpl implements PromotedChannelService {
         Optional<PromotedChannel> optionalPromotedChannel = promotedChannelRepository.findById(0L);
         if (optionalPromotedChannel.isPresent()) {
             PromotedChannel existingChannel = optionalPromotedChannel.get();
-            if (promotedChannel.getChannelDescription() != null
-                    && promotedChannel.getChannelDescription().equals(existingChannel.getChannelDescription())) {
+            if (promotedChannel.getChannelDescription() != null) {
                 existingChannel.setChannelDescription(promotedChannel.getChannelDescription());
             }
-            if (promotedChannel.getChannelLink() != null
-                    && promotedChannel.getChannelLink().equals(existingChannel.getChannelLink())) {
+            if (promotedChannel.getChannelLink() != null) {
                 existingChannel.setChannelLink(promotedChannel.getChannelLink());
             }
-            if (promotedChannel.getChannelName() != null
-                    && promotedChannel.getChannelName().equals(existingChannel.getChannelName())) {
+            if (promotedChannel.getChannelName() != null) {
                 existingChannel.setChannelName(promotedChannel.getChannelName());
             }
-            if (promotedChannel.getChatId() != null
-                    && promotedChannel.getChatId().equals(existingChannel.getChatId())) {
+            if (promotedChannel.getChatId() != null) {
                 existingChannel.setChatId(promotedChannel.getChatId());
             }
             promotedChannelRepository.save(existingChannel);
