@@ -174,8 +174,9 @@
                             </div>
                             <div class="mb-3">
                                 <label for="channelDescription" class="form-label">Channel description:</label>
-                                <textarea name="channelDescription" class="form-control"
-                                    id="channelDescription">${promotedChannel.getChannelDescription()}</textarea>
+                                <textarea name="channelDescription" class="form-control" id="channelDescription"
+                                    th:field="*{channelDescription}"
+                                    th:value="${promotedChannel.getChannelDescription()}"></textarea>
                             </div>
                             <!-- Добавьте здесь другие настройки -->
                             <button type="submit" class="btn btn-primary mb-3">Save changes</button>
