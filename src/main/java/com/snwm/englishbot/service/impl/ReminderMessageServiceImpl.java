@@ -27,18 +27,22 @@ public class ReminderMessageServiceImpl implements ReminderMessageService {
         }
     }
 
+    @Override
     public ReminderMessage getCurrentMessage() {
         return this.currentReminderMessage;
     }
 
+    @Override
     public void setCurrentMessage(ReminderMessage message) {
         this.currentReminderMessage = message;
     }
 
+    @Override
     public List<ReminderMessage> getAllReminderMessages() {
         return reminderMessageRepository.findAll();
     }
 
+    @Override
     public void addReminderMessage(String message) {
         ReminderMessage reminderMessage = ReminderMessage.builder().message(message).build();
         reminderMessageRepository.save(reminderMessage);
