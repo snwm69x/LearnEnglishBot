@@ -3,6 +3,8 @@ package com.snwm.englishbot.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,8 @@ public class ReminderMessageServiceImpl implements ReminderMessageService {
     @Autowired
     private ReminderMessageRepository reminderMessageRepository;
 
-    public ReminderMessageServiceImpl() {
+    @PostConstruct
+    public void init() {
         Optional<ReminderMessage> reminderMessage = reminderMessageRepository.findRandom();
         if (reminderMessage.isPresent()) {
             this.currentReminderMessage = reminderMessage.get();
