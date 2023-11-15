@@ -63,10 +63,25 @@
                 transform: rotate(360deg);
             }
         }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .fadeIn {
+            animation-name: fadeIn;
+            animation-duration: 0.66s;
+        }
     </style>
 </head>
 
-<body>
+<body id="body">
     <div id="loader"></div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <div class="container">
@@ -130,10 +145,10 @@
     </nav>
 
     <!-- Форма поиска -->
-    <div class="container mt-4">
+    <div class="container mt-4 fadeIn">
         <form class="d-flex" action="/users/search" method="GET">
             <div class="input-group">
-                <span class="input-group-text">@</span>
+                <span class="input-group-text" style="color:white; background-color: #0c73fe;"><b>@</b></span>
                 <input class="form-control" type="search" placeholder="Username" name="search" aria-label="Search">
             </div>
             <button class="btn btn-outline-success" type="submit">Поиск</button>
@@ -141,21 +156,21 @@
     </div>
 
     <!-- Таблица результатов -->
-    <div class="container mt-4">
-        <div class="table-responsive">
+    <div class="container mt-4 fadeIn">
+        <div class="table-responsive" id="table">
             <table class="table table-striped table-sm table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>UserType</th>
-                        <th>WordLevel</th>
-                        <th>CorrectAnswers</th>
-                        <th>IncorrectAnswers</th>
-                        <th>SuccessRate</th>
-                        <th>LastAttempt</th>
+                        <th>id</th>
+                        <th>username</th>
+                        <th>first name</th>
+                        <th>last name</th>
+                        <th>user type</th>
+                        <th>word level</th>
+                        <th>correct anwers</th>
+                        <th>incorrect answers</th>
+                        <th>success rate</th>
+                        <th>last attempt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -181,7 +196,7 @@
         </div>
     </div>
 
-    <nav class="container mt-4">
+    <nav class="container mt-4 fadeIn">
         <ul class="pagination">
             <li class="page-item" th:class="${users != null && users.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"

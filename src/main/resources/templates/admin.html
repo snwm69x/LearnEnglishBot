@@ -105,7 +105,8 @@
             <a class="nav-link" href="/users"><i class="bi bi-people"></i> Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/newsletter"><i class="bi bi-chat-left-dots"></i> Newsletter</a>
+            <a class="nav-link" href="/newsletter"><i class="bi bi-chat-left-dots"></i>
+              Newsletter</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="wordsDropdown" role="button" data-bs-toggle="dropdown"
@@ -186,7 +187,7 @@
             <b style="color:white;">Последние действия</b>
           </div>
           <ul class="list-group list-group-flush overflow-auto">
-            <li class="list-group-item" th:each="action : ${recentnews}" th:text="${action}"></li>
+            <li class="list-group-item" th:each="action : ${#lists.reverse(recentnews)}" th:text="${action}"></li>
           </ul>
         </div>
       </div>
