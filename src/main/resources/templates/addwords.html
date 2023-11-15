@@ -27,12 +27,67 @@
         }
 
         .card-header {
-            background-color: #6c757d38;
+            background-color: #0c73fe;
+        }
+
+        #loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #loader::before {
+            content: "";
+            display: block;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Define the animation */
+        @keyframes card-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Apply the animation to the cards */
+        .card {
+            animation: card-appear 0.5s ease-out forwards;
+            opacity: 0;
+            /* Make the cards initially invisible */
         }
     </style>
 </head>
 
 <body>
+    <div id="loader"></div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">EnglishWordBot</a>
@@ -99,7 +154,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Добавление одного слова</h5>
+                        <h5 class="mb-0" style="color:white;">Добавление одного слова</h5>
                     </div>
                     <div class="card-body">
                         <form action="/words/add-word" method="post">
@@ -147,7 +202,7 @@
                                     <option value="PHRASE">PHRASE (Фраза)</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i>
+                            <button type="submit" class="btn btn-primary submitBtn"><i class="bi bi-plus-circle"></i>
                                 Добавить</button>
                         </form>
                         <div th:if="${message}" class="alert alert-success mt-3" role="alert">
@@ -163,7 +218,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Добавление нескольких слов через файл</h5>
+                        <h5 class="mb-0" style="color:white;">Добавление нескольких слов через файл</h5>
                     </div>
                     <div class="card-body">
                         <form action="/words/upload-file" method="post" enctype="multipart/form-data" class="mb-3">
@@ -171,7 +226,7 @@
                                 <label for="file" class="form-label">Выберите файл:</label>
                                 <input type="file" id="file" name="file" required class="form-control mb-3">
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle"></i>
+                            <button type="submit" class="btn btn-primary uploadBtn"><i class="bi bi-plus-circle"></i>
                                 Добавить</button>
                         </form>
                         <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
@@ -189,7 +244,7 @@
             <div class="col-md-6 mx-auto">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Полезная информация</h5>
+                        <h5 class="mb-0" style="color:white;">Полезная информация</h5>
                     </div>
                     <div class="card-body">
                         <h6 class="fw-bold mb-0">Добавление одного слова:</h6>
@@ -219,6 +274,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.submitBtn').on('click', function () {
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...').attr('disabled', 'disabled');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.uploadBtn').on('click', function () {
+                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...').attr('disabled', 'disabled');
+            });
+        });
+    </script>
+    <script>
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'none';
+        });
+
+        // Start the animation after the page has loaded
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'none';
+
+            // Get all the cards
+            const cards = document.querySelectorAll('.card');
+
+            // Loop through the cards and start the animation
+            cards.forEach((card, index) => {
+                // Delay the start of the animation for each card
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animationPlayState = 'running';
+            });
+        });
+    </script>
 </body>
 
 </html>
