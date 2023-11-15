@@ -589,7 +589,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             if (chatMember.getStatus().equals("left") && user.getUserType().equals(UserType.USER)) {
                 AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
                 answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
-                answerCallbackQuery.setText("Вы не подписаны на канал @english_in_use_channel");
+                answerCallbackQuery
+                        .setText("Вы не подписаны на канал " + promotedChannelService.getChannel().getChannelLink());
                 execute(answerCallbackQuery);
             } else {
                 user.setUserType(UserType.PREMIUM);
@@ -684,7 +685,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     execute(deleteMessageWithDifficultLevels);
                     SendMessage msg2 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал "
+                                    + promotedChannelService.getChannel().getChannelLink())
                             .build();
                     msg2.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg2);
@@ -701,7 +703,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     execute(deleteMessageWithDifficultLevels);
                     SendMessage msg3 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал "
+                                    + promotedChannelService.getChannel().getChannelLink())
                             .build();
                     msg3.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg3);
@@ -718,7 +721,8 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                     execute(deleteMessageWithDifficultLevels);
                     SendMessage msg4 = SendMessage.builder()
                             .chatId(callbackQuery.getMessage().getChatId().toString())
-                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал @english_in_use_channel")
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал "
+                                    + promotedChannelService.getChannel().getChannelLink())
                             .build();
                     msg4.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
                     execute(msg4);
