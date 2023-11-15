@@ -155,11 +155,14 @@
             <b style="color: white;">Состояние бота</b>
           </div>
           <div class="card-body">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Время работы: <span th:text="${uptime}"></span></li>
-              <li class="list-group-item">Обработано сообщений: <span th:text="${handledmessages}"></span></li>
-              <li class="list-group-item">Ошибок: <span th:text="${errors}"></span></li>
-              <li class="list-group-item">Среднее время ответа: <span
+            <ul class="list-group list-group-flush" style="background-color: inherit;">
+              <li class="list-group-item" style="background-color: inherit; border: none;">Время работы: <span
+                  th:text="${uptime}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Обработано сообщений: <span
+                  th:text="${handledmessages}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Ошибок: <span
+                  th:text="${errors}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Среднее время ответа: <span
                   th:text="${#numbers.formatDecimal(averageresponsetime, 1, 2)}"></span> секунд
               </li>
             </ul>

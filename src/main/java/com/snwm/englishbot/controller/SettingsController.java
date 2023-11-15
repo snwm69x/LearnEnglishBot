@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.snwm.englishbot.entity.PromotedChannel;
+import com.snwm.englishbot.entity.ReminderMessage;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.service.PromotedChannelService;
+import com.snwm.englishbot.service.impl.ReminderMessageServiceImpl;
 
 @Controller
 @RequestMapping("/settings")
@@ -28,6 +31,8 @@ public class SettingsController {
 
     @Autowired
     private PromotedChannelService promotedChannelService;
+    @Autowired
+    private ReminderMessageServiceImpl reminderMessageServiceImpl;
 
     @GetMapping
     public String getSettingsPage(Model model) {
@@ -37,6 +42,7 @@ public class SettingsController {
         model.addAttribute("botToken", BOT_TOKEN);
         model.addAttribute("botUsername", BOT_USERNAME);
         model.addAttribute("promotedChannel", promotedChannelService.getChannel());
+        model.addAttribute("reminderMessage", reminderMessageServiceImpl.getCurrentMessage());
         return "settings";
     }
 
@@ -49,6 +55,21 @@ public class SettingsController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to update promoted channel");
         }
+        return "redirect:/settings";
+    }
+
+    @PostMapping("/add-reminder-message")
+    public String addReminderMessage(@RequestParam String newMessage, Model model) {
+        ReminderMessage newReminderMessage = new ReminderMessage();
+        newReminderMessage.setMessage(newMessage);
+        reminderMessageServiceImpl.addReminderMessage(newMessage);
+        return "redirect:/settings";
+    }
+
+    @PostMapping("/select-reminder-message")
+    public String selectReminderMessage(@RequestParam Long reminderMessageId, Model model) {
+        ReminderMessage selectedMessage = reminderMessageServiceImpl.getReminderMessageById(reminderMessageId);
+        reminderMessageServiceImpl.setCurrentMessage(selectedMessage);
         return "redirect:/settings";
     }
 

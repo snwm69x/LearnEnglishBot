@@ -67,6 +67,25 @@
         .blur {
             filter: blur(5px);
         }
+
+        @keyframes card-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Примените анимацию к карточкам */
+        .card {
+            animation: card-appear 0.5s ease-out forwards;
+            opacity: 0;
+            /* Сделайте карточки изначально невидимыми */
+        }
     </style>
 </head>
 
@@ -138,11 +157,11 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 style="color:white;">Bot Information</h5>
+                        <h5 style="color:white;">Информация о боте</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Bot token:</strong> <span class="blur" th:text="${botToken}"
-                                onclick="revealToken()">Your Bot
+                        <p><strong>Bot token:</strong> <span class="blur" th:text="${botToken}" onclick="revealToken()"
+                                id="botToken">Your Bot
                                 Name</span></p>
                         <p><strong>Bot username:</strong> <span th:text="${botUsername}">@your_bot_username</span></p>
                     </div>
@@ -153,32 +172,32 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 style="color:white;">Promoted Channel Settings</h5>
+                        <h5 style="color:white;">Настройки продвигаемого канала</h5>
                     </div>
                     <div class="card-body">
                         <form action="/settings/update-promoted-channel" method="post">
                             <div class="mb-3">
-                                <label for="chatId" class="form-label">Chat ID:</label>
+                                <label for="chatId" class="form-label">ID чата:</label>
                                 <input type="text" name="chatId" class="form-control" id="chatId"
                                     th:value="${promotedChannel.getChatId()}">
                             </div>
                             <div class="mb-3">
-                                <label for="channelName" class="form-label">Channel name:</label>
+                                <label for="channelName" class="form-label">Название канала:</label>
                                 <input type="text" name="channelName" class="form-control" id="channelName"
                                     th:value="${promotedChannel.getChannelName()}">
                             </div>
                             <div class="mb-3">
-                                <label for="channelLink" class="form-label">Channel link:</label>
+                                <label for="channelLink" class="form-label">Ссылка на канал:</label>
                                 <input type="text" name="channelLink" class="form-control" id="channelLink"
                                     th:value="${promotedChannel.getChannelLink()}">
                             </div>
                             <div class="mb-3">
-                                <label for="channelDescription" class="form-label">Channel description:</label>
+                                <label for="channelDescription" class="form-label">Описание канала:</label>
                                 <textarea name="channelDescription" class="form-control" id="channelDescription"
                                     th:text="${promotedChannel.getChannelDescription()}"></textarea>
                             </div>
                             <!-- Добавьте здесь другие настройки -->
-                            <button type="submit" class="btn btn-primary mb-3">Save changes</button>
+                            <button type="submit" class="btn btn-primary mb-3">Сохранить изменения</button>
                             <div th:if="${message}" class="alert alert-success mb-3" role="alert">
                                 <p th:text="${message}"></p>
                             </div>
@@ -195,7 +214,34 @@
                     <div class="card-header">
                         <h5 style="color:white;">Настройка сообщения для напоминания</h5>
                     </div>
-                    <!-- ... -->
+                    <div class="card-body">
+                        <h5>Текущее сообщение для рассылки:</h5>
+                        <p th:text="${reminderMessage.getMessage()}"></p>
+
+                        <hr>
+
+                        <form action="#" th:action="@{/settings/add-reminder-message}" method="post">
+                            <div class="mb-3">
+                                <label for="newMessage" class="form-label">Добавить новое сообщение:</label>
+                                <textarea id="newMessage" name="newMessage" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Добавить сообщение</button>
+                        </form>
+
+                        <hr>
+
+                        <form action="#" th:action="@{/settings/select-reminder-message}" method="post">
+                            <div class="mb-3">
+                                <label for="reminderMessageId" class="form-label">Выберите сообщение для
+                                    рассылки:</label>
+                                <select name="reminderMessageId" id="reminderMessageId" class="form-control" size="3">
+                                    <option th:each="message : ${messages}" th:value="${message.id}"
+                                        th:text="${message.text}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Выбрать сообщение</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -213,6 +259,21 @@
             function revealToken() {
                 document.getElementById('botToken').classList.remove('blur');
             }
+
+            window.addEventListener('load', function () {
+                const loader = document.getElementById('loader');
+                loader.style.display = 'none';
+
+                // Получите все карточки
+                const cards = document.querySelectorAll('.card');
+
+                // Пройдитесь по карточкам и начните анимацию
+                cards.forEach((card, index) => {
+                    // Задержите начало анимации для каждой карточки
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.style.animationPlayState = 'running';
+                });
+            });
         </script>
 </body>
 
