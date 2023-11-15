@@ -174,8 +174,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="channelDescription" class="form-label">Channel description:</label>
-                                <input type="text" name="channelDescription" class="form-control"
-                                    id="channelDescription" th:placeholder="${promotedChannel.getChannelDescription()}">
+                                <textarea name="channelDescription" class="form-control" id="channelDescription"
+                                    th:placeholder="${promotedChannel.getChannelDescription()}"></textarea>
                             </div>
                             <!-- Добавьте здесь другие настройки -->
                             <button type="submit" class="btn btn-primary mb-3">Save changes</button>
@@ -193,7 +193,7 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 style="color:white;">Other Settings</h5>
+                        <h5 style="color:white;">Настройка сообщения для напоминания</h5>
                     </div>
                     <!-- ... -->
                 </div>
