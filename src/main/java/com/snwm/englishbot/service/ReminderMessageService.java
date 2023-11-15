@@ -14,4 +14,6 @@ public interface ReminderMessageService {
     ReminderMessage getCurrentMessage();
 
     ReminderMessage getReminderMessageById(Long id);
+
+    void scheduledRemind();
 }

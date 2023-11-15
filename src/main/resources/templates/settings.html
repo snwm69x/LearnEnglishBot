@@ -215,32 +215,34 @@
                         <h5 style="color:white;">Настройка сообщения для напоминания</h5>
                     </div>
                     <div class="card-body">
-                        <h5>Текущее сообщение для рассылки:</h5>
-                        <p th:text="${reminderMessage.getMessage()}"></p>
+                        <h6>Текущее сообщение для рассылки:</h5>
+                            <p th:text="${reminderMessage.getMessage()}"></p>
 
-                        <hr>
+                            <hr>
 
-                        <form action="#" th:action="@{/settings/add-reminder-message}" method="post">
-                            <div class="mb-3">
-                                <label for="newMessage" class="form-label">Добавить новое сообщение:</label>
-                                <textarea id="newMessage" name="newMessage" class="form-control" rows="3"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Добавить сообщение</button>
-                        </form>
+                            <form action="#" th:action="@{/settings/add-reminder-message}" method="post">
+                                <div class="mb-3">
+                                    <label for="newMessage" class="form-label">Добавить новое сообщение:</label>
+                                    <textarea id="newMessage" name="newMessage" class="form-control"
+                                        rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Добавить сообщение</button>
+                            </form>
 
-                        <hr>
+                            <hr>
 
-                        <form action="#" th:action="@{/settings/select-reminder-message}" method="post">
-                            <div class="mb-3">
-                                <label for="reminderMessageId" class="form-label">Выберите сообщение для
-                                    рассылки:</label>
-                                <select name="reminderMessageId" id="reminderMessageId" class="form-control" size="3">
-                                    <option th:each="message : ${allReminderMessages}" th:value="${message.getId()}"
-                                        th:text="${message.getMessage()}"></option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Выбрать сообщение</button>
-                        </form>
+                            <form action="#" th:action="@{/settings/select-reminder-message}" method="post">
+                                <div class="mb-3">
+                                    <label for="reminderMessageId" class="form-label">Выберите сообщение для
+                                        рассылки:</label>
+                                    <select name="reminderMessageId" id="reminderMessageId" class="form-control"
+                                        size="3">
+                                        <option th:each="message : ${allReminderMessages}" th:value="${message.getId()}"
+                                            th:text="${message.getMessage()}"></option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Выбрать сообщение</button>
+                            </form>
                     </div>
                 </div>
             </div>
