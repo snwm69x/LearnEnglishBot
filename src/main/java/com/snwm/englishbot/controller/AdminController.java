@@ -1,5 +1,8 @@
 package com.snwm.englishbot.controller;
 
+import java.util.Collections;
+import java.util.LinkedList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,13 +34,15 @@ public class AdminController {
     public String getAdminPage(Model model) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
+        LinkedList<String> recentNews = adminControllerServiceImpl.getRecentNews();
+        Collections.reverse(recentNews);
         model.addAttribute("user", user);
         model.addAttribute("uptime", adminControllerServiceImpl.getUptime());
         model.addAttribute("handledmessages", adminControllerServiceImpl.getHandledMessages());
         model.addAttribute("errors", adminControllerServiceImpl.getErrors());
         model.addAttribute("newusers", adminControllerServiceImpl.getNewUsers());
         model.addAttribute("allusers", userService.getAllUsers().size());
-        model.addAttribute("recentnews", adminControllerServiceImpl.getRecentNews());
+        model.addAttribute("recentnews", recentNews);
         model.addAttribute("averageresponsetime", adminControllerServiceImpl.getAverageResponseTime());
         return "admin";
     }
