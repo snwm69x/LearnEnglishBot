@@ -1,6 +1,5 @@
 package com.snwm.englishbot.controller;
 
-import java.util.Collections;
 import java.util.LinkedList;
 
 import org.springframework.beans.factory.annotation.Autowired;

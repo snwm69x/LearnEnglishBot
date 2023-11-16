@@ -510,6 +510,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
             answerCallbackQuery.setShowAlert(false);
             answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
+            answerCallbackQuery.setCacheTime(2);
 
             try {
                 execute(editMessageText);
@@ -565,6 +566,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
             answerCallbackQuery.setShowAlert(false);
             answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
+            answerCallbackQuery.setCacheTime(2);
             try {
                 execute(editMessageText);
                 execute(answerCallbackQuery);
@@ -591,6 +593,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
                 answerCallbackQuery
                         .setText("Вы не подписаны на канал " + promotedChannelService.getChannel().getChannelLink());
+                answerCallbackQuery.setCacheTime(2);
                 execute(answerCallbackQuery);
             } else {
                 user.setUserType(UserType.PREMIUM);
@@ -601,6 +604,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                 AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
                 answerCallbackQuery.setCallbackQueryId(callbackQuery.getId());
                 answerCallbackQuery.setText("Вы получили права PREMIUM");
+                answerCallbackQuery.setCacheTime(2);
                 execute(deleteMessage);
                 execute(answerCallbackQuery);
             }
@@ -622,6 +626,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         AnswerCallbackQuery answerCallbackQueryWhenUserPickedDifficult = AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
                 .text("Выбран уровень сложности: " + data[1])
+                .cacheTime(2)
                 .build();
         DeleteMessage deleteMessageWithDifficultLevels = DeleteMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId().toString())
