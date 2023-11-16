@@ -185,6 +185,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
                         update.getCallbackQuery().getFrom().getUserName());
                 handleUserSubscriptionResponse(update.getCallbackQuery());
             }
+
+            if (update.getCallbackQuery().getData().equals("btn")) {
+                handleNewWordCommand(update.getCallbackQuery().getMessage());
+            }
         }
     }
 
@@ -494,7 +498,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             List<InlineKeyboardButton> row = new ArrayList<>();
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setCallbackData(callbackQuery.getData());
+            button.setCallbackData("btn");
             button.setText("Правильно");
             EditMessageText editMessageText = new EditMessageText();
             editMessageText.setChatId(callbackQuery.getMessage().getChatId().toString());
@@ -557,7 +561,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setText("Неверно");
-            button.setCallbackData(callbackQuery.getData());
+            button.setCallbackData("btn");
             row.add(button);
             keyboard.add(row);
             markup.setKeyboard(keyboard);
