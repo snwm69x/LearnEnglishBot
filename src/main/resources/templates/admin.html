@@ -27,12 +27,66 @@
     }
 
     .card-header {
-      background-color: #6c757d38;
+      background-color: #0c73fe;
+    }
+
+    #loader {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #loader::before {
+      content: "";
+      display: block;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes card-appear {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Примените анимацию к карточкам */
+    .card {
+      animation: card-appear 0.5s ease-out forwards;
+      opacity: 0;
+      /* Сделайте карточки изначально невидимыми */
     }
   </style>
 </head>
 
 <body>
+  <div id="loader"></div>
   <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
       <a class="navbar-brand" href="#">EnglishWordBot</a>
@@ -51,7 +105,8 @@
             <a class="nav-link" href="/users"><i class="bi bi-people"></i> Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/newsletter"><i class="bi bi-chat-left-dots"></i> Newsletter</a>
+            <a class="nav-link" href="/newsletter"><i class="bi bi-chat-left-dots"></i>
+              Newsletter</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="wordsDropdown" role="button" data-bs-toggle="dropdown"
@@ -97,15 +152,17 @@
       <div class="col-lg-4 mb-4">
         <div class="card">
           <div class="card-header">
-            Состояние бота
+            <b style="color: white;">Состояние бота</b>
           </div>
           <div class="card-body">
-            <p class="card-text">Бот работает</p>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Время работы: <span th:text="${uptime}"></span></li>
-              <li class="list-group-item">Обработано сообщений: <span th:text="${handledmessages}"></span></li>
-              <li class="list-group-item">Ошибок: <span th:text="${errors}"></span></li>
-              <li class="list-group-item">Среднее время ответа: <span
+            <ul class="list-group list-group-flush" style="background-color: inherit;">
+              <li class="list-group-item" style="background-color: inherit; border: none;">Время работы: <span
+                  th:text="${uptime}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Обработано сообщений: <span
+                  th:text="${handledmessages}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Ошибок: <span
+                  th:text="${errors}"></span></li>
+              <li class="list-group-item" style="background-color: inherit; border: none;">Среднее время ответа: <span
                   th:text="${#numbers.formatDecimal(averageresponsetime, 1, 2)}"></span> секунд
               </li>
             </ul>
@@ -117,7 +174,7 @@
         <!-- Общая статистика -->
         <div class="card">
           <div class="card-header">
-            Общая статистика
+            <b style="color:white;">Общая статистика</b>
           </div>
           <div class="card-body">
             <p class="card-text">Активных пользователей: <span th:text="${allusers}"></span></p>
@@ -130,10 +187,11 @@
         <!-- Последние действия -->
         <div class="card" style="height: 500px;">
           <div class="card-header">
-            Последние действия
+            <b style="color:white;">Последние действия</b>
           </div>
           <ul class="list-group list-group-flush overflow-auto">
-            <li class="list-group-item" th:each="action : ${recentnews}" th:text="${action}"></li>
+            <li class="list-group-item" th:each="action : ${recentnews}" th:text="${action}"
+              style="background-color: inherit; border: none;"></li>
           </ul>
         </div>
       </div>
@@ -143,6 +201,27 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
     crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('loader');
+      loader.style.display = 'none';
+    });
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('loader');
+      loader.style.display = 'none';
+
+      // Получите все карточки
+      const cards = document.querySelectorAll('.card');
+
+      // Пройдитесь по карточкам и начните анимацию
+      cards.forEach((card, index) => {
+        // Задержите начало анимации для каждой карточки
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.style.animationPlayState = 'running';
+      });
+    });
+  </script>
 </body>
 
 </html>

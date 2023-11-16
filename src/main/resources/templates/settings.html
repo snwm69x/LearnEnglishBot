@@ -27,12 +27,70 @@
         }
 
         .card-header {
-            background-color: #6c757d38;
+            background-color: #0c73fe;
+        }
+
+        #loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #loader::before {
+            content: "";
+            display: block;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .blur {
+            filter: blur(5px);
+        }
+
+        @keyframes card-appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Примените анимацию к карточкам */
+        .card {
+            animation: card-appear 0.5s ease-out forwards;
+            opacity: 0;
+            /* Сделайте карточки изначально невидимыми */
         }
     </style>
 </head>
 
 <body>
+    <div id="loader"></div>
     <nav class="navbar navbar-expand-sm navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="#">EnglishWordBot</a>
@@ -99,10 +157,12 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Bot Information</h5>
+                        <h5 style="color:white;">Информация о боте</h5>
                     </div>
                     <div class="card-body">
-                        <p><strong>Bot token:</strong> <span th:text="${botToken}">Your Bot Name</span></p>
+                        <p><strong>Bot token:</strong> <span class="blur" th:text="${botToken}" onclick="revealToken()"
+                                id="botToken">Your Bot
+                                Name</span></p>
                         <p><strong>Bot username:</strong> <span th:text="${botUsername}">@your_bot_username</span></p>
                     </div>
                 </div>
@@ -112,16 +172,39 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Bot Settings</h5>
+                        <h5 style="color:white;">Настройки продвигаемого канала</h5>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form action="/settings/update-promoted-channel" method="post">
                             <div class="mb-3">
-                                <label for="welcomeMessage" class="form-label">Welcome Message</label>
-                                <input type="text" class="form-control" id="welcomeMessage">
+                                <label for="chatId" class="form-label">ID чата:</label>
+                                <input type="text" name="chatId" class="form-control" id="chatId"
+                                    th:value="${promotedChannel.getChatId()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelName" class="form-label">Название канала:</label>
+                                <input type="text" name="channelName" class="form-control" id="channelName"
+                                    th:value="${promotedChannel.getChannelName()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelLink" class="form-label">Ссылка на канал:</label>
+                                <input type="text" name="channelLink" class="form-control" id="channelLink"
+                                    th:value="${promotedChannel.getChannelLink()}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="channelDescription" class="form-label">Описание канала:</label>
+                                <textarea name="channelDescription" class="form-control" id="channelDescription"
+                                    th:text="${promotedChannel.getChannelDescription()}"></textarea>
                             </div>
                             <!-- Добавьте здесь другие настройки -->
-                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="submit" class="btn btn-primary mb-3">Сохранить изменения</button>
+                            <div th:if="${message}" class="alert alert-success mb-3" role="alert">
+                                <p th:text="${message}"></p>
+                            </div>
+                            <!-- Сообщение об ошибке -->
+                            <div th:if="${error}" class="alert alert-danger mb-3" role="alert">
+                                <p th:text="${error}"></p>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -129,9 +212,40 @@
             <div class="col-md-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5>Other Settings</h5>
+                        <h5 style="color:white;">Настройка сообщения для напоминания</h5>
                     </div>
-                    <!-- ... -->
+                    <div class="card-body">
+                        <h6>Текущее сообщение для рассылки:</h5>
+                            <p class="text-center" th:text="${reminderMessage.getMessage()}">
+                                Сообщение для
+                                рассылки</p>
+
+                            <hr>
+
+                            <form action="#" th:action="@{/settings/add-reminder-message}" method="post">
+                                <div class="mb-3">
+                                    <label for="newMessage" class="form-label">Добавить новое сообщение:</label>
+                                    <textarea id="newMessage" name="newMessage" class="form-control"
+                                        rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Добавить сообщение</button>
+                            </form>
+
+                            <hr>
+
+                            <form action="#" th:action="@{/settings/select-reminder-message}" method="post">
+                                <div class="mb-3">
+                                    <label for="reminderMessageId" class="form-label">Выберите сообщение для
+                                        рассылки:</label>
+                                    <select name="reminderMessageId" id="reminderMessageId" class="form-control"
+                                        size="3">
+                                        <option th:each="message : ${allReminderMessages}" th:value="${message.getId()}"
+                                            th:text="${message.getMessage()}"></option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Выбрать сообщение</button>
+                            </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -139,6 +253,32 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
             crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            window.addEventListener('load', function () {
+                const loader = document.getElementById('loader');
+                loader.style.display = 'none';
+            });
+
+            function revealToken() {
+                document.getElementById('botToken').classList.remove('blur');
+            }
+
+            window.addEventListener('load', function () {
+                const loader = document.getElementById('loader');
+                loader.style.display = 'none';
+
+                // Получите все карточки
+                const cards = document.querySelectorAll('.card');
+
+                // Пройдитесь по карточкам и начните анимацию
+                cards.forEach((card, index) => {
+                    // Задержите начало анимации для каждой карточки
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.style.animationPlayState = 'running';
+                });
+            });
+        </script>
 </body>
 
 </html>

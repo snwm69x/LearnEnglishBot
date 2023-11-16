@@ -44,7 +44,7 @@ public class KeyboardMaker {
     public InlineKeyboardMarkup getAdminPageButton(String url) {
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setUrl(url);
-        button.setText("Admin Dashboard");
+        button.setText("Open");
         List<InlineKeyboardButton> row = new ArrayList<>();
         row.add(button);
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
@@ -86,6 +86,14 @@ public class KeyboardMaker {
         keyboard.add(row1);
         keyboard.add(row2);
         keyboard.add(row3);
+        InlineKeyboardButton otherDictionariesButton = new InlineKeyboardButton();
+        otherDictionariesButton.setText("Другие словари");
+        otherDictionariesButton.setCallbackData("difficult:other");
+
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
+        row4.add(otherDictionariesButton);
+
+        keyboard.add(row4);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;

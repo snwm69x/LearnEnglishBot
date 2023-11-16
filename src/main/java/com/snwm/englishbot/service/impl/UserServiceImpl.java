@@ -1,6 +1,7 @@
 package com.snwm.englishbot.service.impl;
 
 import com.snwm.englishbot.entity.enums.UserType;
+import com.snwm.englishbot.entity.enums.WordLevel;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(message.getFrom().getLastName())
                 .userType(UserType.USER)
                 .rating(0)
+                .wordLevel(WordLevel.NONE)
                 .build();
         userRepository.save(user);
     }
