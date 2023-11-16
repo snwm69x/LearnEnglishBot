@@ -35,7 +35,7 @@ public class AdminController {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         LinkedList<String> recentNews = adminControllerServiceImpl.getRecentNews();
-        Collections.reverse(recentNews);
+        // Collections.reverse(recentNews);
         model.addAttribute("user", user);
         model.addAttribute("uptime", adminControllerServiceImpl.getUptime());
         model.addAttribute("handledmessages", adminControllerServiceImpl.getHandledMessages());

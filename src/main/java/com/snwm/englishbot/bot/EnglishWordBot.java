@@ -201,10 +201,10 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         boolean top10 = false;
         User user = userService.getUserByChatId(message.getChatId());
         List<User> users = userService.getAllUsers();
+        users.sort(Comparator.comparing(User::getRating).reversed());
         if (users.indexOf(user) < 10) {
             top10 = true;
         }
-        users.sort(Comparator.comparing(User::getRating).reversed());
         StringBuilder text = new StringBuilder("<b>Таблица лидеров:</b>\n\n");
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
@@ -362,7 +362,7 @@ public class EnglishWordBot extends TelegramLongPollingBot {
         }
         User user = userService.getUserByChatId(message.getChatId());
         // Если у пользователя не выбрана сложность, предлагает ее выбрать
-        if (user.getWordLevel().equals(null)) {
+        if (user.getWordLevel().equals(WordLevel.NONE)) {
             SendMessage sendMessage = SendMessage.builder()
                     .chatId(message.getChatId().toString())
                     .text("У вас не выбрана сложность.")
