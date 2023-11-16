@@ -187,6 +187,17 @@ public class EnglishWordBot extends TelegramLongPollingBot {
             }
 
             if (update.getCallbackQuery().getData().equals("btn")) {
+                AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+                answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
+                answerCallbackQuery.setShowAlert(false);
+                answerCallbackQuery.setText("Следующее слово");
+                answerCallbackQuery.setCacheTime(2);
+                try {
+                    execute(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                    logger.error("Error while sending answer callback query: {}", e.getMessage());
+                }
                 handleNewWordCommand(update.getCallbackQuery().getMessage());
             }
         }
