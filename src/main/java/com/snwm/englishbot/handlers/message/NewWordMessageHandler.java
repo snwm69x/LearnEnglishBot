@@ -43,12 +43,13 @@ public class NewWordMessageHandler implements MessageHandler {
     @Override
     public void handle(Message message, EnglishWordBot bot) {
 
+        Long userChatId = message.getChatId();
         adminControllerServiceImpl.startMessageProcessing();
         logger.info("Обработка команды 'Новое слово' для пользователя: {}",
                 message.getFrom().getUserName());
 
         SendChatAction sendChatAction = SendChatAction.builder()
-                .chatId(message.getChatId().toString())
+                .chatId(userChatId.toString())
                 .action("typing")
                 .build();
         try {
@@ -57,11 +58,11 @@ public class NewWordMessageHandler implements MessageHandler {
             e.printStackTrace();
         }
 
-        User user = userService.getUserByChatId(message.getChatId());
+        User user = userService.getUserByChatId(userChatId);
         // Если у пользователя не выбрана сложность, предлагает ее выбрать
         if (user.getWordLevel().equals(WordLevel.NONE)) {
             SendMessage sendMessage = SendMessage.builder()
-                    .chatId(message.getChatId().toString())
+                    .chatId(userChatId.toString())
                     .text("У вас не выбрана сложность.")
                     .build();
             sendMessage.setReplyMarkup(keyboardMaker.getDifficultLevelKeyboard());
@@ -74,17 +75,17 @@ public class NewWordMessageHandler implements MessageHandler {
             }
         }
         if (user.getWords().isEmpty()) {
-            wordService.set30WordsToUser(message.getChatId(), user.getWordLevel());
+            wordService.set30WordsToUser(userChatId, user.getWordLevel());
         }
         if (random.nextBoolean()) {
-            findTranslation(message, bot);
+            findTranslation(userChatId, bot);
         } else {
-            findWordByTranslation(message, bot);
+            findWordByTranslation(userChatId, bot);
         }
     }
 
-    private void findTranslation(Message message, EnglishWordBot bot) {
-        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
+    private void findTranslation(Long userChatId, EnglishWordBot bot) {
+        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
@@ -100,7 +101,7 @@ public class NewWordMessageHandler implements MessageHandler {
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
-        newWordMessage.setChatId(message.getChatId().toString());
+        newWordMessage.setChatId(userChatId.toString());
         newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options,
                 false);
@@ -118,11 +119,11 @@ public class NewWordMessageHandler implements MessageHandler {
         adminControllerServiceImpl.endMessageProcessing();
         adminControllerServiceImpl
                 .recordNews(
-                        "Пользователь " + message.getFrom().getUserName() + " запросил новое слово " + word.getWord());
+                        "Пользователь " + userChatId.toString() + " запросил новое слово " + word.getWord());
     }
 
-    private void findWordByTranslation(Message message, EnglishWordBot bot) {
-        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(message.getChatId());
+    private void findWordByTranslation(Long userChatId, EnglishWordBot bot) {
+        Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
@@ -138,7 +139,7 @@ public class NewWordMessageHandler implements MessageHandler {
         SendMessage newWordMessage = new SendMessage();
         newWordMessage.disableNotification();
         newWordMessage.enableHtml(true);
-        newWordMessage.setChatId(message.getChatId().toString());
+        newWordMessage.setChatId(userChatId.toString());
         newWordMessage.setText(
                 "<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options, true);
@@ -153,7 +154,7 @@ public class NewWordMessageHandler implements MessageHandler {
         }
         adminControllerServiceImpl.endMessageProcessing();
         adminControllerServiceImpl
-                .recordNews("Пользователь " + message.getFrom().getUserName() + " запросил новое слово "
+                .recordNews("Пользователь " + userChatId.toString() + " запросил новое слово "
                         + word.getTranslation().toString());
     }
 

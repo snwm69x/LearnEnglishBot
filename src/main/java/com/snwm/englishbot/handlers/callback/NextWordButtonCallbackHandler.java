@@ -36,7 +36,7 @@ public class NextWordButtonCallbackHandler implements CallbackHandler {
             adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
             logger.error("Error while sending answer callback query: {}", e.getMessage());
         }
-        newWordMessageHandler.handle(update.getMessage(), bot);
+        newWordMessageHandler.handle(update.getCallbackQuery().getMessage(), bot);
     }
 
 }
