@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.snwm.englishbot.entity.PromotedChannel;
 import com.snwm.englishbot.repository.PromotedChannelRepository;
@@ -25,6 +26,7 @@ public class PromotedChannelServiceImpl implements PromotedChannelService {
         }
     }
 
+    @Transactional
     @Override
     public void setChannel(PromotedChannel promotedChannel) {
         Optional<PromotedChannel> optionalPromotedChannel = promotedChannelRepository.findById(0L);

@@ -1,6 +1,8 @@
 package com.snwm.englishbot.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -19,81 +21,71 @@ public class KeyboardMaker {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(false);
-        List<KeyboardRow> keys = new ArrayList<>();
-        // Добавление кнопок
+
+        KeyboardButton button_newWord = new KeyboardButton("Новое слово 💭");
+        KeyboardButton button_chooseDifficult = new KeyboardButton("Выбрать сложность ⚙️");
+        KeyboardButton button_rating = new KeyboardButton("Таблица лидеров 🏆");
+
         KeyboardRow row1 = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
-        KeyboardButton button_newWord = new KeyboardButton();
-        // KeyboardButton button_statistics = new KeyboardButton();
-        KeyboardButton button_chooseDifficult = new KeyboardButton();
-        KeyboardButton button_rating = new KeyboardButton();
-        button_newWord.setText("Новое слово 💭");
-        // button_statistics.setText("Статистика 🔄");
-        button_chooseDifficult.setText("Выбрать сложность ⚙️");
-        button_rating.setText("Таблица лидеров 🏆");
         row1.add(button_newWord);
-        // row1.add(button_statistics);
-        row2.add(button_chooseDifficult);
         row1.add(button_rating);
-        keys.add(row1);
-        keys.add(row2);
+
+        KeyboardRow row2 = new KeyboardRow();
+        row2.add(button_chooseDifficult);
+
+        List<KeyboardRow> keys = Arrays.asList(row1, row2);
+
         keyboard.setKeyboard(keys);
         return keyboard;
     }
 
     public InlineKeyboardMarkup getAdminPageButton(String url) {
-        InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setUrl(url);
-        button.setText("Open");
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        row.add(button);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row);
+        InlineKeyboardButton button = InlineKeyboardButton.builder()
+                .url(url)
+                .text("Open")
+                .build();
+        List<List<InlineKeyboardButton>> keyboard = Arrays.asList(
+                Collections.singletonList(button));
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;
     }
 
     public InlineKeyboardMarkup getDifficultLevelKeyboard() {
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText("A1 - Elementary");
-        button1.setCallbackData("difficult:A1");
-        InlineKeyboardButton button2 = new InlineKeyboardButton();
-        button2.setText("A2 - Pre-Intermediate");
-        button2.setCallbackData("difficult:A2");
-        InlineKeyboardButton button3 = new InlineKeyboardButton();
-        button3.setText("B1 - Intermediate");
-        button3.setCallbackData("difficult:B1");
-        InlineKeyboardButton button4 = new InlineKeyboardButton();
-        button4.setText("B2 - Upper-Intermediate");
-        button4.setCallbackData("difficult:B2");
-        InlineKeyboardButton button5 = new InlineKeyboardButton();
-        button5.setText("C1 - Advanced");
-        button5.setCallbackData("difficult:C1");
-        InlineKeyboardButton button6 = new InlineKeyboardButton();
-        button6.setText("C2 - Proficiency");
-        button6.setCallbackData("difficult:C2");
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(button1);
-        row1.add(button2);
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-        row2.add(button3);
-        row2.add(button4);
-        List<InlineKeyboardButton> row3 = new ArrayList<>();
-        row3.add(button5);
-        row3.add(button6);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row1);
-        keyboard.add(row2);
-        keyboard.add(row3);
-        InlineKeyboardButton otherDictionariesButton = new InlineKeyboardButton();
-        otherDictionariesButton.setText("Другие словари");
-        otherDictionariesButton.setCallbackData("difficult:other");
+        InlineKeyboardButton a1btn = InlineKeyboardButton.builder()
+                .text("A1 - Elementary")
+                .callbackData("difficult:A1")
+                .build();
+        InlineKeyboardButton a2btn = InlineKeyboardButton.builder()
+                .text("A2 - Pre-Intermediate")
+                .callbackData("difficult:A2")
+                .build();
+        InlineKeyboardButton b1btn = InlineKeyboardButton.builder()
+                .text("B1 - Intermediate")
+                .callbackData("difficult:B1")
+                .build();
+        InlineKeyboardButton b2btn = InlineKeyboardButton.builder()
+                .text("B2 - Upper-Intermediate")
+                .callbackData("difficult:B2")
+                .build();
+        InlineKeyboardButton c1btn = InlineKeyboardButton.builder()
+                .text("C1 - Advanced")
+                .callbackData("difficult:C1")
+                .build();
+        InlineKeyboardButton c2btn = InlineKeyboardButton.builder()
+                .text("C2 - Proficiency")
+                .callbackData("difficult:C2")
+                .build();
+        InlineKeyboardButton otherDict = InlineKeyboardButton.builder()
+                .text("Другие словари")
+                .callbackData("difficult:other")
+                .build();
+        List<List<InlineKeyboardButton>> keyboard = Arrays.asList(
+                Arrays.asList(a1btn, a2btn),
+                Arrays.asList(b1btn, b2btn),
+                Arrays.asList(c1btn, c2btn),
+                Arrays.asList(otherDict));
 
-        List<InlineKeyboardButton> row4 = new ArrayList<>();
-        row4.add(otherDictionariesButton);
-
-        keyboard.add(row4);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;
@@ -133,26 +125,24 @@ public class KeyboardMaker {
     }
 
     public InlineKeyboardMarkup getSuccessPickedDifficultLevel() {
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText("Сложность выбрана");
-        button1.setCallbackData("success");
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(button1);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row1);
+        InlineKeyboardButton button = InlineKeyboardButton.builder()
+                .text("Сложность выбрана")
+                .callbackData("success")
+                .build();
+        List<List<InlineKeyboardButton>> keyboard = Arrays.asList(
+                Collections.singletonList(button));
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;
     }
 
     public InlineKeyboardMarkup checkIfUserSubscribedToChannel() {
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText("Проверить подписку!");
-        button1.setCallbackData("checksubscription");
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(button1);
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        keyboard.add(row1);
+        InlineKeyboardButton button = InlineKeyboardButton.builder()
+                .text("Проверить подписку!")
+                .callbackData("checksubscription")
+                .build();
+        List<List<InlineKeyboardButton>> keyboard = Arrays.asList(
+                Collections.singletonList(button));
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(keyboard);
         return inlineKeyboardMarkup;

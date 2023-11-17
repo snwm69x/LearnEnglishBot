@@ -11,6 +11,7 @@ import com.snwm.englishbot.service.WordService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -32,6 +33,7 @@ public class WordServiceImpl implements WordService {
         return wordRepository.findWordsByUser(id).orElseThrow(EntityNotFoundException::new);
     }
 
+    @Transactional
     @Override
     public void setAllWordToUser(Long id, WordLevel wordLevel) {
         User user = userRepository.findUserByChatId(id);
@@ -39,6 +41,7 @@ public class WordServiceImpl implements WordService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void set30WordsToUser(Long id, WordLevel wordLevel) {
         User user = userRepository.findUserByChatId(id);
@@ -46,6 +49,7 @@ public class WordServiceImpl implements WordService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public Word getRandomWordByUserChatIdAndDeleteIt(Long id) {
         User user = userRepository.findUserByChatId(id);

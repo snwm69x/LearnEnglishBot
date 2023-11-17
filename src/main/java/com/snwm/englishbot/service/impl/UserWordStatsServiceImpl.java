@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.snwm.englishbot.entity.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.snwm.englishbot.repository.UserWordStatsRepository;
 import com.snwm.englishbot.service.UserWordStatsService;
@@ -18,6 +19,7 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
         this.userWordStatsRepository = userWordStatsRepository;
     }
 
+    @Transactional
     @Override
     public void updateWordStats(User user, Word word, boolean isCorrect) {
         if (userWordStatsRepository.findByUserAndWord(user, word).isEmpty()) {
@@ -57,7 +59,7 @@ public class UserWordStatsServiceImpl implements UserWordStatsService {
     public double getSuccessRate(Long wordId) {
         int totalCorrectAttempts = userWordStatsRepository.getCorrectAttempt(wordId);
         int totalAttempts = userWordStatsRepository.getAllAttempt(wordId);
-        return (double)((totalCorrectAttempts * 100) / totalAttempts);
+        return (double) ((totalCorrectAttempts * 100) / totalAttempts);
     }
 
     @Override
