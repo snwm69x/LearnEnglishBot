@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
@@ -40,6 +40,7 @@ public class NewWordMessageHandler implements MessageHandler {
     @Autowired
     private WordService wordService;
 
+    @Transactional
     @Override
     public void handle(Message message, EnglishWordBot bot) {
 
@@ -64,8 +65,8 @@ public class NewWordMessageHandler implements MessageHandler {
             SendMessage sendMessage = SendMessage.builder()
                     .chatId(userChatId.toString())
                     .text("У вас не выбрана сложность.")
+                    .replyMarkup(keyboardMaker.getDifficultLevelKeyboard())
                     .build();
-            sendMessage.setReplyMarkup(keyboardMaker.getDifficultLevelKeyboard());
             try {
                 bot.execute(sendMessage);
                 return;
@@ -84,7 +85,8 @@ public class NewWordMessageHandler implements MessageHandler {
         }
     }
 
-    private void findTranslation(Long userChatId, EnglishWordBot bot) {
+    @Transactional
+    protected void findTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         List<Word> options = new ArrayList<>();
@@ -98,14 +100,13 @@ public class NewWordMessageHandler implements MessageHandler {
         }
         options.add(word);
         Collections.shuffle(options);
-        SendMessage newWordMessage = new SendMessage();
-        newWordMessage.disableNotification();
+        SendMessage newWordMessage = SendMessage.builder()
+                .disableNotification(true)
+                .chatId(userChatId.toString())
+                .text("<b>" + word.getWord() + "</b> " + word.getTranscription())
+                .replyMarkup(keyboardMaker.getNewWordKeyboard(word, options, false))
+                .build();
         newWordMessage.enableHtml(true);
-        newWordMessage.setChatId(userChatId.toString());
-        newWordMessage.setText("<b>" + word.getWord() + "</b> " + word.getTranscription());
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options,
-                false);
-        newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             bot.execute(newWordMessage);
         } catch (TelegramApiException e) {
@@ -122,7 +123,8 @@ public class NewWordMessageHandler implements MessageHandler {
                         "Пользователь " + userChatId.toString() + " запросил новое слово " + word.getWord());
     }
 
-    private void findWordByTranslation(Long userChatId, EnglishWordBot bot) {
+    @Transactional
+    protected void findWordByTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         List<Word> options = new ArrayList<>();
@@ -136,14 +138,13 @@ public class NewWordMessageHandler implements MessageHandler {
         }
         options.add(word);
         Collections.shuffle(options);
-        SendMessage newWordMessage = new SendMessage();
-        newWordMessage.disableNotification();
+        SendMessage newWordMessage = SendMessage.builder()
+                .disableNotification(true)
+                .chatId(userChatId.toString())
+                .text("<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>")
+                .replyMarkup(keyboardMaker.getNewWordKeyboard(word, options, true))
+                .build();
         newWordMessage.enableHtml(true);
-        newWordMessage.setChatId(userChatId.toString());
-        newWordMessage.setText(
-                "<b>" + word.getTranslation().get((int) (Math.random() * word.getTranslation().size())) + "</b>");
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboardMaker.getNewWordKeyboard(word, options, true);
-        newWordMessage.setReplyMarkup(inlineKeyboardMarkup);
         try {
             bot.execute(newWordMessage);
         } catch (TelegramApiException e) {

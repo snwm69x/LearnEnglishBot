@@ -1,15 +1,16 @@
 package com.snwm.englishbot.handlers.callback;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -41,6 +42,7 @@ public class NewWordCallbackHandler implements CallbackHandler {
     @Autowired
     private AdminControllerServiceImpl adminControllerServiceImpl;
 
+    @Transactional
     @Override
     public void handle(Update update, EnglishWordBot bot) {
         Long userId = update.getCallbackQuery().getFrom().getId();
@@ -84,28 +86,26 @@ public class NewWordCallbackHandler implements CallbackHandler {
                     throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
             }
             userWordStatsService.updateWordStats(user, word, true);
+            InlineKeyboardButton button = InlineKeyboardButton.builder()
+                    .text("Правильно")
+                    .callbackData("btn")
+                    .build();
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> row = new ArrayList<>();
-            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setCallbackData("btn");
-            button.setText("Правильно");
-            EditMessageText editMessageText = new EditMessageText();
-            editMessageText.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-            editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
-            editMessageText.setText("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - "
-                    + word.getTranslation().toString());
+            markup.setKeyboard(Arrays.asList(Collections.singletonList(button)));
+            EditMessageText editMessageText = EditMessageText.builder()
+                    .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
+                    .messageId(update.getCallbackQuery().getMessage().getMessageId())
+                    .text("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - "
+                            + word.getTranslation().toString())
+                    .replyMarkup(markup)
+                    .build();
             editMessageText.enableHtml(true);
-            editMessageText.setReplyMarkup(markup);
-            row.add(button);
-            keyboard.add(row);
-            markup.setKeyboard(keyboard);
-            AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-            answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
-            answerCallbackQuery.setShowAlert(false);
-            answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
-            answerCallbackQuery.setCacheTime(2);
-
+            AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
+                    .callbackQueryId(update.getCallbackQuery().getId())
+                    .showAlert(false)
+                    .text("Ваш рейтинг: " + user.getRating().toString())
+                    .cacheTime(2)
+                    .build();
             try {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);
@@ -141,27 +141,29 @@ public class NewWordCallbackHandler implements CallbackHandler {
                     throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
             }
             userWordStatsService.updateWordStats(user, word, false);
-            EditMessageText editMessageText = new EditMessageText();
-            editMessageText.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-            editMessageText.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
-            editMessageText.enableHtml(true);
-            editMessageText.setText("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - "
-                    + word.getTranslation().toString());
+            InlineKeyboardButton button = InlineKeyboardButton.builder()
+                    .text("Неверно")
+                    .callbackData("btn")
+                    .build();
+
             InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-            List<InlineKeyboardButton> row = new ArrayList<>();
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText("Неверно");
-            button.setCallbackData("btn");
-            row.add(button);
-            keyboard.add(row);
-            markup.setKeyboard(keyboard);
-            editMessageText.setReplyMarkup(markup);
-            AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-            answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
-            answerCallbackQuery.setShowAlert(false);
-            answerCallbackQuery.setText("Ваш рейтинг: " + user.getRating().toString());
-            answerCallbackQuery.setCacheTime(2);
+            markup.setKeyboard(Arrays.asList(Collections.singletonList(button)));
+
+            EditMessageText editMessageText = EditMessageText.builder()
+                    .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
+                    .messageId(update.getCallbackQuery().getMessage().getMessageId())
+                    .text("<b>" + word.getWord() + "</b> " + word.getTranscription() + " - "
+                            + word.getTranslation().toString())
+                    .replyMarkup(markup)
+                    .build();
+            editMessageText.enableHtml(true);
+
+            AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
+                    .callbackQueryId(update.getCallbackQuery().getId())
+                    .showAlert(false)
+                    .text("Ваш рейтинг: " + user.getRating().toString())
+                    .cacheTime(2)
+                    .build();
             try {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);

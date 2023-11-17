@@ -26,6 +26,7 @@ import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
 
 @Component("difficult")
 public class ChooseDifficultCallbackHandler implements CallbackHandler {
+
     private static final Logger logger = LoggerFactory.getLogger(ChooseDifficultCallbackHandler.class);
 
     @Autowired
@@ -61,10 +62,10 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                 .build();
         WordLevel wordLevel = WordLevel.valueOf(data[1]);
 
-        GetChatMember getChatMember = new GetChatMember();
-        getChatMember.setChatId(promotedChannelService.getChannel().getChatId().toString());
-        getChatMember.setUserId(update.getCallbackQuery().getFrom().getId());
-
+        GetChatMember getChatMember = GetChatMember.builder()
+                .chatId(promotedChannelService.getChannel().getChatId().toString())
+                .userId(update.getCallbackQuery().getFrom().getId())
+                .build();
         try {
             ChatMember chatMember = bot.execute(getChatMember);
             if (chatMember.getStatus().equals("left") && user.getUserType().equals(UserType.PREMIUM)) {

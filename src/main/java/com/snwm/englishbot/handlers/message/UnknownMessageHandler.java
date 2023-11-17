@@ -33,9 +33,10 @@ public class UnknownMessageHandler implements MessageHandler {
             e.printStackTrace();
         }
         logger.info("Unknown command by User: {} msg: {}", message.getFrom().getUserName(), message.getText());
-        SendMessage unknownMessage = new SendMessage();
-        unknownMessage.setChatId(message.getChatId().toString());
-        unknownMessage.setText("Неизвестная команда");
+        SendMessage unknownMessage = SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Неизвестная команда")
+                .build();
         try {
             bot.execute(unknownMessage);
         } catch (TelegramApiException e) {

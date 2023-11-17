@@ -25,11 +25,12 @@ public class NextWordButtonCallbackHandler implements CallbackHandler {
 
     @Override
     public void handle(Update update, EnglishWordBot bot) {
-        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-        answerCallbackQuery.setCallbackQueryId(update.getCallbackQuery().getId());
-        answerCallbackQuery.setShowAlert(false);
-        answerCallbackQuery.setText("Следующее слово");
-        answerCallbackQuery.setCacheTime(2);
+        AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
+                .callbackQueryId(update.getCallbackQuery().getId())
+                .showAlert(false)
+                .text("Следующее слово")
+                .cacheTime(2)
+                .build();
         try {
             bot.execute(answerCallbackQuery);
         } catch (TelegramApiException e) {

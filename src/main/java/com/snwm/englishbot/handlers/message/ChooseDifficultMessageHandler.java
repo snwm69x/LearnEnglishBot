@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
@@ -39,12 +38,12 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        SendMessage startMessage = new SendMessage();
-        startMessage.setChatId(message.getChatId().toString());
-        startMessage.setText("Выбери сложность:");
-        InlineKeyboardMarkup keyboard = keyboardMaker.getDifficultLevelKeyboard();
-        startMessage.setReplyMarkup(keyboard);
-        startMessage.disableNotification();
+        SendMessage startMessage = SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Выбери сложность:")
+                .replyMarkup(keyboardMaker.getDifficultLevelKeyboard())
+                .disableNotification(true)
+                .build();
         try {
             bot.execute(startMessage);
         } catch (TelegramApiException e) {

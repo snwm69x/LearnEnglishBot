@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
@@ -19,6 +19,7 @@ import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
 
 @Component("/start")
 public class StartMessageHandler implements MessageHandler {
+
     private static final Logger logger = LoggerFactory.getLogger(StartMessageHandler.class);
 
     @Autowired
@@ -28,6 +29,7 @@ public class StartMessageHandler implements MessageHandler {
     @Autowired
     private KeyboardMaker keyboardMaker;
 
+    @Transactional
     @Override
     public void handle(Message message, EnglishWordBot bot) {
         adminControllerServiceImpl.startMessageProcessing();
@@ -47,12 +49,11 @@ public class StartMessageHandler implements MessageHandler {
             adminControllerServiceImpl.setNewUsers(adminControllerServiceImpl.getNewUsers() + 1);
             userService.createNewUser(message);
         }
-        SendMessage startMessage = new SendMessage();
-        startMessage.setChatId(message.getChatId().toString());
-        startMessage.setText(
-                "Привет, я бот для изучения английского языка. \nНажимай на кнопку 'Новое слово', выполняй задания. \nПоднимай рейтинг и соревнуйся с другими людьми.");
-        ReplyKeyboardMarkup keyboard = keyboardMaker.getMainKeyboard();
-        startMessage.setReplyMarkup(keyboard);
+        SendMessage startMessage = SendMessage.builder()
+                .chatId(message.getChatId().toString())
+                .text("Привет, я бот для изучения английского языка. \nНажимай на кнопку 'Новое слово', выполняй задания. \nПоднимай рейтинг и соревнуйся с другими людьми.")
+                .replyMarkup(keyboardMaker.getMainKeyboard())
+                .build();
         try {
             bot.execute(startMessage);
         } catch (TelegramApiException e) {
