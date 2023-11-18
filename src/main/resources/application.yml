@@ -1,6 +1,10 @@
 spring:
+  liquibase:
+    change-log: classpath:liquibase/db.changelog-master.xml
+    enabled: true
+
   datasource:
-    url: jdbc:postgresql://db:5432/${PROD_DB_NAME}
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
     username: ${PROD_DB_USERNAME}
     password: ${PROD_DB_PASSWORD}
     name: Postgres
@@ -15,10 +19,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    show_sql: true
 
 # server:
 #   ssl:
