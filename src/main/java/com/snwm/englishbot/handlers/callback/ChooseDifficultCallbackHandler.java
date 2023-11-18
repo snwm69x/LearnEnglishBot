@@ -46,12 +46,44 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
     public void handle(Update update, EnglishWordBot bot) {
         logger.info("Обработка ответа пользователя на команду 'Выбрать сложность': {}",
                 update.getCallbackQuery().getFrom().getUserName());
-
         User user = userService.getUserByChatId(update.getCallbackQuery().getMessage().getChatId());
         if (!user.getWords().isEmpty()) {
             userService.deleteUserWordsByChatId(update.getCallbackQuery().getMessage().getChatId());
         }
         String[] data = update.getCallbackQuery().getData().split(":");
+        if (data[1].equals("main")) {
+            EditMessageText editMessageText = EditMessageText.builder()
+                    .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
+                    .messageId(update.getCallbackQuery().getMessage().getMessageId())
+                    .text("Выбери уровень сложности:")
+                    .replyMarkup(keyboardMaker.getDifficultLevelKeyboard())
+                    .build();
+            try {
+                bot.execute(editMessageText);
+                return;
+            } catch (TelegramApiException e) {
+                logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
+                        update.getCallbackQuery().getFrom().getUserName());
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                e.printStackTrace();
+            }
+        }
+        if (data[1].equals("dictionaries")) {
+            EditMessageText otherDictionaries = EditMessageText.builder()
+                    .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
+                    .messageId(update.getCallbackQuery().getMessage().getMessageId())
+                    .text("Другие словари:")
+                    .replyMarkup(keyboardMaker.getOtherDictionariesKeyboard())
+                    .build();
+            try {
+                bot.execute(otherDictionaries);
+            } catch (TelegramApiException e) {
+                logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
+                        update.getCallbackQuery().getFrom().getUserName());
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                e.printStackTrace();
+            }
+        }
         AnswerCallbackQuery answerCallbackQueryWhenUserPickedDifficult = AnswerCallbackQuery.builder()
                 .callbackQueryId(update.getCallbackQuery().getId())
                 .text("Выбран уровень сложности: " + data[1])
@@ -79,40 +111,6 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
         }
 
         switch (data[1]) {
-            case "main":
-                EditMessageText editMessageText = EditMessageText.builder()
-                        .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
-                        .messageId(update.getCallbackQuery().getMessage().getMessageId())
-                        .text("Выбери уровень сложности:")
-                        .replyMarkup(keyboardMaker.getDifficultLevelKeyboard())
-                        .build();
-                try {
-                    bot.execute(editMessageText);
-                } catch (TelegramApiException e) {
-                    logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
-                            update.getCallbackQuery().getFrom().getUserName());
-                    statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
-                    e.printStackTrace();
-                }
-
-                break;
-            case "dictionaries":
-                EditMessageText otherDictionaries = EditMessageText.builder()
-                        .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
-                        .messageId(update.getCallbackQuery().getMessage().getMessageId())
-                        .text("Другие словари:")
-                        .replyMarkup(keyboardMaker.getOtherDictionariesKeyboard())
-                        .build();
-                try {
-                    bot.execute(otherDictionaries);
-                } catch (TelegramApiException e) {
-                    logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
-                            update.getCallbackQuery().getFrom().getUserName());
-                    statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
-                    e.printStackTrace();
-                }
-
-                break;
             case "A1":
             case "A2":
             case "B1":
