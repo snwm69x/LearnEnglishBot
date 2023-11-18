@@ -26,4 +26,4 @@ EXPOSE 8080
 EXPOSE 8443
 
 # Запустите приложение
-ENTRYPOINT ["java","-Djavax.net.ssl.trustStore=classpath:keystore.p12","-Djavax.net.ssl.trustStorePassword=snwm1337","-jar","app.jar"]
+ENTRYPOINT ["java","-Djavax.net.ssl.trustStore=/app/keystore.p12","-Djavax.net.ssl.trustStorePassword=snwm1337","-jar","app.jar"]
