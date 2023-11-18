@@ -23,6 +23,7 @@ COPY src/main/resources/keystore.jks keystore.p12
 
 # Откройте порт, на котором работает ваше приложение
 EXPOSE 8080
+EXPOSE 8443
 
 # Запустите приложение
-ENTRYPOINT ["java","-jar","app.jar"]
+ENTRYPOINT ["java","-Djavax.net.ssl.trustStore=classpath:keystore.p12","-Djavax.net.ssl.trustStorePassword=snwm1337","-jar","app.jar"]
