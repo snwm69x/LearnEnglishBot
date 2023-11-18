@@ -112,6 +112,45 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
         }
 
         switch (data[1]) {
+            case "DOC":
+                if (user.getUserType().equals(UserType.PREMIUM) || user.getUserType().equals(UserType.ADMIN)) {
+                    user.setWordLevel(wordLevel);
+                    userService.saveUser(user);
+                    wordService.setAllWordToUser(update.getCallbackQuery().getMessage().getChatId(), wordLevel);
+                    try {
+                        bot.execute(answerCallbackQueryWhenUserPickedDifficult);
+                        bot.execute(deleteMessageWithDifficultLevels);
+                    } catch (TelegramApiException e) {
+                        logger.debug("Error when sending/deleting message in ChooseDifficultCallbackHandler: {}",
+                                update.getCallbackQuery().getFrom().getUserName());
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        bot.execute(deleteMessageWithDifficultLevels);
+                    } catch (TelegramApiException e) {
+                        logger.debug("Error when deleting message in ChooseDifficultCallbackHandler: {}",
+                                update.getCallbackQuery().getFrom().getUserName());
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                        e.printStackTrace();
+                    }
+                    SendMessage msg = SendMessage.builder()
+                            .chatId(update.getCallbackQuery().getMessage().getChatId().toString())
+                            .text("У вас нет доступа к этому уровню. \nЧтобы разблокировать доступ к сложным уровням, подпишитесь на канал "
+                                    + promotedChannelService.getChannel().getChannelLink())
+                            .build();
+                    msg.setReplyMarkup(keyboardMaker.checkIfUserSubscribedToChannel());
+                    try {
+                        bot.execute(msg);
+                    } catch (TelegramApiException e) {
+                        logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
+                                update.getCallbackQuery().getFrom().getUserName());
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                        e.printStackTrace();
+                    }
+                }
+                break;
             case "A1":
             case "A2":
             case "B1":
