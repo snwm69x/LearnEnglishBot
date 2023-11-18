@@ -23,7 +23,7 @@ import com.snwm.englishbot.entity.enums.WordLevel;
 import com.snwm.englishbot.handlers.MessageHandler;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("Новое слово 💭")
 public class NewWordMessageHandler implements MessageHandler {
@@ -32,7 +32,7 @@ public class NewWordMessageHandler implements MessageHandler {
     private final Random random = new Random();
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private UserService userService;
     @Autowired
@@ -45,7 +45,7 @@ public class NewWordMessageHandler implements MessageHandler {
     public void handle(Message message, EnglishWordBot bot) {
 
         Long userChatId = message.getChatId();
-        adminControllerServiceImpl.startMessageProcessing();
+        statisticsServiceImpl.startMessageProcessing();
         logger.info("Обработка команды 'Новое слово' для пользователя: {}",
                 message.getFrom().getUserName());
 
@@ -71,7 +71,7 @@ public class NewWordMessageHandler implements MessageHandler {
                 bot.execute(sendMessage);
                 return;
             } catch (TelegramApiException e) {
-                adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 e.printStackTrace();
             }
         }
@@ -110,15 +110,15 @@ public class NewWordMessageHandler implements MessageHandler {
         try {
             bot.execute(newWordMessage);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             System.out.println(
                     "Ошибка во время обработки/отправки сообщения в команде NewWord методе findTranslation. Word: "
                             + word.getWord()
                             + " Options: " + options.toString());
             e.printStackTrace();
         }
-        adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl
+        statisticsServiceImpl.endMessageProcessing();
+        statisticsServiceImpl
                 .recordNews(
                         "Пользователь " + userChatId.toString() + " запросил новое слово " + word.getWord());
     }
@@ -148,13 +148,13 @@ public class NewWordMessageHandler implements MessageHandler {
         try {
             bot.execute(newWordMessage);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             System.out.println("Error while sending message in method findWordByTranslation. Word: " + word.getWord()
                     + " Options: " + options.toString());
             e.printStackTrace();
         }
-        adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl
+        statisticsServiceImpl.endMessageProcessing();
+        statisticsServiceImpl
                 .recordNews("Пользователь " + userChatId.toString() + " запросил новое слово "
                         + word.getTranslation().toString());
     }

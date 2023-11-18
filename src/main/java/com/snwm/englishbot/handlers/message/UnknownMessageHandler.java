@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.handlers.MessageHandler;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("unknown")
 public class UnknownMessageHandler implements MessageHandler {
@@ -19,7 +19,7 @@ public class UnknownMessageHandler implements MessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(UnknownMessageHandler.class);
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
 
     @Override
     public void handle(Message message, EnglishWordBot bot) {
@@ -40,10 +40,10 @@ public class UnknownMessageHandler implements MessageHandler {
         try {
             bot.execute(unknownMessage);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             logger.error("Error while sending unknown command message: {}", e.getMessage());
         }
-        adminControllerServiceImpl
+        statisticsServiceImpl
                 .recordNews("Неизвестная команда от пользователя: " + message.getFrom().getUserName() + " Сообщение: "
                         + message.getText());
     }

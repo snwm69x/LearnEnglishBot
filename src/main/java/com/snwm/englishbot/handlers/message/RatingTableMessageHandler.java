@@ -17,7 +17,7 @@ import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.handlers.MessageHandler;
 import com.snwm.englishbot.service.UserService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("Таблица лидеров 🏆")
 public class RatingTableMessageHandler implements MessageHandler {
@@ -25,13 +25,13 @@ public class RatingTableMessageHandler implements MessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(RatingTableMessageHandler.class);
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private UserService userService;
 
     @Override
     public void handle(Message message, EnglishWordBot bot) {
-        adminControllerServiceImpl.startMessageProcessing();
+        statisticsServiceImpl.startMessageProcessing();
         logger.info("Пользователь {} запросил Таблицу лидеров", message.getFrom().getUserName());
         SendChatAction sendChatAction = SendChatAction.builder()
                 .chatId(message.getChatId().toString())
@@ -76,15 +76,15 @@ public class RatingTableMessageHandler implements MessageHandler {
         msg.disableNotification();
         try {
             bot.execute(msg);
-            adminControllerServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+            statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
                     + message.getChatId() + " запросил Таблицу лидеров");
         } catch (TelegramApiException e) {
             System.out.println("Ошибка во время обработки команды 'Таблица лидеров' для пользователя: "
                     + message.getFrom().getUserName());
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             e.printStackTrace();
         }
-        adminControllerServiceImpl.endMessageProcessing();
+        statisticsServiceImpl.endMessageProcessing();
     }
 
 }

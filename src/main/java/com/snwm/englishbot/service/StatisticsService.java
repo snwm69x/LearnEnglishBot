@@ -1,6 +1,6 @@
 package com.snwm.englishbot.service;
 
-public interface AdminControllerService {
+public interface StatisticsService {
     String getHandledMessages();
 
     String getUptime();

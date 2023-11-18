@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.service.UserService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
-    private final AdminControllerServiceImpl adminControllerServiceImpl;
+    private final StatisticsServiceImpl statisticsServiceImpl;
 
     @Autowired
     private final UserService userService;
 
-    public AdminController(AdminControllerServiceImpl adminControllerServiceImpl, UserService userService) {
-        this.adminControllerServiceImpl = adminControllerServiceImpl;
+    public AdminController(StatisticsServiceImpl adminControllerServiceImpl, UserService userService) {
+        this.statisticsServiceImpl = adminControllerServiceImpl;
         this.userService = userService;
     }
 
@@ -33,16 +33,16 @@ public class AdminController {
     public String getAdminPage(Model model) {
         Authentication auth = (Authentication) SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        LinkedList<String> recentNews = adminControllerServiceImpl.getRecentNews();
+        LinkedList<String> recentNews = statisticsServiceImpl.getRecentNews();
         // Collections.reverse(recentNews);
         model.addAttribute("user", user);
-        model.addAttribute("uptime", adminControllerServiceImpl.getUptime());
-        model.addAttribute("handledmessages", adminControllerServiceImpl.getHandledMessages());
-        model.addAttribute("errors", adminControllerServiceImpl.getErrors());
-        model.addAttribute("newusers", adminControllerServiceImpl.getNewUsers());
+        model.addAttribute("uptime", statisticsServiceImpl.getUptime());
+        model.addAttribute("handledmessages", statisticsServiceImpl.getHandledMessages());
+        model.addAttribute("errors", statisticsServiceImpl.getErrors());
+        model.addAttribute("newusers", statisticsServiceImpl.getNewUsers());
         model.addAttribute("allusers", userService.getAllUsers().size());
         model.addAttribute("recentnews", recentNews);
-        model.addAttribute("averageresponsetime", adminControllerServiceImpl.getAverageResponseTime());
+        model.addAttribute("averageresponsetime", statisticsServiceImpl.getAverageResponseTime());
         return "admin";
     }
 }

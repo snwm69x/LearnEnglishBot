@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.handlers.CallbackHandler;
 import com.snwm.englishbot.handlers.message.NewWordMessageHandler;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("btn")
 public class NextWordButtonCallbackHandler implements CallbackHandler {
@@ -19,7 +19,7 @@ public class NextWordButtonCallbackHandler implements CallbackHandler {
     private static final Logger logger = LoggerFactory.getLogger(NextWordButtonCallbackHandler.class);
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private NewWordMessageHandler newWordMessageHandler;
 
@@ -34,7 +34,7 @@ public class NextWordButtonCallbackHandler implements CallbackHandler {
         try {
             bot.execute(answerCallbackQuery);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             logger.error("Error while sending answer callback query: {}", e.getMessage());
         }
         newWordMessageHandler.handle(update.getCallbackQuery().getMessage(), bot);

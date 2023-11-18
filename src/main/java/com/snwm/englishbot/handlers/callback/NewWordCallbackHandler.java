@@ -25,7 +25,7 @@ import com.snwm.englishbot.handlers.CallbackHandler;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.UserWordStatsService;
 import com.snwm.englishbot.service.WordService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("nw")
 public class NewWordCallbackHandler implements CallbackHandler {
@@ -40,7 +40,7 @@ public class NewWordCallbackHandler implements CallbackHandler {
     @Autowired
     private UserWordStatsService userWordStatsService;
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
 
     @Transactional
     @Override
@@ -109,11 +109,11 @@ public class NewWordCallbackHandler implements CallbackHandler {
             try {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);
-                adminControllerServiceImpl
+                statisticsServiceImpl
                         .recordNews("Пользователь: " + update.getCallbackQuery().getFrom().getUserName()
                                 + " ответил правильно на слово: " + word.getWord());
             } catch (TelegramApiException e) {
-                adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         } else {
@@ -137,7 +137,7 @@ public class NewWordCallbackHandler implements CallbackHandler {
                     user.setRating(user.getRating() - 6);
                     break;
                 default:
-                    adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                    statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                     throw new IllegalArgumentException("Unexpected value: " + user.getWordLevel());
             }
             userWordStatsService.updateWordStats(user, word, false);
@@ -167,16 +167,16 @@ public class NewWordCallbackHandler implements CallbackHandler {
             try {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);
-                adminControllerServiceImpl
+                statisticsServiceImpl
                         .recordNews("Пользователь: " + update.getCallbackQuery().getFrom().getUserName()
                                 + " ответил неправильно на слово: " + word.getWord());
             } catch (TelegramApiException e) {
-                adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 logger.error("Error while editing message reply markup: {}", e.getMessage());
             }
         }
         userService.saveUser(user);
-        adminControllerServiceImpl.setHandledCallbacks(adminControllerServiceImpl.getHandledCallbacks() + 1);
+        statisticsServiceImpl.setHandledCallbacks(statisticsServiceImpl.getHandledCallbacks() + 1);
         lastWords.add(wordId);
         userLastWordMap.put(userId, lastWords);
     }

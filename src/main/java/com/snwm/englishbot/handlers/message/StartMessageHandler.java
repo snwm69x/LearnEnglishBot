@@ -15,7 +15,7 @@ import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.handlers.MessageHandler;
 import com.snwm.englishbot.service.UserService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("/start")
 public class StartMessageHandler implements MessageHandler {
@@ -23,7 +23,7 @@ public class StartMessageHandler implements MessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(StartMessageHandler.class);
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,7 +32,7 @@ public class StartMessageHandler implements MessageHandler {
     @Transactional
     @Override
     public void handle(Message message, EnglishWordBot bot) {
-        adminControllerServiceImpl.startMessageProcessing();
+        statisticsServiceImpl.startMessageProcessing();
         logger.info("Обработка команды /start для пользователя: {}",
                 message.getFrom().getUserName());
         SendChatAction sendChatAction = SendChatAction.builder()
@@ -46,7 +46,7 @@ public class StartMessageHandler implements MessageHandler {
         }
         User user = userService.getUserByChatId(message.getChatId());
         if (user == null) {
-            adminControllerServiceImpl.setNewUsers(adminControllerServiceImpl.getNewUsers() + 1);
+            statisticsServiceImpl.setNewUsers(statisticsServiceImpl.getNewUsers() + 1);
             userService.createNewUser(message);
         }
         SendMessage startMessage = SendMessage.builder()
@@ -57,11 +57,11 @@ public class StartMessageHandler implements MessageHandler {
         try {
             bot.execute(startMessage);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             logger.error("Error while sending start message: {}", e.getMessage());
         }
-        adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl
+        statisticsServiceImpl.endMessageProcessing();
+        statisticsServiceImpl
                 .recordNews("Новый пользователь: " + message.getFrom().getUserName() + " начал использовать бота");
     }
 

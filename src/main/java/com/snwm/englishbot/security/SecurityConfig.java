@@ -1,4 +1,4 @@
-package com.snwm.englishbot.config;
+package com.snwm.englishbot.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

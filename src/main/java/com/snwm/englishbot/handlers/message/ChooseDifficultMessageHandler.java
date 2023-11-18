@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.handlers.MessageHandler;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("Выбрать сложность ⚙️")
 public class ChooseDifficultMessageHandler implements MessageHandler {
@@ -20,13 +20,13 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
     private static final Logger logger = LoggerFactory.getLogger(ChooseDifficultMessageHandler.class);
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private KeyboardMaker keyboardMaker;
 
     @Override
     public void handle(Message message, EnglishWordBot bot) {
-        adminControllerServiceImpl.startMessageProcessing();
+        statisticsServiceImpl.startMessageProcessing();
         logger.info("Смена сложности для пользователя: {}",
                 message.getFrom().getUserName());
         SendChatAction sendChatAction = SendChatAction.builder()
@@ -47,11 +47,11 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
         try {
             bot.execute(startMessage);
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             logger.error("Error while sending start message: {}", e.getMessage());
         }
-        adminControllerServiceImpl.endMessageProcessing();
-        adminControllerServiceImpl
+        statisticsServiceImpl.endMessageProcessing();
+        statisticsServiceImpl
                 .recordNews("Пользователь: " + message.getFrom().getUserName() + " запросил выбор сложности");
     }
 

@@ -15,7 +15,7 @@ import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.entity.enums.UserType;
 import com.snwm.englishbot.handlers.MessageHandler;
 import com.snwm.englishbot.service.UserService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("/admin")
 public class AdminMessageHandler implements MessageHandler {
@@ -24,7 +24,7 @@ public class AdminMessageHandler implements MessageHandler {
     private static final String ADMIN_PAGE_URL = "learnenglishbot-production-73dd.up.railway.app/admin";
 
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,7 +32,7 @@ public class AdminMessageHandler implements MessageHandler {
 
     @Override
     public void handle(Message message, EnglishWordBot bot) {
-        adminControllerServiceImpl.startMessageProcessing();
+        statisticsServiceImpl.startMessageProcessing();
         logger.info("Обработка команды /admin для пользователя: {}",
                 message.getFrom().getUserName());
         SendChatAction sendChatAction = SendChatAction.builder()
@@ -53,14 +53,14 @@ public class AdminMessageHandler implements MessageHandler {
             msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
             try {
                 bot.execute(msg);
-                adminControllerServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
                         + message.getChatId() + " запросил Admin Dashboard");
             } catch (TelegramApiException e) {
                 System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
-                adminControllerServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
+                statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
-                adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 e.printStackTrace();
             }
         } else {
@@ -70,18 +70,18 @@ public class AdminMessageHandler implements MessageHandler {
                     .build();
             try {
                 bot.execute(msg2);
-                adminControllerServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
                         + message.getChatId() + " запросил Admin Dashboard без привилегий");
             } catch (TelegramApiException e) {
-                adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
-                adminControllerServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
+                statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
                 e.printStackTrace();
             }
         }
-        adminControllerServiceImpl.endMessageProcessing();
+        statisticsServiceImpl.endMessageProcessing();
     }
 
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
 
-import com.snwm.englishbot.service.AdminControllerService;
+import com.snwm.englishbot.service.StatisticsService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Service
 @Getter
 @Setter
-public class AdminControllerServiceImpl implements AdminControllerService {
+public class StatisticsServiceImpl implements StatisticsService {
 
     private static final long startTime = System.currentTimeMillis();
     private int handledMessages = 0;
@@ -23,6 +23,7 @@ public class AdminControllerServiceImpl implements AdminControllerService {
     private long totalResponseTime = 0;
     private long currentStartTime = 0;
     private int newUsers = 0;
+    private long lastResponseTime = 0;
 
     @Override
     public String getUptime() {
@@ -48,6 +49,7 @@ public class AdminControllerServiceImpl implements AdminControllerService {
     public void endMessageProcessing() {
         long responseTime = System.currentTimeMillis() - currentStartTime;
         totalResponseTime += responseTime;
+        lastResponseTime = responseTime;
         handledMessages++;
     }
 

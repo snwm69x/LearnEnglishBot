@@ -22,7 +22,7 @@ import com.snwm.englishbot.handlers.CallbackHandler;
 import com.snwm.englishbot.service.PromotedChannelService;
 import com.snwm.englishbot.service.UserService;
 import com.snwm.englishbot.service.WordService;
-import com.snwm.englishbot.service.impl.AdminControllerServiceImpl;
+import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("difficult")
 public class ChooseDifficultCallbackHandler implements CallbackHandler {
@@ -36,7 +36,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
     @Autowired
     private PromotedChannelService promotedChannelService;
     @Autowired
-    private AdminControllerServiceImpl adminControllerServiceImpl;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
     private KeyboardMaker keyboardMaker;
 
@@ -73,7 +73,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                 userService.saveUser(user);
             }
         } catch (TelegramApiException e) {
-            adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+            statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             e.printStackTrace();
         }
 
@@ -92,7 +92,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                     } catch (TelegramApiException e) {
                         logger.debug("Error when sending/deleting message in ChooseDifficultCallbackHandler: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
-                        adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                         e.printStackTrace();
                     }
                 }
@@ -110,7 +110,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                     } catch (TelegramApiException e) {
                         logger.debug("Error when sending/deleting message in ChooseDifficultCallbackHandler: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
-                        adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                         e.printStackTrace();
                     }
                 } else {
@@ -119,7 +119,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                     } catch (TelegramApiException e) {
                         logger.debug("Error when deleting message in ChooseDifficultCallbackHandler: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
-                        adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                         e.printStackTrace();
                     }
                     SendMessage msg = SendMessage.builder()
@@ -133,7 +133,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                     } catch (TelegramApiException e) {
                         logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
-                        adminControllerServiceImpl.setErrors(adminControllerServiceImpl.getErrors() + 1);
+                        statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                         e.printStackTrace();
                     }
                 }
@@ -141,8 +141,8 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
             default:
                 break;
         }
-        adminControllerServiceImpl.setHandledCallbacks(adminControllerServiceImpl.getHandledCallbacks() + 1);
-        adminControllerServiceImpl.recordNews(
+        statisticsServiceImpl.setHandledCallbacks(statisticsServiceImpl.getHandledCallbacks() + 1);
+        statisticsServiceImpl.recordNews(
                 "Пользователь: " + update.getCallbackQuery().getFrom().getUserName() + " выбрал уровень сложности: "
                         + data[1]);
     }
