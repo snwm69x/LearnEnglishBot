@@ -19,11 +19,10 @@ WORKDIR /app
 # Копируйте jar файл из стадии сборки в текущую стадию
 COPY --from=build /app/target/englishbot-0.0.1-SNAPSHOT.jar app.jar
 
-COPY src/main/resources/keystore.p12 keystore.p12
+# COPY src/main/resources/keystore.p12 keystore.p12
 
 # Откройте порт, на котором работает ваше приложение
 EXPOSE 8080
-EXPOSE 8443
 
 # Запустите приложение
-ENTRYPOINT ["java","-Djavax.net.ssl.trustStore=/app/keystore.p12","-Djavax.net.ssl.trustStorePassword=snwm1337","-jar","app.jar"]
+ENTRYPOINT ["java", "-jar","app.jar"]
