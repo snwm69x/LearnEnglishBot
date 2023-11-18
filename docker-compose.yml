@@ -13,7 +13,7 @@ services:
       - PROD_BOT_NAME=@EngLingo_bot
       - PROD_BOT_TOKEN=6834770884:AAFemvRgrQmFf9DtPv8yNG0uYLFEoo9lA2M
     ports:
-      - "8080:8080"
+      - "8443:8443"
   db:
     image: postgres:13
     environment:
