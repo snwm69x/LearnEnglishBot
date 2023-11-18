@@ -1324,8 +1324,8 @@ VALUES
 
     <changeSet id="6" author="snwm">
         <sql>
-            INSERT INTO promoted_channel (chat_id, channel_name, channel_link, channel_description)
-            VALUES (-1001672871308, 'English In Use', '@english_in_use_channel', 'Pro100English');
+            INSERT INTO promoted_channel (id, chat_id, channel_name, channel_link, channel_description)
+            VALUES (0, -1001672871308, 'English In Use', '@english_in_use_channel', 'Pro100English');
         </sql>
     </changeSet>
 
