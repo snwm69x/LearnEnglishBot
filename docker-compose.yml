@@ -22,6 +22,6 @@ services:
       - POSTGRES_PASSWORD=snwm1337
     volumes:
       - db-data:/var/lib/postgresql/data
-      ./path/to/your/sql/files:/docker-entrypoint-initdb.d/
+      - src/main/resources/sql:/docker-entrypoint-initdb.d/
 volumes:
   db-data:
