@@ -77,6 +77,7 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
                     .build();
             try {
                 bot.execute(otherDictionaries);
+                return;
             } catch (TelegramApiException e) {
                 logger.debug("Error when sending message in ChooseDifficultCallbackHandler: {}",
                         update.getCallbackQuery().getFrom().getUserName());
