@@ -1,0 +1,26 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - PROD_DB_HOST=db
+      - PROD_DB_PORT=5432
+      - PROD_DB_NAME=mydatabase
+      - PROD_DB_USERNAME=postgres
+      - PROD_DB_PASSWORD=snwm1337
+      - PROD_BOT_NAME=@EngLingo_bot
+      - PROD_BOT_TOKEN=6834770884:AAFemvRgrQmFf9DtPv8yNG0uYLFEoo9lA2M
+    ports:
+      - "8080:8080"
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=snwm1337
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
