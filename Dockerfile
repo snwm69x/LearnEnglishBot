@@ -23,6 +23,7 @@ COPY --from=build /app/target/englishbot-0.0.1-SNAPSHOT.jar app.jar
 
 # Откройте порт, на котором работает ваше приложение
 EXPOSE 8080
+EXPOSE 5432
 
 # Запустите приложение
 ENTRYPOINT ["java", "-jar","app.jar"]
