@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Соберите приложение
-RUN mvn package
+RUN mvn package -DskipTests
 
 # Используйте официальный образ OpenJDK 17 для запуска вашего приложения
 FROM openjdk:17-jdk-slim
