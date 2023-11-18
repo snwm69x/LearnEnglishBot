@@ -5,13 +5,13 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - PROD_DB_HOST=db
-      - PROD_DB_PORT=5432
-      - PROD_DB_NAME=mydatabase
-      - PROD_DB_USERNAME=postgres
-      - PROD_DB_PASSWORD=snwm1337
-      - PROD_BOT_NAME=@EngLingo_bot
-      - PROD_BOT_TOKEN=6834770884:AAFemvRgrQmFf9DtPv8yNG0uYLFEoo9lA2M
+      - PROD_DB_HOST=${PROD_DB_HOST}
+      - PROD_DB_PORT=${PROD_DB_PORT}
+      - PROD_DB_NAME=${PROD_DB_NAME}
+      - PROD_DB_USERNAME=${PROD_DB_USERNAME}
+      - PROD_DB_PASSWORD=${PROD_DB_PASSWORD}
+      - PROD_BOT_NAME=${PROD_BOT_NAME}
+      - PROD_BOT_TOKEN=${PROD_BOT_TOKEN}
     ports:
       - "80:8080"
   db:
