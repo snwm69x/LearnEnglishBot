@@ -284,8 +284,8 @@
     </script>
     <script>
         $(document).ready(function () {
-            $('.uploadBtn').on('click', function () {
-                $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...').attr('disabled', 'disabled');
+            $('form').on('submit', function () {
+                $('.uploadBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Загрузка...').attr('disabled', 'disabled');
             });
         });
     </script>
