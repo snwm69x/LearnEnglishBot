@@ -19,6 +19,8 @@ WORKDIR /app
 # Копируйте jar файл из стадии сборки в текущую стадию
 COPY --from=build /app/target/englishbot-0.0.1-SNAPSHOT.jar app.jar
 
+COPY src/main/resources/keystore.jks keystore.p12
+
 # Откройте порт, на котором работает ваше приложение
 EXPOSE 8080
 

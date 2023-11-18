@@ -20,4 +20,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+server:
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: snwm1337
+    key-store-type: PKCS12
+    key-alias: mydomain
+    key-password: snwm1337
+  port: 8080
+
       
