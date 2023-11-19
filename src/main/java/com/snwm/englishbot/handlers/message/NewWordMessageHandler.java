@@ -89,6 +89,7 @@ public class NewWordMessageHandler implements MessageHandler {
     protected void findTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
+        words.remove(word);
         List<Word> options = new ArrayList<>();
         while (options.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());

@@ -59,9 +59,7 @@ public class WordServiceImpl implements WordService {
         List<Word> words = user.getWords();
         int randomIndex = (int) (Math.random() * words.size());
         Word word = words.get(randomIndex);
-        words.remove(randomIndex);
-        user.setWords(words);
-        userRepository.deleteWordById(user.getChatId(), (long) randomIndex);
+        userRepository.deleteWordById(user.getChatId(), word.getId());
         return word;
     }
 

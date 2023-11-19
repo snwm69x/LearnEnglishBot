@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "words")
@@ -17,9 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-@JsonIgnoreProperties({"users"})
+@JsonIgnoreProperties({ "users" })
 public class Word {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,19 +37,27 @@ public class Word {
     @Column
     private String transcription;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-    mappedBy = "words", 
-    cascade = {CascadeType.DETACH, 
-            CascadeType.MERGE, 
-            CascadeType.PERSIST, 
-            CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "words", cascade = { CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH })
     private List<User> users;
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "WordLevel cannot be empty")
-    private WordLevel  wordLevel;
+    private WordLevel wordLevel;
 
     @Enumerated(EnumType.STRING)
     @NotBlank(message = "WordType cannot be empty")
     private WordType wordType;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Word otherWord = (Word) obj;
+        return Objects.equals(this.word, otherWord.word);
+    }
 }
