@@ -2,8 +2,10 @@ package com.snwm.englishbot.handlers.message;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,16 +92,17 @@ public class NewWordMessageHandler implements MessageHandler {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         words.remove(word);
-        List<Word> options = new ArrayList<>();
-        while (options.size() != 3) {
+        Set<Word> optionsSet = new HashSet<>();
+        while (optionsSet.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
             Word randomWord = words.get(randomIndex);
-            if (!randomWord.equals(word) && !options.contains(randomWord)) {
-                options.add(randomWord);
+            if (!randomWord.equals(word) && !optionsSet.contains(randomWord)) {
+                optionsSet.add(randomWord);
                 words.remove(randomIndex);
             }
         }
-        options.add(word);
+        optionsSet.add(word);
+        List<Word> options = new ArrayList<>(optionsSet);
         Collections.shuffle(options);
         SendMessage newWordMessage = SendMessage.builder()
                 .disableNotification(true)
@@ -115,7 +118,7 @@ public class NewWordMessageHandler implements MessageHandler {
             System.out.println(
                     "Ошибка во время обработки/отправки сообщения в команде NewWord методе findTranslation. Word: "
                             + word.getWord()
-                            + " Options: " + options.toString());
+                            + " Options: " + optionsSet.toString());
             e.printStackTrace();
         }
         statisticsServiceImpl.endMessageProcessing();
@@ -128,16 +131,18 @@ public class NewWordMessageHandler implements MessageHandler {
     protected void findWordByTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
-        List<Word> options = new ArrayList<>();
-        while (options.size() != 3) {
+        words.remove(word);
+        Set<Word> optionsSet = new HashSet<>();
+        while (optionsSet.size() != 3) {
             int randomIndex = (int) (Math.random() * words.size());
             Word randomWord = words.get(randomIndex);
-            if (!randomWord.equals(word) && !options.contains(randomWord)) {
-                options.add(randomWord);
+            if (!randomWord.equals(word) && !optionsSet.contains(randomWord)) {
+                optionsSet.add(randomWord);
                 words.remove(randomIndex);
             }
         }
-        options.add(word);
+        optionsSet.add(word);
+        List<Word> options = new ArrayList<>(optionsSet);
         Collections.shuffle(options);
         SendMessage newWordMessage = SendMessage.builder()
                 .disableNotification(true)

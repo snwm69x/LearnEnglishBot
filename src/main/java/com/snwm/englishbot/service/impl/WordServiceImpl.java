@@ -55,6 +55,7 @@ public class WordServiceImpl implements WordService {
         User user = userRepository.findUserByChatId(id);
         if (user.getWords().isEmpty()) {
             user.setWords(wordRepository.findByWordLevel(user.getWordLevel()));
+            userRepository.save(user);
         }
         List<Word> words = user.getWords();
         int randomIndex = (int) (Math.random() * words.size());
