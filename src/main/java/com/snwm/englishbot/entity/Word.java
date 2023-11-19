@@ -52,12 +52,22 @@ public class Word {
     private WordType wordType;
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object o) {
+        if (this == o)
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
-        Word otherWord = (Word) obj;
-        return Objects.equals(this.word, otherWord.word);
+        Word word1 = (Word) o;
+        return Objects.equals(id, word1.id) &&
+                Objects.equals(word, word1.word) &&
+                Objects.equals(translation, word1.translation) &&
+                Objects.equals(transcription, word1.transcription) &&
+                Objects.equals(wordLevel, word1.wordLevel) &&
+                Objects.equals(wordType, word1.wordType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, word, translation, transcription, wordLevel, wordType);
     }
 }
