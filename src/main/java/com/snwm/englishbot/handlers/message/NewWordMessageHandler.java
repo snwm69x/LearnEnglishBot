@@ -77,9 +77,6 @@ public class NewWordMessageHandler implements MessageHandler {
                 e.printStackTrace();
             }
         }
-        if (user.getWords().isEmpty()) {
-            wordService.set30WordsToUser(userChatId, user.getWordLevel());
-        }
         if (random.nextBoolean()) {
             findTranslation(userChatId, bot);
         } else {
