@@ -21,7 +21,7 @@ import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 public class AdminMessageHandler implements MessageHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminMessageHandler.class);
-    private static final String ADMIN_PAGE_URL = "learnenglishbot-production-73dd.up.railway.app/admin";
+    private static final String ADMIN_PAGE_URL = "http://95.181.173.115/admin";
 
     @Autowired
     private StatisticsServiceImpl statisticsServiceImpl;
