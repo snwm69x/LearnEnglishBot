@@ -3,6 +3,7 @@ package com.snwm.englishbot.handlers.message;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -89,16 +90,14 @@ public class NewWordMessageHandler implements MessageHandler {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         words.remove(word);
-        Set<Word> optionsSet = new HashSet<>();
-        while (optionsSet.size() != 3) {
-            int randomIndex = (int) (Math.random() * words.size());
-            Word randomWord = words.get(randomIndex);
-            if (!randomWord.equals(word) && !optionsSet.contains(randomWord)) {
+        Collections.shuffle(words);
+        Set<Word> optionsSet = new LinkedHashSet<>();
+        optionsSet.add(word);
+        for (Word randomWord : words) {
+            if (optionsSet.size() < 4) {
                 optionsSet.add(randomWord);
-                words.remove(randomIndex);
             }
         }
-        optionsSet.add(word);
         List<Word> options = new ArrayList<>(optionsSet);
         Collections.shuffle(options);
         SendMessage newWordMessage = SendMessage.builder()
@@ -129,16 +128,14 @@ public class NewWordMessageHandler implements MessageHandler {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
         words.remove(word);
-        Set<Word> optionsSet = new HashSet<>();
-        while (optionsSet.size() != 3) {
-            int randomIndex = (int) (Math.random() * words.size());
-            Word randomWord = words.get(randomIndex);
-            if (!randomWord.equals(word) && !optionsSet.contains(randomWord)) {
+        Collections.shuffle(words);
+        Set<Word> optionsSet = new LinkedHashSet<>();
+        optionsSet.add(word);
+        for (Word randomWord : words) {
+            if (optionsSet.size() < 4) {
                 optionsSet.add(randomWord);
-                words.remove(randomIndex);
             }
         }
-        optionsSet.add(word);
         List<Word> options = new ArrayList<>(optionsSet);
         Collections.shuffle(options);
         SendMessage newWordMessage = SendMessage.builder()
