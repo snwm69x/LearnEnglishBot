@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.bot.Snwm69xBot;
-import com.snwm.englishbot.bot.snwm.Snwm69xServiceImpl;
+import com.snwm.englishbot.bot.snwm.Snwm69xLogService;
 import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.handlers.MessageHandler;
@@ -32,7 +32,7 @@ public class StartMessageHandler implements MessageHandler {
     @Autowired
     private KeyboardMaker keyboardMaker;
     @Autowired
-    private Snwm69xServiceImpl snwm69xServiceImpl;
+    private Snwm69xLogService snwm69xServiceImpl;
     @Autowired
     private ApplicationContext context;
 

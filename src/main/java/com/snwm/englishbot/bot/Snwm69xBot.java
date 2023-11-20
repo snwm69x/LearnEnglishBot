@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import com.snwm.englishbot.bot.snwm.Snwm69xServiceImpl;
+import com.snwm.englishbot.bot.snwm.Snwm69xLogService;
 
 @Component
 public class Snwm69xBot extends TelegramLongPollingBot {
@@ -16,7 +16,7 @@ public class Snwm69xBot extends TelegramLongPollingBot {
     private final Long ADMIN_CHAT_ID;
 
     @Autowired
-    private Snwm69xServiceImpl snwm69xServiceImpl;
+    private Snwm69xLogService snwm69xServiceImpl;
 
     Snwm69xBot(@Value("${SNWM_BOT_TOKEN}") String token,
             @Value("${SNWM_BOT_NAME}") String username,

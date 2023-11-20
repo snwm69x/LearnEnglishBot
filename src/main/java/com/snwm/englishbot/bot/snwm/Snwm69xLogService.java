@@ -11,18 +11,17 @@ import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.service.UserService;
 
 @Service
-public class Snwm69xServiceImpl implements Snwm69xService {
+public class Snwm69xLogService {
 
     private final String CHAT_ID;
 
     @Autowired
     private UserService userService;
 
-    public Snwm69xServiceImpl(@Value("${SNWM_BOT_ADMIN_CHANNEL}") String chatId) {
+    public Snwm69xLogService(@Value("${SNWM_BOT_ADMIN_CHANNEL}") String chatId) {
         this.CHAT_ID = chatId;
     }
 
-    @Override
     public void sendNewUserMessage(User user, Snwm69xBot snwm69xBot) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
@@ -36,7 +35,6 @@ public class Snwm69xServiceImpl implements Snwm69xService {
         }
     }
 
-    @Override
     public void handleSetAdminRights(String username, Snwm69xBot snwm69xBot) {
         userService.setUserAdminRights(username);
         SendMessage sendMessage = SendMessage.builder()
