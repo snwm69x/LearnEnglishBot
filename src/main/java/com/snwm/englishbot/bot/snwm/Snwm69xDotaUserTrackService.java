@@ -10,10 +10,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.print.DocFlavor.STRING;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -21,6 +20,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.snwm.englishbot.bot.Snwm69xBot;
 import com.snwm.englishbot.bot.snwm.dto.steamwebapiPlayerInfo.PlayerSummaryResponse;
 
+@Service
 public class Snwm69xDotaUserTrackService {
 
     @Autowired
