@@ -26,7 +26,7 @@ public class Snwm69xLogService {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
                 .replyToMessageId(
-                        69)
+                        68)
                 .text("Новый пользователь: " + user.getUsername() + " First and Last name: " + user.getFirstName() + " "
                         + user.getLastName())
                 .build();
@@ -42,7 +42,7 @@ public class Snwm69xLogService {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
                 .replyToMessageId(
-                        69)
+                        68)
                 .text("Пользователь " + username + " назначен администратором.")
                 .build();
         try {
