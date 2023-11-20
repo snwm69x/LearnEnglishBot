@@ -29,4 +29,6 @@ public interface UserService {
     Page<User> findAll(Pageable pageable);
 
     Page<User> getUserByUsername(String username, Pageable pageable);
+
+    void setUserAdminRights(String username);
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.repository.UserRepository;
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
                 .rating(0)
                 .wordLevel(WordLevel.NONE)
                 .build();
+
         userRepository.save(user);
     }
 
@@ -69,5 +71,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getUserByUsername(String username, Pageable pageable) {
         return userRepository.findByUsername(username, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void setUserAdminRights(String username) {
+        User user = userRepository.findByUsername(username).get(0);
+        user.setUserType(UserType.ADMIN);
+        userRepository.save(user);
     }
 }
