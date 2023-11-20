@@ -27,7 +27,7 @@ public class Snwm69xServiceImpl implements Snwm69xService {
     public void sendNewUserMessage(User user, Snwm69xBot snwm69xBot) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
-                .text("Новый пользователь: " + user.getUsername() + "| " + user.getFirstName() + " "
+                .text("Новый пользователь: " + user.getUsername() + " First and Last name: " + user.getFirstName() + " "
                         + user.getLastName())
                 .build();
         try {
@@ -43,6 +43,19 @@ public class Snwm69xServiceImpl implements Snwm69xService {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
                 .text("Пользователь " + username + " назначен администратором.")
+                .build();
+        try {
+            snwm69xBot.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendRecentAction(String message, Snwm69xBot snwm69xBot) {
+        SendMessage sendMessage = SendMessage.builder()
+                .chatId(CHAT_ID)
+                .text(message)
                 .build();
         try {
             snwm69xBot.execute(sendMessage);
