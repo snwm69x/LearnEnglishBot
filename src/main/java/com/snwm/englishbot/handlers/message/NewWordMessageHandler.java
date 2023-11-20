@@ -88,14 +88,27 @@ public class NewWordMessageHandler implements MessageHandler {
     @Transactional
     protected void findTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
+        System.out.println("Загаданное слово: " + word.getWord() + "| id: " + word.getId() + "| translate: "
+                + word.getTranslation().toString());
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
+        Set<Word> uniqueWords = new HashSet<>(words);
+        if (uniqueWords.size() < words.size()) {
+            System.out.println("Список words содержит дубликаты");
+        } else {
+            System.out.println("Список words не содержит дубликаты");
+        }
+        words = new ArrayList<>(new HashSet<>(words));
         words.remove(word);
         Collections.shuffle(words);
         Set<Word> optionsSet = new LinkedHashSet<>();
         optionsSet.add(word);
+        System.out.println("В optionsSet добавлено слово: " + word.getWord() + "| id: " + word.getId() + "| translate: "
+                + word.getTranslation().toString());
         for (Word randomWord : words) {
             if (optionsSet.size() < 4) {
                 optionsSet.add(randomWord);
+                System.out.println("В optionsSet добавлено слово: " + randomWord.getWord() + "| id: "
+                        + randomWord.getId() + "| translate: " + randomWord.getTranslation().toString());
             }
         }
         List<Word> options = new ArrayList<>(optionsSet);
@@ -126,14 +139,27 @@ public class NewWordMessageHandler implements MessageHandler {
     @Transactional
     protected void findWordByTranslation(Long userChatId, EnglishWordBot bot) {
         Word word = wordService.getRandomWordByUserChatIdAndDeleteIt(userChatId);
+        System.out.println("Загаданное слово: " + word.getWord() + "| id: " + word.getId() + "| translate: "
+                + word.getTranslation().toString());
         List<Word> words = wordService.getAllWordsByTypeAndLevel(word.getWordType(), word.getWordLevel());
+        Set<Word> uniqueWords = new HashSet<>(words);
+        if (uniqueWords.size() < words.size()) {
+            System.out.println("Список words содержит дубликаты");
+        } else {
+            System.out.println("Список words не содержит дубликаты");
+        }
+        words = new ArrayList<>(new HashSet<>(words));
         words.remove(word);
         Collections.shuffle(words);
         Set<Word> optionsSet = new LinkedHashSet<>();
         optionsSet.add(word);
+        System.out.println("В optionsSet добавлено слово: " + word.getWord() + "| id: " + word.getId() + "| translate: "
+                + word.getTranslation().toString());
         for (Word randomWord : words) {
             if (optionsSet.size() < 4) {
                 optionsSet.add(randomWord);
+                System.out.println("В optionsSet добавлено слово: " + randomWord.getWord() + "| id: "
+                        + randomWord.getId() + "| translate: " + randomWord.getTranslation().toString());
             }
         }
         List<Word> options = new ArrayList<>(optionsSet);
