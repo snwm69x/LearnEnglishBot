@@ -1,4 +1,4 @@
-package com.snwm.englishbot.service.impl;
+package com.snwm.englishbot.bot.snwm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.Snwm69xBot;
 import com.snwm.englishbot.entity.User;
-import com.snwm.englishbot.service.Snwm69xService;
 import com.snwm.englishbot.service.UserService;
 
 @Service
@@ -43,19 +42,6 @@ public class Snwm69xServiceImpl implements Snwm69xService {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(CHAT_ID)
                 .text("Пользователь " + username + " назначен администратором.")
-                .build();
-        try {
-            snwm69xBot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void sendRecentAction(String message, Snwm69xBot snwm69xBot) {
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(CHAT_ID)
-                .text(message)
                 .build();
         try {
             snwm69xBot.execute(sendMessage);

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import com.snwm.englishbot.service.impl.Snwm69xServiceImpl;
+import com.snwm.englishbot.bot.snwm.Snwm69xServiceImpl;
 
 @Component
 public class Snwm69xBot extends TelegramLongPollingBot {

@@ -13,11 +13,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.snwm.englishbot.bot.EnglishWordBot;
 import com.snwm.englishbot.bot.Snwm69xBot;
+import com.snwm.englishbot.bot.snwm.Snwm69xServiceImpl;
 import com.snwm.englishbot.component.KeyboardMaker;
 import com.snwm.englishbot.entity.User;
 import com.snwm.englishbot.handlers.MessageHandler;
 import com.snwm.englishbot.service.UserService;
-import com.snwm.englishbot.service.impl.Snwm69xServiceImpl;
 import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 
 @Component("/start")

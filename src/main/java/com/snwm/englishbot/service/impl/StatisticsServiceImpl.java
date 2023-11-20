@@ -3,11 +3,7 @@ package com.snwm.englishbot.service.impl;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-
-import com.snwm.englishbot.bot.Snwm69xBot;
 import com.snwm.englishbot.service.StatisticsService;
 
 import lombok.Getter;
@@ -27,11 +23,6 @@ public class StatisticsServiceImpl implements StatisticsService {
     private long currentStartTime = 0;
     private int newUsers = 0;
     private long lastResponseTime = 0;
-
-    @Autowired
-    private Snwm69xServiceImpl snwm69xServiceImpl;
-    @Autowired
-    private ApplicationContext applicationContext;
 
     @Override
     public String getUptime() {
@@ -67,7 +58,6 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public void recordNews(String action) {
-        snwm69xServiceImpl.sendRecentAction(action, applicationContext.getBean(Snwm69xBot.class));
         if (recentNews.size() >= 25) {
             recentNews.removeFirst();
         }
