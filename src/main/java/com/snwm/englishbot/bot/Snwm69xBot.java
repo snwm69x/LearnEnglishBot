@@ -28,6 +28,9 @@ public class Snwm69xBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        if (update.hasMessage()) {
+            System.out.println(update.getMessage().getChatId());
+        }
         if (update.hasMessage() && update.getMessage().getChatId().equals(ADMIN_CHAT_ID)) {
             if (update.getMessage().hasText()) {
                 String message = update.getMessage().getText();
