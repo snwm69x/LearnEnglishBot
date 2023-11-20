@@ -14,6 +14,8 @@ services:
       - PROD_BOT_TOKEN=${PROD_BOT_TOKEN}
     ports:
       - "80:8080"
+    env_file:
+      - .env
   db:
     image: postgres:13
     environment:
