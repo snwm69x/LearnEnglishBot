@@ -38,6 +38,8 @@ public class Snwm69xDotaUserTrackService {
             SendPhoto sendPhoto = SendPhoto.builder()
                     .chatId(CHAT_ID.toString())
                     .parseMode("html")
+                    .replyToMessageId(
+                            63)
                     .photo(avatarFile)
                     .caption("Егор Просвиркин aka " + "<b>"
                             + playerSummaryResponse.getResponse().getPlayers().get(0).getPersonaname() + "</b>" +
