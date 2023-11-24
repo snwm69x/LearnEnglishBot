@@ -119,9 +119,11 @@ public class NewWordMessageHandler implements MessageHandler {
             e.printStackTrace();
         }
         statisticsServiceImpl.endMessageProcessing();
-        statisticsServiceImpl
-                .recordNews(
-                        "Пользователь " + userChatId.toString() + " запросил новое слово " + word.getWord());
+        User user = userService.getUserByChatId(userChatId);
+        String username = user.getUsername() != null ? user.getUsername()
+                : user.getFirstName() + " " + user.getLastName();
+
+        statisticsServiceImpl.recordNews("Пользователь " + username + " запросил новое слово " + word.getWord());
     }
 
     @Transactional
@@ -156,9 +158,11 @@ public class NewWordMessageHandler implements MessageHandler {
             e.printStackTrace();
         }
         statisticsServiceImpl.endMessageProcessing();
-        statisticsServiceImpl
-                .recordNews("Пользователь " + userChatId.toString() + " запросил новое слово "
-                        + word.getTranslation().toString());
+        User user = userService.getUserByChatId(userChatId);
+        String username = user.getUsername() != null ? user.getUsername()
+                : user.getFirstName() + " " + user.getLastName();
+
+        statisticsServiceImpl.recordNews("Пользователь " + username + " запросил новое слово " + word.getWord());
     }
 
 }

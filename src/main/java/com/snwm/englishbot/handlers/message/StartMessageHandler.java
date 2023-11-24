@@ -62,8 +62,9 @@ public class StartMessageHandler implements MessageHandler {
             logger.error("Error while sending start message: {}", e.getMessage());
         }
         statisticsServiceImpl.endMessageProcessing();
-        statisticsServiceImpl
-                .recordNews("Новый пользователь: " + message.getFrom().getUserName() + " начал использовать бота");
+        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
+                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
+        statisticsServiceImpl.recordNews("Пользователь " + username + " начал общение с ботом.");
     }
 
 }

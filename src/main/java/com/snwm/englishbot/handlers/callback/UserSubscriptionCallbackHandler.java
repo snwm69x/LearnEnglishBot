@@ -33,6 +33,10 @@ public class UserSubscriptionCallbackHandler implements CallbackHandler {
 
         @Override
         public void handle(Update update, EnglishWordBot bot) {
+                String username = update.getCallbackQuery().getFrom().getUserName() != null
+                                ? update.getCallbackQuery().getFrom().getUserName()
+                                : update.getCallbackQuery().getFrom().getFirstName() + " "
+                                                + update.getCallbackQuery().getFrom().getLastName();
                 logger.info("Обработка ответа пользователя для получения привилегий: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
 
@@ -74,7 +78,7 @@ public class UserSubscriptionCallbackHandler implements CallbackHandler {
                 statisticsServiceImpl.setHandledCallbacks(statisticsServiceImpl.getHandledCallbacks() + 1);
                 statisticsServiceImpl
                                 .recordNews(
-                                                "Пользователь: " + update.getCallbackQuery().getFrom().getUserName()
+                                                "Пользователь: " + username
                                                                 + " подписался на канал");
         }
 

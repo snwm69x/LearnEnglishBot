@@ -61,7 +61,12 @@ public class RatingTableMessageHandler implements MessageHandler {
             } else {
                 text.append(i + 1).append(". @");
             }
-            text.append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
+            if (usr.getUsername() == null) {
+                text.append(usr.getFirstName() + " " + usr.getLastName()).append(" - ").append(usr.getRating())
+                        .append(" pts\n");
+            } else {
+                text.append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
+            }
         }
         if (top10) {
             text.append("\nПоздравляем, вы входите в 🔝10 лидеров!🎉");
@@ -76,8 +81,11 @@ public class RatingTableMessageHandler implements MessageHandler {
         msg.disableNotification();
         try {
             bot.execute(msg);
-            statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
-                    + message.getChatId() + " запросил Таблицу лидеров");
+            statisticsServiceImpl.recordNews("Пользователь: " +
+                    (message.getFrom().getUserName() != null ? message.getFrom().getUserName()
+                            : message.getFrom().getFirstName() + " " + message.getFrom().getLastName())
+                    +
+                    " с ID: " + message.getChatId() + " запросил Таблицу лидеров");
         } catch (TelegramApiException e) {
             System.out.println("Ошибка во время обработки команды 'Таблица лидеров' для пользователя: "
                     + message.getFrom().getUserName());

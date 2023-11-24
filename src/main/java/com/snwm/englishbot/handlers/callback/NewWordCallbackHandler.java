@@ -45,6 +45,10 @@ public class NewWordCallbackHandler implements CallbackHandler {
     @Transactional
     @Override
     public void handle(Update update, EnglishWordBot bot) {
+        String username = update.getCallbackQuery().getFrom().getUserName() != null
+                ? update.getCallbackQuery().getFrom().getUserName()
+                : update.getCallbackQuery().getFrom().getFirstName() + " "
+                        + update.getCallbackQuery().getFrom().getLastName();
         Long userId = update.getCallbackQuery().getFrom().getId();
         Long wordId = Long.parseLong(update.getCallbackQuery().getData().split(":")[1]);
         LinkedList<Long> lastWords = userLastWordMap.getOrDefault(userId, new LinkedList<>());
@@ -110,7 +114,7 @@ public class NewWordCallbackHandler implements CallbackHandler {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);
                 statisticsServiceImpl
-                        .recordNews("Пользователь: " + update.getCallbackQuery().getFrom().getUserName()
+                        .recordNews("Пользователь: " + username
                                 + " ответил правильно на слово: " + word.getWord());
             } catch (TelegramApiException e) {
                 statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
@@ -168,7 +172,7 @@ public class NewWordCallbackHandler implements CallbackHandler {
                 bot.execute(editMessageText);
                 bot.execute(answerCallbackQuery);
                 statisticsServiceImpl
-                        .recordNews("Пользователь: " + update.getCallbackQuery().getFrom().getUserName()
+                        .recordNews("Пользователь: " + username
                                 + " ответил неправильно на слово: " + word.getWord());
             } catch (TelegramApiException e) {
                 statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);

@@ -32,6 +32,8 @@ public class AdminMessageHandler implements MessageHandler {
 
     @Override
     public void handle(Message message, EnglishWordBot bot) {
+        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
+                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
         statisticsServiceImpl.startMessageProcessing();
         logger.info("Обработка команды /admin для пользователя: {}",
                 message.getFrom().getUserName());
@@ -53,13 +55,13 @@ public class AdminMessageHandler implements MessageHandler {
             msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
             try {
                 bot.execute(msg);
-                statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
                         + message.getChatId() + " запросил Admin Dashboard");
             } catch (TelegramApiException e) {
                 System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
                 statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + message.getFrom().getUserName());
+                        + username);
                 statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 e.printStackTrace();
             }
@@ -70,14 +72,14 @@ public class AdminMessageHandler implements MessageHandler {
                     .build();
             try {
                 bot.execute(msg2);
-                statisticsServiceImpl.recordNews("Пользователь: " + message.getFrom().getUserName() + " с ID: "
+                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
                         + message.getChatId() + " запросил Admin Dashboard без привилегий");
             } catch (TelegramApiException e) {
                 statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
                 System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
                         + message.getFrom().getUserName());
                 statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + message.getFrom().getUserName());
+                        + username);
                 e.printStackTrace();
             }
         }

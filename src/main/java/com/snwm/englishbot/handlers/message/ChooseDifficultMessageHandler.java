@@ -51,8 +51,10 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
             logger.error("Error while sending start message: {}", e.getMessage());
         }
         statisticsServiceImpl.endMessageProcessing();
+        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
+                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
         statisticsServiceImpl
-                .recordNews("Пользователь: " + message.getFrom().getUserName() + " запросил выбор сложности");
+                .recordNews("Пользователь: " + username + " запросил выбор сложности");
     }
 
 }
