@@ -53,19 +53,21 @@ public class RatingTableMessageHandler implements MessageHandler {
         for (int i = 0; i < Math.min(users.size(), 10); i++) {
             User usr = users.get(i);
             if (i == 0) {
-                text.append("👑 @");
+                text.append("👑 ");
             } else if (i == 1) {
-                text.append("🥈 @");
+                text.append("🥈 ");
             } else if (i == 2) {
-                text.append("🥉 @");
+                text.append("🥉 ");
             } else {
-                text.append(i + 1).append(". @");
+                text.append(i + 1).append(". ");
             }
             if (usr.getUsername() == null) {
-                text.append(usr.getFirstName() + " " + usr.getLastName()).append(" - ").append(usr.getRating())
-                        .append(" pts\n");
+                String firstName = usr.getFirstName() != null ? usr.getFirstName() : "";
+                String lastName = usr.getLastName() != null ? usr.getLastName() : "";
+                String fullName = (firstName + " " + lastName).trim();
+                text.append(fullName).append(" - ").append(usr.getRating()).append(" pts\n");
             } else {
-                text.append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
+                text.append("@").append(usr.getUsername()).append(" - ").append(usr.getRating()).append(" pts\n");
             }
         }
         if (top10) {
@@ -81,11 +83,19 @@ public class RatingTableMessageHandler implements MessageHandler {
         msg.disableNotification();
         try {
             bot.execute(msg);
-            statisticsServiceImpl.recordNews("Пользователь: " +
-                    (message.getFrom().getUserName() != null ? message.getFrom().getUserName()
-                            : message.getFrom().getFirstName() + " " + message.getFrom().getLastName())
-                    +
-                    " с ID: " + message.getChatId() + " запросил Таблицу лидеров");
+            // for logs in tg
+            var from = message.getFrom();
+
+            String username = from.getUserName();
+            if (username == null) {
+                String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+                String lastName = from.getLastName() != null ? from.getLastName() : "";
+                username = (firstName + " " + lastName).trim();
+            }
+            //
+            statisticsServiceImpl
+                    .recordNews("Пользователь: " + username + " с ID: " + message.getChatId()
+                            + " запросил Таблицу лидеров");
         } catch (TelegramApiException e) {
             System.out.println("Ошибка во время обработки команды 'Таблица лидеров' для пользователя: "
                     + message.getFrom().getUserName());

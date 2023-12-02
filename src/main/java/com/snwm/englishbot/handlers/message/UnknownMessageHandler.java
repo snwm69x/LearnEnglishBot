@@ -43,8 +43,16 @@ public class UnknownMessageHandler implements MessageHandler {
             statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
             logger.error("Error while sending unknown command message: {}", e.getMessage());
         }
-        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
-                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
+        // for logs in tg
+        var from = message.getFrom();
+
+        String username = from.getUserName();
+        if (username == null) {
+            String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+            String lastName = from.getLastName() != null ? from.getLastName() : "";
+            username = (firstName + " " + lastName).trim();
+        }
+        //
         statisticsServiceImpl
                 .recordNews("Неизвестная команда от пользователя: " + username + " Сообщение: "
                         + message.getText());

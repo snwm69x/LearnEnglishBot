@@ -45,10 +45,17 @@ public class NewWordCallbackHandler implements CallbackHandler {
     @Transactional
     @Override
     public void handle(Update update, EnglishWordBot bot) {
-        String username = update.getCallbackQuery().getFrom().getUserName() != null
-                ? update.getCallbackQuery().getFrom().getUserName()
-                : update.getCallbackQuery().getFrom().getFirstName() + " "
-                        + update.getCallbackQuery().getFrom().getLastName();
+        // for logs in tg
+        var callbackQuery = update.getCallbackQuery();
+        var from = callbackQuery.getFrom();
+
+        String username = from.getUserName();
+        if (username == null) {
+            String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+            String lastName = from.getLastName() != null ? from.getLastName() : "";
+            username = (firstName + " " + lastName).trim();
+        }
+        //
         Long userId = update.getCallbackQuery().getFrom().getId();
         Long wordId = Long.parseLong(update.getCallbackQuery().getData().split(":")[1]);
         LinkedList<Long> lastWords = userLastWordMap.getOrDefault(userId, new LinkedList<>());

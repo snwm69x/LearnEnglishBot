@@ -159,9 +159,14 @@ public class NewWordMessageHandler implements MessageHandler {
         }
         statisticsServiceImpl.endMessageProcessing();
         User user = userService.getUserByChatId(userChatId);
-        String username = user.getUsername() != null ? user.getUsername()
-                : user.getFirstName() + " " + user.getLastName();
-
+        // for logs in tg
+        String username = user.getUsername();
+        if (username == null) {
+            String firstName = user.getFirstName() != null ? user.getFirstName() : "";
+            String lastName = user.getLastName() != null ? user.getLastName() : "";
+            username = (firstName + " " + lastName).trim();
+        }
+        //
         statisticsServiceImpl.recordNews("Пользователь " + username + " запросил новое слово " + word.getWord());
     }
 

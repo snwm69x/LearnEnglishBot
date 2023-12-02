@@ -33,10 +33,17 @@ public class UserSubscriptionCallbackHandler implements CallbackHandler {
 
         @Override
         public void handle(Update update, EnglishWordBot bot) {
-                String username = update.getCallbackQuery().getFrom().getUserName() != null
-                                ? update.getCallbackQuery().getFrom().getUserName()
-                                : update.getCallbackQuery().getFrom().getFirstName() + " "
-                                                + update.getCallbackQuery().getFrom().getLastName();
+                // for logs in tg
+                var callbackQuery = update.getCallbackQuery();
+                var from = callbackQuery.getFrom();
+
+                String username = from.getUserName();
+                if (username == null) {
+                        String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+                        String lastName = from.getLastName() != null ? from.getLastName() : "";
+                        username = (firstName + " " + lastName).trim();
+                }
+                //
                 logger.info("Обработка ответа пользователя для получения привилегий: {}",
                                 update.getCallbackQuery().getFrom().getUserName());
 

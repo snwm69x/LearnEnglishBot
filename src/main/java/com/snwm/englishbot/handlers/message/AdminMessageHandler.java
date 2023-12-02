@@ -20,70 +20,80 @@ import com.snwm.englishbot.service.impl.StatisticsServiceImpl;
 @Component("/admin")
 public class AdminMessageHandler implements MessageHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminMessageHandler.class);
-    private static final String ADMIN_PAGE_URL = "http://95.181.173.115/admin";
+        private static final Logger logger = LoggerFactory.getLogger(AdminMessageHandler.class);
+        private static final String ADMIN_PAGE_URL = "http://95.181.173.115/admin";
 
-    @Autowired
-    private StatisticsServiceImpl statisticsServiceImpl;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private KeyboardMaker keyboardMaker;
+        @Autowired
+        private StatisticsServiceImpl statisticsServiceImpl;
+        @Autowired
+        private UserService userService;
+        @Autowired
+        private KeyboardMaker keyboardMaker;
 
-    @Override
-    public void handle(Message message, EnglishWordBot bot) {
-        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
-                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
-        statisticsServiceImpl.startMessageProcessing();
-        logger.info("Обработка команды /admin для пользователя: {}",
-                message.getFrom().getUserName());
-        SendChatAction sendChatAction = SendChatAction.builder()
-                .chatId(message.getChatId().toString())
-                .action("typing")
-                .build();
-        try {
-            bot.execute(sendChatAction);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        @Override
+        public void handle(Message message, EnglishWordBot bot) {
+                // for logs in tg
+                var from = message.getFrom();
+
+                String username = from.getUserName();
+                if (username == null) {
+                        String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+                        String lastName = from.getLastName() != null ? from.getLastName() : "";
+                        username = (firstName + " " + lastName).trim();
+                }
+                //
+                statisticsServiceImpl.startMessageProcessing();
+                logger.info("Обработка команды /admin для пользователя: {}",
+                                message.getFrom().getUserName());
+                SendChatAction sendChatAction = SendChatAction.builder()
+                                .chatId(message.getChatId().toString())
+                                .action("typing")
+                                .build();
+                try {
+                        bot.execute(sendChatAction);
+                } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                }
+                User user = userService.getUserByChatId(message.getChatId());
+                if (user.getUserType().equals(UserType.ADMIN)) {
+                        SendMessage msg = SendMessage.builder()
+                                        .chatId(message.getChatId().toString())
+                                        .text("Admin Dashboard")
+                                        .build();
+                        msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
+                        try {
+                                bot.execute(msg);
+                                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
+                                                + message.getChatId() + " запросил Admin Dashboard");
+                        } catch (TelegramApiException e) {
+                                System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
+                                                + message.getFrom().getUserName());
+                                statisticsServiceImpl.recordNews(
+                                                "Ошибка во время обработки команды '/admin' для пользователя: "
+                                                                + username);
+                                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                                e.printStackTrace();
+                        }
+                } else {
+                        SendMessage msg2 = SendMessage.builder()
+                                        .chatId(message.getChatId().toString())
+                                        .text("У вас нету прав Администратора")
+                                        .build();
+                        try {
+                                bot.execute(msg2);
+                                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
+                                                + message.getChatId() + " запросил Admin Dashboard без привилегий");
+                        } catch (TelegramApiException e) {
+                                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
+                                System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
+                                                + message.getFrom().getUserName());
+                                statisticsServiceImpl.recordNews(
+                                                "Ошибка во время обработки команды '/admin' для пользователя: "
+                                                                + username);
+                                e.printStackTrace();
+                        }
+                }
+                statisticsServiceImpl.endMessageProcessing();
         }
-        User user = userService.getUserByChatId(message.getChatId());
-        if (user.getUserType().equals(UserType.ADMIN)) {
-            SendMessage msg = SendMessage.builder()
-                    .chatId(message.getChatId().toString())
-                    .text("Admin Dashboard")
-                    .build();
-            msg.setReplyMarkup(keyboardMaker.getAdminPageButton(ADMIN_PAGE_URL));
-            try {
-                bot.execute(msg);
-                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
-                        + message.getChatId() + " запросил Admin Dashboard");
-            } catch (TelegramApiException e) {
-                System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + message.getFrom().getUserName());
-                statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + username);
-                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
-                e.printStackTrace();
-            }
-        } else {
-            SendMessage msg2 = SendMessage.builder()
-                    .chatId(message.getChatId().toString())
-                    .text("У вас нету прав Администратора")
-                    .build();
-            try {
-                bot.execute(msg2);
-                statisticsServiceImpl.recordNews("Пользователь: " + username + " с ID: "
-                        + message.getChatId() + " запросил Admin Dashboard без привилегий");
-            } catch (TelegramApiException e) {
-                statisticsServiceImpl.setErrors(statisticsServiceImpl.getErrors() + 1);
-                System.out.println("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + message.getFrom().getUserName());
-                statisticsServiceImpl.recordNews("Ошибка во время обработки команды '/admin' для пользователя: "
-                        + username);
-                e.printStackTrace();
-            }
-        }
-        statisticsServiceImpl.endMessageProcessing();
-    }
 
 }

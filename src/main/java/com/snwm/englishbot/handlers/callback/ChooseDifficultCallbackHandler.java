@@ -44,10 +44,17 @@ public class ChooseDifficultCallbackHandler implements CallbackHandler {
     @Transactional
     @Override
     public void handle(Update update, EnglishWordBot bot) {
-        String username = update.getCallbackQuery().getFrom().getUserName() != null
-                ? update.getCallbackQuery().getFrom().getUserName()
-                : update.getCallbackQuery().getFrom().getFirstName() + " "
-                        + update.getCallbackQuery().getFrom().getLastName();
+        // for logs in tg
+        var callbackQuery = update.getCallbackQuery();
+        var from = callbackQuery.getFrom();
+
+        String username = from.getUserName();
+        if (username == null) {
+            String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+            String lastName = from.getLastName() != null ? from.getLastName() : "";
+            username = (firstName + " " + lastName).trim();
+        }
+        //
         logger.info("Обработка ответа пользователя на команду 'Выбрать сложность': {}",
                 update.getCallbackQuery().getFrom().getUserName());
         User user = userService.getUserByChatId(update.getCallbackQuery().getMessage().getChatId());

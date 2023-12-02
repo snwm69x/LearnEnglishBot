@@ -27,6 +27,16 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
     @Override
     public void handle(Message message, EnglishWordBot bot) {
         statisticsServiceImpl.startMessageProcessing();
+        // for logs in tg
+        var from = message.getFrom();
+
+        String username = from.getUserName();
+        if (username == null) {
+            String firstName = from.getFirstName() != null ? from.getFirstName() : "";
+            String lastName = from.getLastName() != null ? from.getLastName() : "";
+            username = (firstName + " " + lastName).trim();
+        }
+        //
         logger.info("Смена сложности для пользователя: {}",
                 message.getFrom().getUserName());
         SendChatAction sendChatAction = SendChatAction.builder()
@@ -51,8 +61,6 @@ public class ChooseDifficultMessageHandler implements MessageHandler {
             logger.error("Error while sending start message: {}", e.getMessage());
         }
         statisticsServiceImpl.endMessageProcessing();
-        String username = message.getFrom().getUserName() != null ? message.getFrom().getUserName()
-                : message.getFrom().getFirstName() + " " + message.getFrom().getLastName();
         statisticsServiceImpl
                 .recordNews("Пользователь: " + username + " запросил выбор сложности");
     }
