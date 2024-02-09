@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import com.snwm.englishbot.entity.Word;
-
+// Переделать, чтобы методы вызывались статически, а не с объектов
 @Component
 public class KeyboardMaker {
 
